@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.softdrinksindustrylevystub.models.etmp
+package uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub
 
 import java.time.{LocalDate => Date}
 
-/**
-  * Rough Scala approximation of raw ETMP data structures
-  * 
-  * Not to be used directly in MDTP BE/FE services!
-  */
+/*
+ * Rough Scala approximation of raw ETMP data structures
+ * 
+ * Not to be used directly in MDTP BE/FE services!
+ */
 
 case class Address (
   addressNotInUk: Boolean,
