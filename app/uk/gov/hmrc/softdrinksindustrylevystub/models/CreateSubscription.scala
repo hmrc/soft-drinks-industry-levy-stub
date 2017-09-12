@@ -18,6 +18,9 @@ package uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub
 
 import java.time.{LocalDate => Date}
 
+import play.api.libs.json.Json
+import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils
+
 /*
  * Rough Scala approximation of raw ETMP data structures
  * 
@@ -38,6 +41,10 @@ case class Address (
   faxNumber: Option[String]
 )
 
+object Address {
+  implicit val addressFormat = Json.format[Address]
+}
+
 case class ContactDetails(
   name: String,
   positionInCompany: Option[String],
@@ -46,14 +53,9 @@ case class ContactDetails(
   emailAddress: String
 )
 
-case class LevyDetails(
-  activities: ActivityType.Value,
-  lessThanMillion: Boolean,
-  producerClassification: Option[ProducerClassification.Value],
-  smallProducerExemption: Boolean,
-  usesCopacker: Boolean,
-  voluntarilyRegistered: Boolean
-)
+object ContactDetails {
+  implicit val contactDetailsFormat = Json.format[ContactDetails]
+}
 
 case class LitresProduced(
   ProducedLower: Option[Int],
@@ -64,6 +66,10 @@ case class LitresProduced(
   PackagedHigher: Option[Int]
 )
 
+object LitresProduced {
+  implicit val litresProducedFormat = Json.format[LitresProduced]
+}
+
 case class BankDetails (
   directDebit: Boolean,
   accountName: Option[String],
@@ -72,38 +78,75 @@ case class BankDetails (
   buildingSocietyRollNumber: Option[String]
 )
 
+object BankDetails {
+  implicit val bankDetailsFormat = Json.format[BankDetails]
+}
+
 
 object ProducerClassification extends Enumeration {
-  type OrganisationType = Value
+  type ProducerClassification = Value
   val Unknown, Large, Small = Value
+  implicit val producerClassificationFormat = EnumUtils.enumFormat(ProducerClassification)
 }
 
 
 object OrganisationType extends Enumeration {
-  type OrganisationType = Value
+  type OrganisationType = Value // TODO - figure out if these type statements are needed
   val Unknown, SoleProprietor, LimitedCompany, LLP, UnincorporatedBody, Partnership, Trust = Value
+  implicit val organisationTypeFormat = EnumUtils.enumFormat(OrganisationType)
 }
 
 object ActionType extends Enumeration {
   val Unknown, Add, Amend, Remove = Value
+  implicit val actionTypeFormat = EnumUtils.enumFormat(ActionType)
 }
 
 object EntityType extends Enumeration {
   val Unknown, GroupMember, GroupRepresentativeMember, ControllingBody, Partner = Value
+  implicit val entityTypeFormat = EnumUtils.enumFormat(EntityType)
 }
 
 object ActivityType extends Enumeration {
   val Unknown, Producer, Importer, ContractPacker = Value
+  implicit val activityTypeFormat = EnumUtils.enumFormat(ActivityType)
+}
+case class LevyDetails(
+  activities: ActivityType.Value,
+  lessThanMillion: Boolean,
+  producerClassification: Option[ProducerClassification.Value],
+  smallProducerExemption: Boolean,
+  usesCopacker: Boolean,
+  voluntarilyRegistered: Boolean
+)
+
+object LevyDetails {
+  implicit val levyDetailsFormat = Json.format[LevyDetails]
 }
 
 object SiteAction extends Enumeration {
   val Unknown, NewSite, AmendSite, CloseSite, TransferSite = Value
+  implicit val siteActionFormat = EnumUtils.enumFormat(SiteAction)
 }
 
 object SiteType extends Enumeration {
   val Unknown, Warehouse, ProductionSite = Value
+  implicit val siteTypeFormat = EnumUtils.enumFormat(SiteType)
 }
 
+case class Site (
+  action: Option[SiteAction.Value],
+  siteReference: Option[String],
+  dateOfClosure: Option[Date],
+  siteClosureReason: Option[String],
+  tradingName: Option[String],
+  newSiteReference: Option[String],
+  address: Address,
+  typeOfSite: Option[SiteType.Value]
+)
+
+object Site {
+  implicit val siteFormat = Json.format[Site]
+}
 
 case class CreateSubscriptionRequest (
   organisationType: OrganisationType.Value,
@@ -127,18 +170,16 @@ case class CreateSubscriptionRequest (
   sites: List[Site]
 )
 
-case class Site (
-  action: Option[SiteAction.Value],
-  siteReference: Option[String],
-  dateOfClosure: Option[Date],
-  siteClosureReason: Option[String],
-  tradingName: Option[String],
-  newSiteReference: Option[String],
-  address: Address,
-  typeOfSite: Option[SiteType.Value]
-)
+object CreateSubscriptionRequest {
+  implicit val createSubscriptionRequestFormat = Json.format[CreateSubscriptionRequest]
+}
+
 
 case class CreateSubscriptionResponse (
   safeId: String,
   formBundleNumber: String
 )
+
+object CreateSubscriptionResponse {
+  implicit val createSubscriptionResponseFormat = Json.format[CreateSubscriptionResponse]
+}
