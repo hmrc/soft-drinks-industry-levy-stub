@@ -16,6 +16,15 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
+import java.time.{LocalDate, LocalTime}
+import java.time.format.DateTimeFormatter._
+
+import akka.japi.Option.Some
+import cats.implicits._
+import org.scalacheck._
+import org.scalacheck.support.cats._
+import uk.gov.hmrc.smartstub._
+import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import com.google.inject.Singleton
 import uk.gov.hmrc.softdrinksindustrylevystub.models.DesSubmissionResult
 import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.{CreateSubscriptionRequest, CreateSubscriptionResponse}

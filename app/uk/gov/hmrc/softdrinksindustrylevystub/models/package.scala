@@ -21,4 +21,11 @@ import play.api.libs.json._
 package object models {
   implicit val desSubmissionRequestFormatter: Format[DesSubmissionRequest] = Json.format[DesSubmissionRequest]
   implicit val desSubmissionResultFormatter: Format[DesSubmissionResult] = Json.format[DesSubmissionResult]
+
+  implicit val subscriptionDetailsFormatter: Format[SubscriptionDetails] = Json.format[SubscriptionDetails]
+  implicit val addressDetailsFormatter: Format[AddressDetails] = Json.format[AddressDetails]
+  implicit val relationshipDetailsFormatter: Format[RelationshipDetails] = Json.format[RelationshipDetails]
+  implicit val bankDetailsFormatter: Format[BankDetails] = Json.format[BankDetails]
+  implicit val siteDetailsFormatter: Format[SiteDetails] = Json.format[SiteDetails]
+  implicit val getSubscriptionResponseFormatter: Format[GetSubscriptionResponse] = Json.format[GetSubscriptionResponse]
 }
