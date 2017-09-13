@@ -35,5 +35,8 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
 
   def createSubscription = ???
 
-  def retrieveSubscriptionDetails = ???
+  def retrieveSubscriptionDetails(nino: String, utr: String): Action[JsValue] = Action.async { implicit request =>
+
+    ???
+  }
 }

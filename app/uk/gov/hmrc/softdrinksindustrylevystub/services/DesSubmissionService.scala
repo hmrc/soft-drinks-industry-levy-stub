@@ -16,10 +16,31 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import com.google.inject.Singleton
-import uk.gov.hmrc.softdrinksindustrylevystub.models.DesSubmissionResult
+import java.time.{LocalDate, LocalTime}
+import java.time.format.DateTimeFormatter._
+
+import akka.japi.Option.Some
+import cats.implicits._
+import org.scalacheck._
+import org.scalacheck.support.cats._
+import uk.gov.hmrc.smartstub._
+import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
 @Singleton
 class DesSubmissionService {
   def buildResponse(): DesSubmissionResult = DesSubmissionResult(true)
+
+  def generateSubscriptionDetails(): Gen[SubscriptionDetails] = {
+    Gen.date(2014, 2017).sometimes |@|
+      Gen.date(2014, 2017).sometimes
+  }
+
+  def generateAddressDetails(): Gen[AddressDetails] = ???
+
+  def generateRelationshipDetails(): Gen[RelationshipDetails] = ???
+
+  def generateBankDetails(): Gen[BankDetails] = ???
+
+  def generateSiteDetails(): Gen[SiteDetails] = ???
+
 }
