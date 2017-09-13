@@ -28,9 +28,9 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.softdrinksindustrylevystub.models.DesSubmissionResult
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
-class HelloWorldControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
+class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
-  val mockHelloWorldController = new HelloWorldController(mockDesSubmissionService)
+  val mockHelloWorldController = new SubscriptionController(mockDesSubmissionService)
 
   override def beforeEach() {
     reset(mockDesSubmissionService)
