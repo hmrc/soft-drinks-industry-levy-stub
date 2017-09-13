@@ -22,6 +22,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.softdrinksindustrylevystub.models.DesSubmissionRequest
+import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.{CreateSubscriptionRequest, CreateSubscriptionResponse}
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
 import scala.concurrent.Future
@@ -33,7 +34,10 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
     withJsonBody[DesSubmissionRequest](_ => Future.successful(Ok(Json.toJson(desSubmissionService.buildResponse()))))
   }
 
-  def createSubscription = ???
+  def createSubscription(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    withJsonBody[CreateSubscriptionRequest](data =>
+      Future.successful(Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(data)))))
+  }
 
-  def retrieveSubscriptionDetails = ???
+//  def retrieveSubscriptionDetails = ???
 }

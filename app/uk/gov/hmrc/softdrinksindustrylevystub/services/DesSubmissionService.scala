@@ -18,8 +18,21 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import com.google.inject.Singleton
 import uk.gov.hmrc.softdrinksindustrylevystub.models.DesSubmissionResult
+import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.{CreateSubscriptionRequest, CreateSubscriptionResponse}
 
 @Singleton
 class DesSubmissionService {
+
+  def createSubscriptionResponse(data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
+
+//    data.
+
+
+    CreateSubscriptionResponse("foo", "bar")
+  }
+
+
+  def createSubscriptionResponse() = ???
+
   def buildResponse(): DesSubmissionResult = DesSubmissionResult(true)
 }
