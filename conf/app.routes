@@ -1,3 +1,4 @@
 # microservice specific routes
 
-POST        /des-valid             @uk.gov.hmrc.softdrinksindustrylevystub.controllers.HelloWorldController.submitHello
+POST        /create-subscription             @uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.createSubscription
+GET         /retrieve-subscription-details   @uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails

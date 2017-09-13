@@ -27,9 +27,13 @@ import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import scala.concurrent.Future
 
 @Singleton
-class HelloWorldController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController {
+class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController {
 
   def submitHello(): Action[JsValue] = Action.async(parse.json) { implicit request =>
     withJsonBody[DesSubmissionRequest](_ => Future.successful(Ok(Json.toJson(desSubmissionService.buildResponse()))))
   }
+
+  def createSubscription = ???
+
+  def retrieveSubscriptionDetails = ???
 }
