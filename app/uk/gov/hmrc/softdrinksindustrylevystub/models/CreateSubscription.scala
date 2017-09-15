@@ -164,7 +164,7 @@ case class CreateSubscriptionRequest (
   primaryPerson: ContactDetails,
   softDrinksIndustryLevyDetails: LevyDetails,
   sdilActivity: LitresProduced,
-  estimatedAmountOfTaxInTheNext12Months: Option[Int],
+  estimatedAmountOfTaxInTheNext12Months: Option[Int], // TODO change this to BigDecimal
   taxObligationStartDate: Date,
   bankDetails: BankDetails,
   sites: List[Site]

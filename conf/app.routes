@@ -1,4 +1,4 @@
 # microservice specific routes
 
 POST        /create-subscription             @uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.createSubscription
-GET         /retrieve-subscription-details/:nino/:utr   @uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(nino, utr)
+GET         /retrieve-subscription-details/:utr   @uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(utr)

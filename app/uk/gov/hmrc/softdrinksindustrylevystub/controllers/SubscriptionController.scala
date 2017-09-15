@@ -39,8 +39,7 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
       Future.successful(Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(data)))))
   }
 
-  def retrieveSubscriptionDetails(nino: String, utr: String): Action[JsValue] = Action.async { implicit request =>
-
-    ???
+  def retrieveSubscriptionDetails(utr: String) = Action {
+    Ok(Json.toJson(desSubmissionService.retrieveSubscriptionDetails(utr)))
   }
 }
