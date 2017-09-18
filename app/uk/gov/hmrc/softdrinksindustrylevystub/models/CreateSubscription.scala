@@ -21,12 +21,6 @@ import java.time.{LocalDate => Date}
 import play.api.libs.json.Json
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils
 
-/*
- * Rough Scala approximation of raw ETMP data structures
- * 
- * Not to be used directly in MDTP BE/FE services!
- */
-
 case class Address (
   addressNotInUk: Boolean,
   addressLine1: String,
@@ -41,10 +35,6 @@ case class Address (
   faxNumber: Option[String]
 )
 
-object Address {
-  implicit val addressFormat = Json.format[Address]
-}
-
 case class ContactDetails(
   name: String,
   positionInCompany: Option[String],
@@ -52,10 +42,6 @@ case class ContactDetails(
   mobileNumber: Option[String],
   emailAddress: String
 )
-
-object ContactDetails {
-  implicit val contactDetailsFormat = Json.format[ContactDetails]
-}
 
 case class LitresProduced(
   ProducedLower: Option[Int],
@@ -66,10 +52,6 @@ case class LitresProduced(
   PackagedHigher: Option[Int]
 )
 
-object LitresProduced {
-  implicit val litresProducedFormat = Json.format[LitresProduced]
-}
-
 case class BankDetails (
   directDebit: Boolean,
   accountName: Option[String],
@@ -77,11 +59,6 @@ case class BankDetails (
   sortCode: Option[String],
   buildingSocietyRollNumber: Option[String]
 )
-
-object BankDetails {
-  implicit val bankDetailsFormat = Json.format[BankDetails]
-}
-
 
 object ProducerClassification extends Enumeration {
   type ProducerClassification = Value
@@ -119,10 +96,6 @@ case class LevyDetails(
   voluntarilyRegistered: Boolean
 )
 
-object LevyDetails {
-  implicit val levyDetailsFormat = Json.format[LevyDetails]
-}
-
 object SiteAction extends Enumeration {
   val Unknown, NewSite, AmendSite, CloseSite, TransferSite = Value
   implicit val siteActionFormat = EnumUtils.enumFormat(SiteAction)
@@ -143,10 +116,6 @@ case class Site (
   address: Address,
   typeOfSite: Option[SiteType.Value]
 )
-
-object Site {
-  implicit val siteFormat = Json.format[Site]
-}
 
 case class CreateSubscriptionRequest (
   organisationType: OrganisationType.Value,
@@ -170,16 +139,7 @@ case class CreateSubscriptionRequest (
   sites: List[Site]
 )
 
-object CreateSubscriptionRequest {
-  implicit val createSubscriptionRequestFormat = Json.format[CreateSubscriptionRequest]
-}
-
-
 case class CreateSubscriptionResponse (
   safeId: String,
   formBundleNumber: String
 )
-
-object CreateSubscriptionResponse {
-  implicit val createSubscriptionResponseFormat = Json.format[CreateSubscriptionResponse]
-}

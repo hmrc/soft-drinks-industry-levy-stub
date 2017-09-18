@@ -18,7 +18,7 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.libs.json.{JsSuccess, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.CreateSubscriptionRequest
@@ -38,7 +38,7 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
     try {
       Ok(Json.toJson(desSubmissionService.retrieveSubscriptionDetails(utr)))
     } catch {
-      case _: IllegalArgumentException => NotFound(Json.parse("""{"reason" : "bogus utr dude"}"""))
+      case _: IllegalArgumentException => NotFound(Json.parse("""{"reason" : "unknown subscription"}"""))
     }
   }
 }

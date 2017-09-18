@@ -17,15 +17,17 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import play.api.libs.json._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 
 package object models {
-  implicit val desSubmissionRequestFormatter: Format[DesSubmissionRequest] = Json.format[DesSubmissionRequest]
-  implicit val desSubmissionResultFormatter: Format[DesSubmissionResult] = Json.format[DesSubmissionResult]
 
-  implicit val subscriptionDetailsFormatter: Format[SubscriptionDetails] = Json.format[SubscriptionDetails]
-  implicit val addressDetailsFormatter: Format[AddressDetails] = Json.format[AddressDetails]
-  implicit val relationshipDetailsFormatter: Format[RelationshipDetails] = Json.format[RelationshipDetails]
-  implicit val bankDetailsFormatter: Format[BankDetails] = Json.format[BankDetails]
-  implicit val siteDetailsFormatter: Format[SiteDetails] = Json.format[SiteDetails]
-  implicit val getSubscriptionResponseFormatter: Format[GetSubscriptionResponse] = Json.format[GetSubscriptionResponse]
+  implicit val addressFormat: OFormat[Address] = Json.format[Address]
+  implicit val contactDetailsFormat: OFormat[ContactDetails] = Json.format[ContactDetails]
+  implicit val litresProducedFormat: OFormat[LitresProduced] = Json.format[LitresProduced]
+  implicit val bankDetailsFormat: OFormat[BankDetails] = Json.format[BankDetails]
+  implicit val levyDetailsFormat: OFormat[LevyDetails] = Json.format[LevyDetails]
+  implicit val siteFormat: OFormat[Site] = Json.format[Site]
+  implicit val createSubscriptionRequestFormat: OFormat[CreateSubscriptionRequest] = Json.format[CreateSubscriptionRequest]
+  implicit val createSubscriptionResponseFormat: OFormat[CreateSubscriptionResponse] = Json.format[CreateSubscriptionResponse]
+
 }
