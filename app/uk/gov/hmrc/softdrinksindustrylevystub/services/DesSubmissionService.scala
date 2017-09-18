@@ -24,7 +24,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 @Singleton
 class DesSubmissionService {
 
-  val store: PersistentGen[String, CreateSubscriptionRequest] = Generator.store
+  val store  = Generator.store.empty
 
   def createSubscriptionResponse(data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
     store(data.customerIdentificationNumber) = data

@@ -43,7 +43,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     "return Status: 404 Body: CreateSubscriptionRequest for a unsuccessful retrieve request" in {
       val utr = "1097172565"
 
-      when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenThrow(new IllegalArgumentException("borked"))
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenReturn(None)
       val response = mockSubscriptionController.retrieveSubscriptionDetails(utr)(FakeRequest("GET", "/retrieve-subscription-details/"))
 
       status(response) mustBe NOT_FOUND

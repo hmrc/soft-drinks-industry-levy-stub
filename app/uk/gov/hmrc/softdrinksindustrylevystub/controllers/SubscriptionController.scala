@@ -35,10 +35,9 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
   }
 
   def retrieveSubscriptionDetails(utr: String) = Action {
-    try {
-      Ok(Json.toJson(desSubmissionService.retrieveSubscriptionDetails(utr)))
-    } catch {
-      case _: IllegalArgumentException => NotFound(Json.parse("""{"reason" : "unknown subscription"}"""))
+    desSubmissionService.retrieveSubscriptionDetails(utr) match {
+      case Some(data) => Ok(Json.toJson(Some(data)))
+      case _ => NotFound(Json.parse("""{"reason" : "unknown subscription"}"""))
     }
   }
 }
