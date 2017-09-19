@@ -23,7 +23,7 @@ import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 
-object Generator {
+object SubscriptionGenerator {
 
   lazy val store: PersistentGen[String, CreateSubscriptionRequest] = genCreateSubscriptionRequest.asMutable[String]
 

@@ -24,11 +24,11 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 @Singleton
 class DesSubmissionService {
 
-  val store  = Generator.store.empty
+  lazy val store  = SubscriptionGenerator.store.empty
 
   def createSubscriptionResponse(data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
     store(data.customerIdentificationNumber) = data
-    Generator.genCreateSubscriptionResponse.seeded(data.customerIdentificationNumber).get
+    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(data.customerIdentificationNumber).get
   }
 
   def retrieveSubscriptionDetails(utr: String): Option[CreateSubscriptionRequest] = {

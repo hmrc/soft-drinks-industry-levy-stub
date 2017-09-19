@@ -27,12 +27,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.{CreateSubscriptionRequest, CreateSubscriptionResponse}
-import uk.gov.hmrc.softdrinksindustrylevystub.services.{DesSubmissionService, Generator}
+import uk.gov.hmrc.softdrinksindustrylevystub.services.{DesSubmissionService, SubscriptionGenerator}
 
 class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
   val mockSubscriptionController = new SubscriptionController(mockDesSubmissionService)
-  val mockStore = Generator.store.empty
   implicit val hc: HeaderCarrier = new HeaderCarrier
 
   override def beforeEach() {
@@ -51,19 +50,16 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       status(response) mustBe NOT_FOUND
     }
 
-//    "return Status: OK Body: CreateSubscriptionRequest for a successful retrieve request" in {
-//
-//      val utr = "1097172565"
-//      mockStore(utr) = Json.fromJson[CreateSubscriptionRequest](successfulRetrieveOutput).get
-//      val r = Json.fromJson[CreateSubscriptionRequest](successfulRetrieveOutput)
-//
-//      when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenReturn(Some(r.get))
-//      val response = mockSubscriptionController.retrieveSubscriptionDetails(utr)(FakeRequest("GET", "/retrieve-subscription-details/"))
-//
-//      status(response) mustBe OK
-//      verify(mockDesSubmissionService, times(1)).retrieveSubscriptionDetails(any())
-//      contentAsJson(response).mustBe(successfulRetrieveOutput)
-//    }
+    "return Status: OK Body: CreateSubscriptionRequest for a successful retrieve request" in {
+      val utr = "1097172564"
+      val r = Json.fromJson[CreateSubscriptionRequest](successfulRetrieveOutput)
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenReturn(Some(r.get))
+      val response = mockSubscriptionController.retrieveSubscriptionDetails(utr)(FakeRequest("GET", "/retrieve-subscription-details/"))
+
+      status(response) mustBe OK
+      verify(mockDesSubmissionService, times(1)).retrieveSubscriptionDetails(any())
+      contentAsJson(response).mustBe(successfulRetrieveOutput)
+    }
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest with all optional data" in {
 

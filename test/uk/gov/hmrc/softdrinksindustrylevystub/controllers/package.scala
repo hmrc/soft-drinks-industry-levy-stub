@@ -117,12 +117,12 @@ package object controllers {
                                                     "voluntarilyRegistered" : false
                                                   },
                                                   "sdilActivity" : {
-                                                    "ProducedLower" : 1,
-                                                    "ProducedHigher" : 2,
-                                                    "ImportedLower" : 3,
-                                                    "ImportedHigher" : 4,
-                                                    "PackagedLower" : 5,
-                                                    "PackagedHigher" : 6
+                                                    "producedLower" : 1,
+                                                    "producedHigher" : 2,
+                                                    "importedLower" : 3,
+                                                    "importedHigher" : 4,
+                                                    "packagedLower" : 5,
+                                                    "packagedHigher" : 6
                                                   },
                                                   "estimatedAmountOfTaxInTheNext12Months" : 5000,
                                                   "taxObligationStartDate" : "2017-09-12",
@@ -210,12 +210,12 @@ package object controllers {
                                                               "voluntarilyRegistered" : false
                                                             },
                                                             "sdilActivity" : {
-                                                              "ProducedLower" : 1,
-                                                              "ProducedHigher" : 2,
-                                                              "ImportedLower" : 3,
-                                                              "ImportedHigher" : 4,
-                                                              "PackagedLower" : 5,
-                                                              "PackagedHigher" : 6
+                                                              "producedLower" : 1,
+                                                              "producedHigher" : 2,
+                                                              "importedLower" : 3,
+                                                              "importedHigher" : 4,
+                                                              "packagedLower" : 5,
+                                                              "packagedHigher" : 6
                                                             },
                                                             "estimatedAmountOfTaxInTheNext12Months" : 5000,
                                                             "taxObligationStartDate" : "2017-09-12",
