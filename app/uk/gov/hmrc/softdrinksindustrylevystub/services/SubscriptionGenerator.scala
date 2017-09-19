@@ -28,25 +28,25 @@ object SubscriptionGenerator {
   lazy val store: PersistentGen[String, CreateSubscriptionRequest] = genCreateSubscriptionRequest.asMutable[String]
 
   def genCreateSubscriptionRequest: Gen[CreateSubscriptionRequest] = {
-    organisationTypeGen |@|                                 // organisationType
-    actionTypeGen.sometimes |@|                             // action
-    entityTypeGen.sometimes |@|                             // typeOfEntity
-    Gen.date(2014, 2017) |@|                                // dateOfApplication
-    Gen.date(2014, 2017) |@|                                // taxStartDate
-    Gen.date(2014, 2017).sometimes |@|                      // joining date
-    Gen.date(2014, 2017).sometimes |@|                      // leaving date
-    pattern"999999999999" |@|                               // customerIdentificationNumber
-    Gen.alphaLowerStr |@|                                   // tradingName
-    addressGen |@|                                          // businessContactDetails
-    Gen.boolean |@|                                         // correspondenceAddressDiffers
-    addressGen.sometimes |@|                                // correspondenceAddress
-    contactDetailsGen |@|                                   // primaryPerson
-    levyDetailsGen |@|                                      // softDrinksIndustryLevyDetails
-    litresProducedGen |@|                                   // sdilActivity
-    Gen.choose(1, 100000).sometimes |@|                     // estimatedAmountOfTaxInTheNext12Months
-    Gen.date(2017, 2020) |@|                                // taxObligationStartDate
-    bankDetailsGen |@|                                      // bankDetails
-    Gen.choose(1,5).flatMap { n => Gen.listOfN(n, siteGen)} // sites
+    organisationTypeGen |@|                                       // organisationType
+    actionTypeGen.sometimes |@|                                   // action
+    entityTypeGen.sometimes |@|                                   // typeOfEntity
+    Gen.date(2014, 2017) |@|                                      // dateOfApplication
+    Gen.date(2014, 2017) |@|                                      // taxStartDate
+    Gen.date(2014, 2017).sometimes |@|                            // joining date
+    Gen.date(2014, 2017).sometimes |@|                            // leaving date
+    pattern"999999999999" |@|                                     // customerIdentificationNumber
+    Gen.alphaLowerStr |@|                                         // tradingName
+    addressGen |@|                                                // businessContactDetails
+    Gen.boolean |@|                                               // correspondenceAddressDiffers
+    addressGen.sometimes |@|                                      // correspondenceAddress
+    contactDetailsGen |@|                                         // primaryPerson
+    levyDetailsGen |@|                                            // softDrinksIndustryLevyDetails
+    litresProducedGen |@|                                         // sdilActivity
+    Gen.choose(1d, 10000d).map(BigDecimal.valueOf).sometimes |@|  // estimatedAmountOfTaxInTheNext12Months
+    Gen.date(2017, 2020) |@|                                      // taxObligationStartDate
+    bankDetailsGen |@|                                            // bankDetails
+    Gen.choose(1,5).flatMap { n => Gen.listOfN(n, siteGen)}       // sites
   }.map(CreateSubscriptionRequest.apply)
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] = {
