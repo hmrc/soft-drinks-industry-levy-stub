@@ -44,12 +44,12 @@ case class ContactDetails(
 )
 
 case class LitresProduced(
-  ProducedLower: Option[Int],
-  ProducedHigher: Option[Int],
-  ImportedLower: Option[Int],
-  ImportedHigher: Option[Int],
-  PackagedLower: Option[Int],
-  PackagedHigher: Option[Int]
+  producedLower: Option[Int],
+  producedHigher: Option[Int],
+  importedLower: Option[Int],
+  importedHigher: Option[Int],
+  packagedLower: Option[Int],
+  packagedHigher: Option[Int]
 )
 
 case class BankDetails (

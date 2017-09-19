@@ -20,7 +20,7 @@ import cats.implicits._
 import org.scalacheck._
 import org.scalacheck.support.cats._
 import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
-import uk.gov.hmrc.smartstub.{AdvGen, _}
+import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 
 object Generator {
@@ -28,72 +28,72 @@ object Generator {
   lazy val store: PersistentGen[String, CreateSubscriptionRequest] = genCreateSubscriptionRequest.asMutable[String]
 
   def genCreateSubscriptionRequest: Gen[CreateSubscriptionRequest] = {
-    organisationTypeGen |@|
-      actionTypeGen.sometimes |@|
-      entityTypeGen.sometimes |@|
-      Gen.date(2014, 2017) |@|
-      Gen.date(2014, 2017) |@|
-      Gen.date(2014, 2017).sometimes |@|
-      Gen.date(2014, 2017).sometimes |@|
-      pattern"999999999999" |@|
-      Gen.alphaLowerStr |@|
-      addressGen |@|
-      Gen.boolean |@|
-      addressGen.sometimes |@|
-      contactDetailsGen |@|
-      levyDetailsGen |@|
-      litresProducedGen |@|
-      Gen.choose(1, 100000).sometimes |@|
-      Gen.date(2017, 2020) |@|
-      bankDetailsGen |@|
-      Gen.choose(1,5).flatMap { n => Gen.listOfN(n, siteGen)}
+    organisationTypeGen |@|                                 // organisationType
+    actionTypeGen.sometimes |@|                             // action
+    entityTypeGen.sometimes |@|                             // typeOfEntity
+    Gen.date(2014, 2017) |@|                                // dateOfApplication
+    Gen.date(2014, 2017) |@|                                // taxStartDate
+    Gen.date(2014, 2017).sometimes |@|                      // joining date
+    Gen.date(2014, 2017).sometimes |@|                      // leaving date
+    pattern"999999999999" |@|                               // customerIdentificationNumber
+    Gen.alphaLowerStr |@|                                   // tradingName
+    addressGen |@|                                          // businessContactDetails
+    Gen.boolean |@|                                         // correspondenceAddressDiffers
+    addressGen.sometimes |@|                                // correspondenceAddress
+    contactDetailsGen |@|                                   // primaryPerson
+    levyDetailsGen |@|                                      // softDrinksIndustryLevyDetails
+    litresProducedGen |@|                                   // sdilActivity
+    Gen.choose(1, 100000).sometimes |@|                     // estimatedAmountOfTaxInTheNext12Months
+    Gen.date(2017, 2020) |@|                                // taxObligationStartDate
+    bankDetailsGen |@|                                      // bankDetails
+    Gen.choose(1,5).flatMap { n => Gen.listOfN(n, siteGen)} // sites
   }.map(CreateSubscriptionRequest.apply)
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] = {
-    pattern"99999999".gen |@|
-      pattern"99999999".gen
+    pattern"99999999".gen |@| // safeId
+    pattern"99999999".gen     // formBundleNumber
   }.map(CreateSubscriptionResponse.apply)
 
-  lazy val siteGen: Gen[Site] = {
-    siteActionGen.sometimes |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.date(2017, 2020).sometimes |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.alphaNumStr.sometimes |@|
-      addressGen |@|
-      siteTypeGen.sometimes
+  private lazy val siteGen: Gen[Site] = {
+    siteActionGen.sometimes |@|         // action
+    Gen.alphaNumStr.sometimes |@|       // siteReference
+    Gen.date(2017, 2020).sometimes |@|  // dateOfClosure
+    Gen.alphaNumStr.sometimes |@|       // siteClosureReason
+    Gen.alphaNumStr.sometimes |@|       // tradingName
+    Gen.alphaNumStr.sometimes |@|       // newSiteReference
+    addressGen |@|                      // address
+    siteTypeGen.sometimes               // typeOfSite
   }.map(Site.apply)
 
   private lazy val addressGen: Gen[Address] = {
-    Gen.boolean |@|
-      Gen.alphaNumStr |@|
-      Gen.alphaNumStr |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.alphaNumStr |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.alphaNumStr |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.alphaNumStr |@|
-      Gen.alphaNumStr.sometimes
+    Gen.boolean |@|                     // addressNotInUk
+    Gen.alphaNumStr |@|                 // addressLine1
+    Gen.alphaNumStr |@|                 // addressLine2
+    Gen.alphaNumStr.sometimes |@|       // addressLine3
+    Gen.alphaNumStr.sometimes |@|       // addressLine4
+    Gen.alphaNumStr |@|                 // postcode
+    Gen.alphaNumStr.sometimes |@|       // nonUkCountry
+    Gen.alphaNumStr |@|                 // telephoneNumber
+    Gen.alphaNumStr.sometimes |@|       // mobileNumber
+    Gen.alphaNumStr |@|                 // emailAddress
+    Gen.alphaNumStr.sometimes           // faxNumber
   }.map(Address.apply)
 
   private lazy val bankDetailsGen: Gen[BankDetails] = {
-    Gen.boolean |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.alphaNumStr.sometimes
+    Gen.boolean |@|                     // directDebit
+    Gen.alphaNumStr.sometimes |@|       // accountName
+    Gen.alphaNumStr.sometimes |@|       // accountNumber
+    Gen.alphaNumStr.sometimes |@|       // sortCode
+    Gen.alphaNumStr.sometimes           // buildingSocietyRollNumber
   }.map(BankDetails.apply)
 
   private lazy val litresProducedGen: Gen[LitresProduced] = {
-    Gen.choose(1, 1000000).sometimes |@|
-      Gen.choose(1, 1000000).sometimes |@|
-      Gen.choose(1, 1000000).sometimes |@|
-      Gen.choose(1, 1000000).sometimes |@|
-      Gen.choose(1, 1000000).sometimes |@|
-      Gen.choose(1, 1000000).sometimes
+    Gen.choose(1, 1000000).sometimes |@|  // producedLower
+    Gen.choose(1, 1000000).sometimes |@|  // producedHigher
+    Gen.choose(1, 1000000).sometimes |@|  // importedLower
+    Gen.choose(1, 1000000).sometimes |@|  // importedHigher
+    Gen.choose(1, 1000000).sometimes |@|  // packagedLower
+    Gen.choose(1, 1000000).sometimes      // packagedHigher
   }.map(LitresProduced.apply)
 
   private lazy val entityTypeGen: Gen[EntityType.Value] =
@@ -163,20 +163,20 @@ object Generator {
     } yield producerClassification
 
   private lazy val levyDetailsGen: Gen[LevyDetails] = {
-    activitiesGen |@|
-      Gen.boolean |@|
-      producerClassificationGen.sometimes |@|
-      Gen.boolean |@|
-      Gen.boolean |@|
-      Gen.boolean
+    activitiesGen |@|                         // activities
+    Gen.boolean |@|                           // lessThanMillion
+    producerClassificationGen.sometimes |@|   // producerClassification
+    Gen.boolean |@|                           // smallProducerExemption
+    Gen.boolean |@|                           // usesCopacker
+    Gen.boolean                               // voluntarilyRegistered
   }.map(LevyDetails.apply)
 
   private lazy val contactDetailsGen: Gen[ContactDetails] = {
-    Gen.forename() |@|
-      Gen.alphaNumStr.sometimes |@|
-      Gen.ukPhoneNumber |@|
-      pattern"99999 999999".gen.sometimes |@|
-      Gen.const("john.doe@somedomain.com")
+    Gen.forename() |@|                        // name
+    Gen.alphaNumStr.sometimes |@|             // positionInCompany
+    Gen.ukPhoneNumber |@|                     // telephoneNumber
+    pattern"99999 999999".gen.sometimes |@|   // mobileNumber
+    Gen.const("john.doe@somedomain.com")      // emailAddress
   }.map(ContactDetails.apply)
 
 }
