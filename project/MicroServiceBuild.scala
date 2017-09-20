@@ -21,6 +21,7 @@ object MicroServiceBuild extends Build with MicroService {
     "uk.gov.hmrc" %% "play-config" % "4.3.0",
     "uk.gov.hmrc" %% "logback-json-logger" % "3.1.0",
     "uk.gov.hmrc" %% "domain" % "4.1.0",
+    "org.scalacheck" %% "scalacheck" % "1.13.5",
     "io.github.amrhassan" %% "scalacheck-cats" % "0.3.2"
   )
 

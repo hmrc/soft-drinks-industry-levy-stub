@@ -16,31 +16,24 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import java.time.{LocalDate, LocalTime}
-import java.time.format.DateTimeFormatter._
-
-import akka.japi.Option.Some
-import cats.implicits._
-import org.scalacheck._
-import org.scalacheck.support.cats._
+import com.google.inject.Singleton
+import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 
 @Singleton
 class DesSubmissionService {
-  def buildResponse(): DesSubmissionResult = DesSubmissionResult(true)
 
-  def generateSubscriptionDetails(): Gen[SubscriptionDetails] = {
-    Gen.date(2014, 2017).sometimes |@|
-      Gen.date(2014, 2017).sometimes
+  lazy val store  = SubscriptionGenerator.store.empty
+
+  def createSubscriptionResponse(data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
+    store(data.customerIdentificationNumber) = data
+    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(data.customerIdentificationNumber).get
   }
 
-  def generateAddressDetails(): Gen[AddressDetails] = ???
-
-  def generateRelationshipDetails(): Gen[RelationshipDetails] = ???
-
-  def generateBankDetails(): Gen[BankDetails] = ???
-
-  def generateSiteDetails(): Gen[SiteDetails] = ???
+  def retrieveSubscriptionDetails(utr: String): Option[CreateSubscriptionRequest] = {
+    store.get(utr)
+  }
 
 }
+

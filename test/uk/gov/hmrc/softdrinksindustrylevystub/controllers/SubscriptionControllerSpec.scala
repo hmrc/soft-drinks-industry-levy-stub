@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
@@ -25,42 +26,65 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.softdrinksindustrylevystub.models.DesSubmissionResult
+import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.{CreateSubscriptionRequest, CreateSubscriptionResponse}
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
 class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
-  val mockHelloWorldController = new SubscriptionController(mockDesSubmissionService)
+  val mockSubscriptionController = new SubscriptionController(mockDesSubmissionService)
+  implicit val hc: HeaderCarrier = new HeaderCarrier
 
   override def beforeEach() {
     reset(mockDesSubmissionService)
   }
 
-  "HelloWorldController" should {
-    "return Status: OK Body: DesSubmissionResult(true) for successful valid submitDesRequest" in {
-      implicit val hc = new HeaderCarrier
+  "SubscriptionController" should {
 
-      val input = """{ "number": 1 }"""
+    "return Status: 404 Body: reason: unknown subscription message for a unsuccessful retrieve request" in {
+      val utr = "1097172565"
 
-      when(mockDesSubmissionService.buildResponse()).thenReturn(DesSubmissionResult(true))
-      val response = mockHelloWorldController.submitHello()(FakeRequest("POST", "/des-valid").withBody(Json.parse(input)))
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenReturn(None)
+      val response = mockSubscriptionController.retrieveSubscriptionDetails(utr)(FakeRequest("GET", "/retrieve-subscription-details/"))
 
-      status(response) mustBe OK
-      verify(mockDesSubmissionService, times(1)).buildResponse()
-      Json.fromJson[DesSubmissionResult](contentAsJson(response)).getOrElse(DesSubmissionResult(false)) mustBe DesSubmissionResult(true)
+      status(response) mustBe NOT_FOUND
     }
 
-    "return Status: OK Body: DesSubmissionResult(false) for successful invalid submitDesRequest" in {
-      implicit val hc = new HeaderCarrier
+    "return Status: OK Body: CreateSubscriptionRequest for a successful retrieve request" in {
+      val utr = "1097172564"
+      val r = Json.fromJson[CreateSubscriptionRequest](successfulRetrieveOutput)
 
-      val input = """{ "number": 1 }"""
-
-      when(mockDesSubmissionService.buildResponse()).thenReturn(DesSubmissionResult(false))
-      val response = mockHelloWorldController.submitHello()(FakeRequest("POST", "/des-valid").withBody(Json.parse(input)))
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenReturn(Some(r.get))
+      val response = mockSubscriptionController.retrieveSubscriptionDetails(utr)(FakeRequest("GET", "/retrieve-subscription-details/"))
 
       status(response) mustBe OK
-      verify(mockDesSubmissionService, times(1)).buildResponse()
-      Json.fromJson[DesSubmissionResult](contentAsJson(response)).getOrElse(DesSubmissionResult(true)) mustBe DesSubmissionResult(false)
+      verify(mockDesSubmissionService, times(1)).retrieveSubscriptionDetails(any())
+      contentAsJson(response).mustBe(successfulRetrieveOutput)
     }
+
+    "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest with all optional data" in {
+      when(mockDesSubmissionService.createSubscriptionResponse(any())).thenReturn(CreateSubscriptionResponse("foo", "bar"))
+      val response = mockSubscriptionController.createSubscription()(FakeRequest("POST", "/create-subscription").withBody(validCreateSubscriptionRequestInput))
+
+      status(response) mustBe OK
+      verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any())
+      Json.fromJson[CreateSubscriptionResponse](contentAsJson(response)).getOrElse(CreateSubscriptionResponse("bar", "foo")) mustBe CreateSubscriptionResponse("foo", "bar")
+    }
+
+    "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest without all optional data" in {
+      when(mockDesSubmissionService.createSubscriptionResponse(any())).thenReturn(CreateSubscriptionResponse("foo", "bar"))
+      val response = mockSubscriptionController.createSubscription()(FakeRequest("POST", "/create-subscription").withBody(validCreateSubscriptionRequestInputWithoutOptionals))
+
+      status(response) mustBe OK
+      verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any())
+      Json.fromJson[CreateSubscriptionResponse](contentAsJson(response)).getOrElse(CreateSubscriptionResponse("bar", "foo")) mustBe CreateSubscriptionResponse("foo", "bar")
+    }
+
+    "return Status: 400 Body: nondescript error message for submission for invalid CreateSubscriptionRequest" in {
+      val response = mockSubscriptionController.createSubscription()(FakeRequest("POST", "/create-subscription").withBody(invalidCreationInput))
+
+      status(response) mustBe BAD_REQUEST
+      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any())
+    }
+
   }
 }
