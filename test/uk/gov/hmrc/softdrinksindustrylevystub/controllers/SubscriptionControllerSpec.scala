@@ -27,7 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.{CreateSubscriptionRequest, CreateSubscriptionResponse}
-import uk.gov.hmrc.softdrinksindustrylevystub.services.{DesSubmissionService, SubscriptionGenerator}
+import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
 class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
@@ -41,7 +41,6 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   "SubscriptionController" should {
 
     "return Status: 404 Body: reason: unknown subscription message for a unsuccessful retrieve request" in {
-
       val utr = "1097172565"
 
       when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenReturn(None)
@@ -53,6 +52,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     "return Status: OK Body: CreateSubscriptionRequest for a successful retrieve request" in {
       val utr = "1097172564"
       val r = Json.fromJson[CreateSubscriptionRequest](successfulRetrieveOutput)
+
       when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenReturn(Some(r.get))
       val response = mockSubscriptionController.retrieveSubscriptionDetails(utr)(FakeRequest("GET", "/retrieve-subscription-details/"))
 
@@ -62,7 +62,6 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     }
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest with all optional data" in {
-
       when(mockDesSubmissionService.createSubscriptionResponse(any())).thenReturn(CreateSubscriptionResponse("foo", "bar"))
       val response = mockSubscriptionController.createSubscription()(FakeRequest("POST", "/create-subscription").withBody(validCreateSubscriptionRequestInput))
 
@@ -72,7 +71,6 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     }
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest without all optional data" in {
-
       when(mockDesSubmissionService.createSubscriptionResponse(any())).thenReturn(CreateSubscriptionResponse("foo", "bar"))
       val response = mockSubscriptionController.createSubscription()(FakeRequest("POST", "/create-subscription").withBody(validCreateSubscriptionRequestInputWithoutOptionals))
 
@@ -82,7 +80,6 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     }
 
     "return Status: 400 Body: nondescript error message for submission for invalid CreateSubscriptionRequest" in {
-
       val response = mockSubscriptionController.createSubscription()(FakeRequest("POST", "/create-subscription").withBody(invalidCreationInput))
 
       status(response) mustBe BAD_REQUEST
