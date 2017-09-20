@@ -18,47 +18,46 @@ package uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub
 
 import java.time.{LocalDate => Date}
 
-import play.api.libs.json.Json
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils
 
-case class Address (
-  addressNotInUk: Boolean,
-  addressLine1: String,
-  addressLine2: String,
-  addressLine3: Option[String],
-  addressLine4: Option[String],
-  postcode: String,
-  nonUkCountry: Option[String],
-  telephoneNumber: String,
-  mobileNumber: Option[String],
-  emailAddress: String,
-  faxNumber: Option[String]
-)
+case class Address(
+                    addressNotInUk: Boolean,
+                    addressLine1: String,
+                    addressLine2: String,
+                    addressLine3: Option[String],
+                    addressLine4: Option[String],
+                    postcode: String,
+                    nonUkCountry: Option[String],
+                    telephoneNumber: String,
+                    mobileNumber: Option[String],
+                    emailAddress: String,
+                    faxNumber: Option[String]
+                  )
 
 case class ContactDetails(
-  name: String,
-  positionInCompany: Option[String],
-  telephoneNumber: String,
-  mobileNumber: Option[String],
-  emailAddress: String
-)
+                           name: String,
+                           positionInCompany: Option[String],
+                           telephoneNumber: String,
+                           mobileNumber: Option[String],
+                           emailAddress: String
+                         )
 
 case class LitresProduced(
-  producedLower: Option[Int],
-  producedHigher: Option[Int],
-  importedLower: Option[Int],
-  importedHigher: Option[Int],
-  packagedLower: Option[Int],
-  packagedHigher: Option[Int]
-)
+                           producedLower: Option[Int],
+                           producedHigher: Option[Int],
+                           importedLower: Option[Int],
+                           importedHigher: Option[Int],
+                           packagedLower: Option[Int],
+                           packagedHigher: Option[Int]
+                         )
 
-case class BankDetails (
-  directDebit: Boolean,
-  accountName: Option[String],
-  accountNumber: Option[String],
-  sortCode: Option[String],
-  buildingSocietyRollNumber: Option[String]
-)
+case class BankDetails(
+                        directDebit: Boolean,
+                        accountName: Option[String],
+                        accountNumber: Option[String],
+                        sortCode: Option[String],
+                        buildingSocietyRollNumber: Option[String]
+                      )
 
 object ProducerClassification extends Enumeration {
   type ProducerClassification = Value
@@ -87,14 +86,15 @@ object ActivityType extends Enumeration {
   val Unknown, Producer, Importer, ContractPacker = Value
   implicit val activityTypeFormat = EnumUtils.enumFormat(ActivityType)
 }
+
 case class LevyDetails(
-  activities: ActivityType.Value,
-  lessThanMillion: Boolean,
-  producerClassification: Option[ProducerClassification.Value],
-  smallProducerExemption: Boolean,
-  usesCopacker: Boolean,
-  voluntarilyRegistered: Boolean
-)
+                        activities: ActivityType.Value,
+                        lessThanMillion: Boolean,
+                        producerClassification: Option[ProducerClassification.Value],
+                        smallProducerExemption: Boolean,
+                        usesCopacker: Boolean,
+                        voluntarilyRegistered: Boolean
+                      )
 
 object SiteAction extends Enumeration {
   val Unknown, NewSite, AmendSite, CloseSite, TransferSite = Value
@@ -106,40 +106,40 @@ object SiteType extends Enumeration {
   implicit val siteTypeFormat = EnumUtils.enumFormat(SiteType)
 }
 
-case class Site (
-  action: Option[SiteAction.Value],
-  siteReference: Option[String],
-  dateOfClosure: Option[Date],
-  siteClosureReason: Option[String],
-  tradingName: Option[String],
-  newSiteReference: Option[String],
-  address: Address,
-  typeOfSite: Option[SiteType.Value]
-)
+case class Site(
+                 action: Option[SiteAction.Value],
+                 siteReference: Option[String],
+                 dateOfClosure: Option[Date],
+                 siteClosureReason: Option[String],
+                 tradingName: Option[String],
+                 newSiteReference: Option[String],
+                 address: Address,
+                 typeOfSite: Option[SiteType.Value]
+               )
 
-case class CreateSubscriptionRequest (
-  organisationType: OrganisationType.Value,
-  action: Option[ActionType.Value],
-  typeOfEntity: Option[EntityType.Value],
-  dateOfApplication: Date,
-  taxStartDate: Date,
-  joiningDate: Option[Date],
-  leavingDate: Option[Date],
-  customerIdentificationNumber: String,
-  tradingName: String,
-  businessContactDetails: Address,
-  correspondenceAddressDiffers: Boolean,
-  correspondenceAddress: Option[Address],
-  primaryPerson: ContactDetails,
-  softDrinksIndustryLevyDetails: LevyDetails,
-  sdilActivity: LitresProduced,
-  estimatedAmountOfTaxInTheNext12Months: Option[Int], // TODO change this to BigDecimal
-  taxObligationStartDate: Date,
-  bankDetails: BankDetails,
-  sites: List[Site]
-)
+case class CreateSubscriptionRequest(
+                                      organisationType: OrganisationType.Value,
+                                      action: Option[ActionType.Value],
+                                      typeOfEntity: Option[EntityType.Value],
+                                      dateOfApplication: Date,
+                                      taxStartDate: Date,
+                                      joiningDate: Option[Date],
+                                      leavingDate: Option[Date],
+                                      customerIdentificationNumber: String,
+                                      tradingName: String,
+                                      businessContactDetails: Address,
+                                      correspondenceAddressDiffers: Boolean,
+                                      correspondenceAddress: Option[Address],
+                                      primaryPerson: ContactDetails,
+                                      softDrinksIndustryLevyDetails: LevyDetails,
+                                      sdilActivity: LitresProduced,
+                                      estimatedAmountOfTaxInTheNext12Months: Option[BigDecimal],
+                                      taxObligationStartDate: Date,
+                                      bankDetails: BankDetails,
+                                      sites: List[Site]
+                                    )
 
-case class CreateSubscriptionResponse (
-  safeId: String,
-  formBundleNumber: String
-)
+case class CreateSubscriptionResponse(
+                                       safeId: String,
+                                       formBundleNumber: String
+                                     )
