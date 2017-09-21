@@ -16,7 +16,10 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub
 
+import java.time.LocalDate
+
 import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
 package object controllers {
   val invalidCreationInput: JsValue = Json.parse(
@@ -303,6 +306,49 @@ package object controllers {
       |	}]
       |}
     """.stripMargin
+  )
+
+  val validRosmRegisterIndividualInput: JsValue = Json.parse(
+    """{
+      |	"regime" : "SDIL",
+      |	"requiresNameMatch" : true,
+      |	"isAnAgent" : true,
+      |	"individual" : {
+      |		"firstName" : "Stephen",
+      |		"lastName" : "Wood",
+      |		"dateOfBirth" : "1990-04-03"
+      |	}
+      |}""".stripMargin
+  )
+
+  val validRosmRegisterOrganisationnput: JsValue = Json.parse(
+    """{
+      |	"regime" : "SDIL",
+      |	"requiresNameMatch" : true,
+      |	"isAnAgent" : true,
+      | "organisation" : {
+      |   "organisationName" : "Big Wig",
+      |   "organisationType" : "Partnership"
+      | }
+      |}""".stripMargin
+  )
+
+  val invalidRosmRegisterInput = """{"number": 1}"""
+
+  val validRosmResponseAddress = RosmResponseAddress("50", Some("The Street"), None, None, "GB", "AA11 1AA")
+
+  val validRosmResponseContactDetails = RosmResponseContactDetails(Some("12345678900"), None, None, Some("a@a.com"))
+
+  val validResponseIndividual = Individual("Stephen", None, "Wood", Some(LocalDate.parse("1990-04-03")))
+
+  val validResponseOrganisation = OrganisationResponse("Big Wig", false, RosmOrganisationType.Partnership)
+
+  val rosmRegisterIndividualResponse = RosmRegisterResponse(
+    "safeID", None, false, false, true, Some(validResponseIndividual), None, validRosmResponseAddress, validRosmResponseContactDetails
+  )
+
+  val rosmRegisterOrganisationResponse = RosmRegisterResponse(
+    "safeID", None, false, false, true, None, Some(validResponseOrganisation), validRosmResponseAddress, validRosmResponseContactDetails
   )
 
 }

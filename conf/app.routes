@@ -1,4 +1,6 @@
-# microservice specific routes
-
+#SDIL subscription
 POST        /create-subscription             @uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.createSubscription
 GET         /retrieve-subscription-details/:utr   @uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(utr)
+
+#ROSM registration
+POST        /register/:utr                   @uk.gov.hmrc.softdrinksindustrylevystub.controllers.RosmController.register(utr)
