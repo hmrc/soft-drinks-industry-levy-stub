@@ -310,26 +310,26 @@ package object controllers {
 
   val validRosmRegisterIndividualInput: JsValue = Json.parse(
     """{
-      |	"regime" : "SDIL",
-      |	"requiresNameMatch" : true,
-      |	"isAnAgent" : true,
-      |	"individual" : {
-      |		"firstName" : "Stephen",
-      |		"lastName" : "Wood",
-      |		"dateOfBirth" : "1990-04-03"
+      |	"regime": "SDIL",
+      |	"requiresNameMatch": true,
+      |	"isAnAgent": true,
+      |	"individual": {
+      |		"firstName": "Stephen",
+      |		"lastName": "Wood",
+      |		"dateOfBirth": "1990-04-03"
       |	}
       |}""".stripMargin
   )
 
   val validRosmRegisterOrganisationnput: JsValue = Json.parse(
     """{
-      |	"regime" : "SDIL",
-      |	"requiresNameMatch" : true,
-      |	"isAnAgent" : true,
-      | "organisation" : {
-      |   "organisationName" : "Big Wig",
-      |   "organisationType" : "Partnership"
-      | }
+      |	"regime": "SDIL",
+      |	"requiresNameMatch": true,
+      |	"isAnAgent": true,
+      |	"organisation": {
+      |		"organisationName": "Big Wig",
+      |		"organisationType": "Partnership"
+      |	}
       |}""".stripMargin
   )
 

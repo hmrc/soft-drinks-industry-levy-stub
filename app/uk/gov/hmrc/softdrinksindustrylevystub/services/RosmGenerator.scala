@@ -36,11 +36,11 @@ object RosmGenerator {
 
   private def genEmail = {
     for {
-      length <- Gen.choose(5, 8).flatMap(len => Gen.listOfN(len, Gen.alphaLowerChar)).map(_.mkString)
+      username <- Gen.choose(5, 8).flatMap(len => Gen.listOfN(len, Gen.alphaLowerChar)).map(_.mkString)
       at <- Gen.const("@")
       domain <- Gen.choose(7, 9).flatMap(len => Gen.listOfN(len, Gen.alphaLowerChar)).map(_.mkString)
       ending <- Gen.const(".com")
-    } yield s"$length$at$domain$ending"
+    } yield s"$username$at$domain$ending"
   }
 
   private def genRosmResponseContactDetails: Gen[RosmResponseContactDetails] = {
