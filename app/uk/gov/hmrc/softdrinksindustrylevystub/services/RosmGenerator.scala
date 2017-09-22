@@ -19,8 +19,8 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 import cats.implicits._
 import org.scalacheck.Gen
 import org.scalacheck.support.cats._
-import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
+import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
 object RosmGenerator {
@@ -58,11 +58,15 @@ object RosmGenerator {
     }
   }
 
+  private def shouldGenAgentRef(isAnAgent: Boolean, utr: String): Option[String] = {
+    if (isAnAgent) Gen.alphaNumStr.seeded(utr) else None
+  }
+
   def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[RosmRegisterResponse] = {
     Gen.alphaNumStr |@| //safeId
-      Gen.alphaNumStr.sometimes |@| //agentReferenceNumber
+      shouldGenAgentRef(rosmRequest.isAnAgent, utr) |@| //agentReferenceNumber
       Gen.boolean |@| //isEditable
-      Gen.boolean |@| //isAnAgent
+      rosmRequest.isAnAgent |@| //isAnAgent
       Gen.const(rosmRequest.individual.isDefined) |@| //isAnIndividual
       Gen.const(rosmRequest.individual) |@| //organisation
       Gen.const(shouldGenOrg(rosmRequest.organisation, utr)) |@| //individual

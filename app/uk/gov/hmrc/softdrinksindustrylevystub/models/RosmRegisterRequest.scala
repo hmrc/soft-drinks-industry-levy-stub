@@ -41,6 +41,7 @@ case class OrganisationRequest(
                               )
 
 object RosmOrganisationType extends Enumeration {
-  //TODO - Add space in the toString for the two body org types
-  val Unknown, Partnership, LLP, CorporateBody, UnincorporatedBody = Value
+  val Unknown, Partnership, LLP = Value
+  val CorporateBody = Value("Corporate body")
+  val UnincorporatedBody = Value("Unincorporated body")
 }
