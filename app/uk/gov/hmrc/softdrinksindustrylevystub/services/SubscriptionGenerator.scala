@@ -38,7 +38,7 @@ object SubscriptionGenerator {
     primaryPersonContactGen |@|                                         // primaryPerson
     detailsGen |@|                                            // details
     litresProducedGen |@|                                         // sdilActivity
-    Gen.choose(1d, 10000d).map(BigDecimal.valueOf).sometimes |@|  // estimatedAmountOfTaxInTheNext12Months
+    Gen.choose(1d, 10000d).map(BigDecimal.valueOf).sometimes |@|  // estimatedTaxAmount
     Gen.date(2017, 2020) |@|                                      // taxObligationStartDate
     bankDetailsGen |@|                                            // bankDetails
     Gen.choose(1,5).flatMap { n => Gen.listOfN(n, siteGen)}       // sites
@@ -79,12 +79,12 @@ object SubscriptionGenerator {
   }.map(BankDetails.apply)
 
   private lazy val litresProducedGen: Gen[LitresProduced] = {
-    Gen.choose(1, 1000000).sometimes |@|  // producedLower
-    Gen.choose(1, 1000000).sometimes |@|  // producedHigher
-    Gen.choose(1, 1000000).sometimes |@|  // importedLower
-    Gen.choose(1, 1000000).sometimes |@|  // importedHigher
-    Gen.choose(1, 1000000).sometimes |@|  // packagedLower
-    Gen.choose(1, 1000000).sometimes      // packagedHigher
+    Gen.choose(1, 1000000).sometimes |@|  // litresProducedUKHigher
+    Gen.choose(1, 1000000).sometimes |@|  // litresProducedUKLower
+    Gen.choose(1, 1000000).sometimes |@|  // litresImportedUKHigher
+    Gen.choose(1, 1000000).sometimes |@|  // litresImportedUKLower
+    Gen.choose(1, 1000000).sometimes |@|  // litresPackagedUKHigher
+    Gen.choose(1, 1000000).sometimes      // litresPackagedUKLower
   }.map(LitresProduced.apply)
 
   private lazy val entityTypeGen: Gen[EntityType.Value] =

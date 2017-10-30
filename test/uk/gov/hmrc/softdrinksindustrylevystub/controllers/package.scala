@@ -123,14 +123,14 @@ package object controllers {
       |		"voluntarilyRegistered": false
       |	},
       |	"sdilActivity": {
-      |		"producedLower": 1,
-      |		"producedHigher": 2,
-      |		"importedLower": 3,
-      |		"importedHigher": 4,
-      |		"packagedLower": 5,
-      |		"packagedHigher": 6
+      |		"litresProducedUKLower": 1,
+      |		"litresProducedUKHigher": 2,
+      |		"litresImportedUKLower": 3,
+      |		"litresImportedUKHigher": 4,
+      |		"litresPackagedUKLower": 5,
+      |		"litresPackagedUKHigher": 6
       |	},
-      |	"estimatedAmountOfTaxInTheNext12Months": 5000,
+      |	"estimatedTaxAmount": 5000,
       |	"taxObligationStartDate": "2017-09-12",
       |	"bankDetails": {
       |		"directDebit": false,
@@ -219,14 +219,14 @@ package object controllers {
       |		"voluntarilyRegistered": false
       |	},
       |	"sdilActivity": {
-      |		"producedLower": 1,
-      |		"producedHigher": 2,
-      |		"importedLower": 3,
-      |		"importedHigher": 4,
-      |		"packagedLower": 5,
-      |		"packagedHigher": 6
+      |		"litresProducedUKLower": 1,
+      |		"litresProducedUKHigher": 2,
+      |		"litresImportedUKLower": 3,
+      |		"litresImportedUKHigher": 4,
+      |		"litresPackagedUKLower": 5,
+      |		"litresPackagedUKHigher": 6
       |	},
-      |	"estimatedAmountOfTaxInTheNext12Months": 5000,
+      |	"estimatedTaxAmount": 5000,
       |	"taxObligationStartDate": "2017-09-12",
       |	"bankDetails": {
       |		"directDebit": false,

@@ -74,12 +74,12 @@ case class PrimaryPersonContact(
                                )
 
 case class LitresProduced(
-                           producedLower: Option[Int],
-                           producedHigher: Option[Int],
-                           importedLower: Option[Int],
-                           importedHigher: Option[Int],
-                           packagedLower: Option[Int],
-                           packagedHigher: Option[Int]
+                           litresProducedUKHigher: Option[Int],
+                           litresProducedUKLower: Option[Int],
+                           litresImportedUKHigher: Option[Int],
+                           litresImportedUKLower: Option[Int],
+                           litresPackagedUKHigher: Option[Int],
+                           litresPackagedUKLower: Option[Int]
                          )
 
 case class BankDetails(
@@ -163,8 +163,8 @@ case class CreateSubscriptionRequest(
                                       correspondenceContact: CorrespondenceContact,
                                       primaryPersonContact: PrimaryPersonContact,
                                       details: Details,
-                                      sdilActivity: LitresProduced,
-                                      estimatedAmountOfTaxInTheNext12Months: Option[BigDecimal],
+                                      activityQuestions: LitresProduced,
+                                      estimatedTaxAmount: Option[BigDecimal],
                                       taxObligationStartDate: Date,
                                       bankDetails: BankDetails,
                                       sites: List[Site]
