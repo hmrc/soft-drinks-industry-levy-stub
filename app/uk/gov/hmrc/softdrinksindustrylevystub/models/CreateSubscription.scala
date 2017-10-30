@@ -118,14 +118,19 @@ object ActivityType extends Enumeration {
   implicit val activityTypeFormat = EnumUtils.enumFormat(ActivityType)
 }
 
-case class LevyDetails(
-                        activities: ActivityType.Value,
-                        lessThanMillion: Boolean,
-                        producerClassification: Option[ProducerClassification.Value],
-                        smallProducerExemption: Boolean,
-                        usesCopacker: Boolean,
-                        voluntarilyRegistered: Boolean
-                      )
+case class ProducerDetails(
+                            produceMillionLitres: Boolean,
+                            producerClassification: String,
+                            smallProducerExemption: Option[Boolean],
+                            useContractPacker: Option[Boolean],
+                            voluntarilyRegistered: Option[Boolean]
+                          )
+case class Details(
+                  producer: Boolean,
+                  producerDetails: Option[ProducerDetails],
+                  importer: Boolean,
+                  contractPacker: Boolean
+                  )
 
 object SiteAction extends Enumeration {
   val Unknown, NewSite, AmendSite, CloseSite, TransferSite = Value
@@ -157,7 +162,7 @@ case class CreateSubscriptionRequest(
                                       businessContact: BusinessContact,
                                       correspondenceContact: CorrespondenceContact,
                                       primaryPersonContact: PrimaryPersonContact,
-                                      details: LevyDetails,
+                                      details: Details,
                                       sdilActivity: LitresProduced,
                                       estimatedAmountOfTaxInTheNext12Months: Option[BigDecimal],
                                       taxObligationStartDate: Date,

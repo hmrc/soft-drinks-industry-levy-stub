@@ -29,20 +29,14 @@ object SubscriptionGenerator {
 
   def genCreateSubscriptionRequest: Gen[CreateSubscriptionRequest] = {
     Gen.oneOf("1","2","3","4","5") |@|                                       // organisationType
-    //actionTypeGen.sometimes |@|                                   // action
-//    entityTypeGen.sometimes |@|                                   // typeOfEntity
     Gen.date(2014, 2017) |@|                                      // applicationDate
     Gen.date(2014, 2017) |@|                                      // taxStartDate
-//    Gen.date(2014, 2017).sometimes |@|                            // joining date
-//    Gen.dateaddressGen(2014, 2017).sometimes |@|                            // leaving date
     pattern"999999999999" |@|                                     // cin
     Gen.alphaLowerStr |@|                                         // tradingName
     businessContactGen |@|                                                // businessContact
     correspondenceContactGen |@|                                  // correspondenceContact
-//    Gen.boolean |@|                                               // correspondenceAddressDiffers
-//    addressGen.sometimes |@|                                      // correspondenceAddress
     primaryPersonContactGen |@|                                         // primaryPerson
-    levyDetailsGen |@|                                            // softDrinksIndustryLevyDetails
+    detailsGen |@|                                            // details
     litresProducedGen |@|                                         // sdilActivity
     Gen.choose(1d, 10000d).map(BigDecimal.valueOf).sometimes |@|  // estimatedAmountOfTaxInTheNext12Months
     Gen.date(2017, 2020) |@|                                      // taxObligationStartDate
@@ -114,14 +108,20 @@ object SubscriptionGenerator {
   private lazy val producerClassificationGen: Gen[ProducerClassification.Value] =
     Gen.oneOf(ProducerClassification.values.toSeq)
 
-  private lazy val levyDetailsGen: Gen[LevyDetails] = {
-    activitiesGen |@|                         // activities
-    Gen.boolean |@|                           // lessThanMillion
-    producerClassificationGen.sometimes |@|   // producerClassification
-    Gen.boolean |@|                           // smallProducerExemption
-    Gen.boolean |@|                           // usesCopacker
-    Gen.boolean                               // voluntarilyRegistered
-  }.map(LevyDetails.apply)
+  private lazy val producerDetailsGen: Gen[ProducerDetails] = {
+    Gen.boolean |@|
+    Gen.oneOf("1","2") |@|
+    Gen.boolean.sometimes |@|
+    Gen.boolean.sometimes |@|
+    Gen.boolean.sometimes
+  }.map(ProducerDetails.apply)
+
+  private lazy val detailsGen: Gen[Details] = {
+    Gen.boolean |@|
+    producerDetailsGen.sometimes |@|
+    Gen.boolean |@|
+    Gen.boolean
+  }.map(Details.apply)
 
   private lazy val contactDetailsGen: Gen[ContactDetails] = {
     Gen.ukPhoneNumber |@|                     // telephone
