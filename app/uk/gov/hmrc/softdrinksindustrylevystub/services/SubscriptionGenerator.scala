@@ -28,19 +28,20 @@ object SubscriptionGenerator {
   lazy val store: PersistentGen[String, CreateSubscriptionRequest] = genCreateSubscriptionRequest.asMutable[String]
 
   def genCreateSubscriptionRequest: Gen[CreateSubscriptionRequest] = {
-    organisationTypeGen |@|                                       // organisationType
-    actionTypeGen.sometimes |@|                                   // action
-    entityTypeGen.sometimes |@|                                   // typeOfEntity
-    Gen.date(2014, 2017) |@|                                      // dateOfApplication
+    Gen.oneOf("1","2","3","4","5") |@|                                       // organisationType
+    //actionTypeGen.sometimes |@|                                   // action
+//    entityTypeGen.sometimes |@|                                   // typeOfEntity
+    Gen.date(2014, 2017) |@|                                      // applicationDate
     Gen.date(2014, 2017) |@|                                      // taxStartDate
-    Gen.date(2014, 2017).sometimes |@|                            // joining date
-    Gen.date(2014, 2017).sometimes |@|                            // leaving date
-    pattern"999999999999" |@|                                     // customerIdentificationNumber
+//    Gen.date(2014, 2017).sometimes |@|                            // joining date
+//    Gen.dateaddressGen(2014, 2017).sometimes |@|                            // leaving date
+    pattern"999999999999" |@|                                     // cin
     Gen.alphaLowerStr |@|                                         // tradingName
-    addressGen |@|                                                // businessContactDetails
-    Gen.boolean |@|                                               // correspondenceAddressDiffers
-    addressGen.sometimes |@|                                      // correspondenceAddress
-    contactDetailsGen |@|                                         // primaryPerson
+    businessContactGen |@|                                                // businessContact
+    correspondenceContactGen |@|                                  // correspondenceContact
+//    Gen.boolean |@|                                               // correspondenceAddressDiffers
+//    addressGen.sometimes |@|                                      // correspondenceAddress
+    primaryPersonContactGen |@|                                         // primaryPerson
     levyDetailsGen |@|                                            // softDrinksIndustryLevyDetails
     litresProducedGen |@|                                         // sdilActivity
     Gen.choose(1d, 10000d).map(BigDecimal.valueOf).sometimes |@|  // estimatedAmountOfTaxInTheNext12Months
@@ -66,17 +67,13 @@ object SubscriptionGenerator {
   }.map(Site.apply)
 
   private lazy val addressGen: Gen[Address] = {
-    Gen.boolean |@|                     // addressNotInUk
-    Gen.alphaNumStr |@|                 // addressLine1
-    Gen.alphaNumStr |@|                 // addressLine2
-    Gen.alphaNumStr.sometimes |@|       // addressLine3
-    Gen.alphaNumStr.sometimes |@|       // addressLine4
-    Gen.alphaNumStr |@|                 // postcode
-    Gen.alphaNumStr.sometimes |@|       // nonUkCountry
-    Gen.alphaNumStr |@|                 // telephoneNumber
-    Gen.alphaNumStr.sometimes |@|       // mobileNumber
-    Gen.alphaNumStr |@|                 // emailAddress
-    Gen.alphaNumStr.sometimes           // faxNumber
+    Gen.boolean |@|                     // notUKAddress
+    Gen.alphaNumStr |@|                 // line1
+    Gen.alphaNumStr |@|                 // line2
+    Gen.alphaNumStr.sometimes |@|       // line3
+    Gen.alphaNumStr.sometimes |@|       // line4
+    Gen.alphaNumStr.sometimes |@|       // postCode
+    Gen.alphaNumStr.sometimes           // country
   }.map(Address.apply)
 
   private lazy val bankDetailsGen: Gen[BankDetails] = {
@@ -97,70 +94,25 @@ object SubscriptionGenerator {
   }.map(LitresProduced.apply)
 
   private lazy val entityTypeGen: Gen[EntityType.Value] =
-    for {
-      entityType <- Gen.oneOf(
-        EntityType.withName("Unknown"),
-        EntityType.withName("GroupMember"),
-        EntityType.withName("GroupRepresentativeMember"),
-        EntityType.withName("ControllingBody"),
-        EntityType.withName("Partner"))
-    } yield entityType
+    Gen.oneOf(EntityType.values.toSeq)
 
   private lazy val actionTypeGen: Gen[ActionType.Value] =
-    for {
-      actionType <- Gen.oneOf(
-        ActionType.withName("Unknown"),
-        ActionType.withName("Add"),
-        ActionType.withName("Amend"),
-        ActionType.withName("Remove"))
-    } yield actionType
+    Gen.oneOf(ActionType.values.toSeq)
 
   private lazy val organisationTypeGen: Gen[OrganisationType.Value] =
-    for {
-      orgType <- Gen.oneOf(
-        OrganisationType.withName("Unknown"),
-        OrganisationType.withName("SoleProprietor"),
-        OrganisationType.withName("LimitedCompany"),
-        OrganisationType.withName("LLP"),
-        OrganisationType.withName("UnincorporatedBody"),
-        OrganisationType.withName("Partnership"),
-        OrganisationType.withName("Trust"))
-    } yield orgType
+    Gen.oneOf(OrganisationType.values.toSeq)
 
   private lazy val siteTypeGen: Gen[SiteType.Value] =
-    for {
-      siteType <- Gen.oneOf(
-        SiteType.withName("Unknown"),
-        SiteType.withName("Warehouse"),
-        SiteType.withName("ProductionSite"))
-    } yield siteType
+    Gen.oneOf(SiteType.values.toSeq)
 
   private lazy val siteActionGen: Gen[SiteAction.Value] =
-    for {
-      siteAction <- Gen.oneOf(
-        SiteAction.withName("Unknown"),
-        SiteAction.withName("NewSite"),
-        SiteAction.withName("AmendSite"),
-        SiteAction.withName("CloseSite"),
-        SiteAction.withName("TransferSite"))
-    } yield siteAction
+    Gen.oneOf(SiteAction.values.toSeq)
 
   private lazy val activitiesGen: Gen[ActivityType.Value] =
-    for {
-      activityType <- Gen.oneOf(
-        ActivityType.withName("Unknown"),
-        ActivityType.withName("Producer"),
-        ActivityType.withName("Importer"),
-        ActivityType.withName("ContractPacker"))
-    } yield activityType
+    Gen.oneOf(ActivityType.values.toSeq)
 
   private lazy val producerClassificationGen: Gen[ProducerClassification.Value] =
-    for {
-      producerClassification <- Gen.oneOf(
-        ProducerClassification.withName("Unknown"),
-        ProducerClassification.withName("Large"),
-        ProducerClassification.withName("Small"))
-    } yield producerClassification
+    Gen.oneOf(ProducerClassification.values.toSeq)
 
   private lazy val levyDetailsGen: Gen[LevyDetails] = {
     activitiesGen |@|                         // activities
@@ -172,11 +124,29 @@ object SubscriptionGenerator {
   }.map(LevyDetails.apply)
 
   private lazy val contactDetailsGen: Gen[ContactDetails] = {
-    Gen.forename() |@|                        // name
-    Gen.alphaNumStr.sometimes |@|             // positionInCompany
-    Gen.ukPhoneNumber |@|                     // telephoneNumber
-    pattern"99999 999999".gen.sometimes |@|   // mobileNumber
-    Gen.const("john.doe@somedomain.com")      // emailAddress
+    Gen.ukPhoneNumber |@|                     // telephone
+    pattern"99999 999999".gen.sometimes |@|   // mobile
+    pattern"99999 999999".gen.sometimes |@|   // fax TODO number pattern now includes +-() see DES spec
+    Gen.const("john.doe@somedomain.com")      // email
   }.map(ContactDetails.apply)
 
+  private lazy val businessContactGen: Gen[BusinessContact] = {
+    addressGen             |@|
+    contactDetailsGen
+  }.map(BusinessContact.apply)
+
+  private lazy val correspondenceContactGen: Gen[CorrespondenceContact] = {
+    addressGen             |@|
+    contactDetailsGen      |@|
+    Gen.boolean.sometimes
+  }.map(CorrespondenceContact.apply)
+
+  private lazy val primaryPersonContactGen: Gen[PrimaryPersonContact] = {
+    Gen.alphaStr           |@|
+    Gen.alphaStr.sometimes           |@|
+    Gen.ukPhoneNumber |@|                     // telephone
+    pattern"99999 999999".gen.sometimes |@|   // mobile
+    pattern"99999 999999".gen.sometimes |@|   // fax TODO number pattern now includes +-() see DES spec
+    Gen.const("john.doe@somedomain.com")      // email
+  }.map(PrimaryPersonContact.apply)
 }

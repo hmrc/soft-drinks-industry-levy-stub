@@ -14,6 +14,22 @@
  * limitations under the License.
  */
 
+/*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub
 
 import java.time.{LocalDate => Date}
@@ -21,26 +37,41 @@ import java.time.{LocalDate => Date}
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils
 
 case class Address(
-                    addressNotInUk: Boolean,
-                    addressLine1: String,
-                    addressLine2: String,
-                    addressLine3: Option[String],
-                    addressLine4: Option[String],
-                    postcode: String,
-                    nonUkCountry: Option[String],
-                    telephoneNumber: String,
-                    mobileNumber: Option[String],
-                    emailAddress: String,
-                    faxNumber: Option[String]
+                    notUKAddress: Boolean,
+                    line1: String,
+                    line2: String,
+                    line3: Option[String],
+                    line4: Option[String],
+                    postCode: Option[String],
+                    country: Option[String]
                   )
 
 case class ContactDetails(
-                           name: String,
-                           positionInCompany: Option[String],
-                           telephoneNumber: String,
-                           mobileNumber: Option[String],
-                           emailAddress: String
+                           telephone: String,
+                           mobile: Option[String],
+                           fax: Option[String],
+                           email: String
                          )
+
+case class BusinessContact(
+                          addressDetails: Address,
+                          contactDetails: ContactDetails
+                          )
+
+case class CorrespondenceContact(
+                                addressDetails: Address,
+                                contactDetails: ContactDetails,
+                                differentAddress: Option[Boolean]
+                                )
+
+case class PrimaryPersonContact(
+                                 name: String,
+                                 positionInCompany: Option[String],
+                                 telephone: String,
+                                 mobile: Option[String],
+                                 fax: Option[String],
+                                 email: String  // TODO ask LT if nice way to avoid dupe of ContactDetails
+                               )
 
 case class LitresProduced(
                            producedLower: Option[Int],
@@ -68,7 +99,7 @@ object ProducerClassification extends Enumeration {
 
 object OrganisationType extends Enumeration {
   type OrganisationType = Value // TODO - figure out if these type statements are needed
-  val Unknown, SoleProprietor, LimitedCompany, LLP, UnincorporatedBody, Partnership, Trust = Value
+  val SoleProprietor, LimitedCompany, LLP, UnincorporatedBody, Partnership = Value
   implicit val organisationTypeFormat = EnumUtils.enumFormat(OrganisationType)
 }
 
@@ -118,20 +149,15 @@ case class Site(
                )
 
 case class CreateSubscriptionRequest(
-                                      organisationType: OrganisationType.Value,
-                                      action: Option[ActionType.Value],
-                                      typeOfEntity: Option[EntityType.Value],
-                                      dateOfApplication: Date,
+                                      organisationType: String,
+                                      applicationDate: Date,
                                       taxStartDate: Date,
-                                      joiningDate: Option[Date],
-                                      leavingDate: Option[Date],
-                                      customerIdentificationNumber: String,
+                                      cin: String,
                                       tradingName: String,
-                                      businessContactDetails: Address,
-                                      correspondenceAddressDiffers: Boolean,
-                                      correspondenceAddress: Option[Address],
-                                      primaryPerson: ContactDetails,
-                                      softDrinksIndustryLevyDetails: LevyDetails,
+                                      businessContact: BusinessContact,
+                                      correspondenceContact: CorrespondenceContact,
+                                      primaryPersonContact: PrimaryPersonContact,
+                                      details: LevyDetails,
                                       sdilActivity: LitresProduced,
                                       estimatedAmountOfTaxInTheNext12Months: Option[BigDecimal],
                                       taxObligationStartDate: Date,

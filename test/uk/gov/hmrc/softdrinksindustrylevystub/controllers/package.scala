@@ -25,23 +25,23 @@ package object controllers {
   val invalidCreationInput: JsValue = Json.parse(
     """{
       |	"organisationType": "LimitedCompany BORKED",
-      |	"dateOfApplication": "2017-09-12",
+      |	"applicationDate": "2017-09-12",
       |	"taxStartDate": "2017-09-12",
-      |	"customerIdentificationNumber": "1097172564",
+      |	"cin": "1097172564",
       |	"tradingName": "some trading name",
-      |	"businessContactDetails": {
-      |		"addressNotInUk": false,
-      |		"addressLine1": "line1",
-      |		"addressLine2": "line2",
-      |		"postcode": "ABC123",
-      |		"telephoneNumber": "123123123",
-      |		"emailAddress": "foo@bar.com"
+      |	"businessContact": {
+      |		"notUKAddress": false,
+      |		"line1": "line1",
+      |		"line2": "line2",
+      |		"postCode": "ABC123",
+      |		"telephone": "123123123",
+      |		"email": "foo@bar.com"
       |	},
       |	"correspondenceAddressDiffers": false,
       |	"primaryPerson": {
       |		"name": "foo",
-      |		"telephoneNumber": "123123123",
-      |		"emailAddress": "foo@bar.com"
+      |		"telephone": "123123123",
+      |		"email": "foo@bar.com"
       |	},
       |	"softDrinksIndustryLevyDetails": {
       |		"activities": "ContractPacker",
@@ -57,12 +57,12 @@ package object controllers {
       |	},
       |	"sites": [{
       |		"address": {
-      |			"addressNotInUk": false,
-      |			"addressLine1": "line1",
-      |			"addressLine2": "line2",
-      |			"postcode": "ABC123",
-      |			"telephoneNumber": "123123123",
-      |			"emailAddress": "foo@bar.com"
+      |			"notUKAddress": false,
+      |			"line1": "line1",
+      |			"line2": "line2",
+      |			"postCode": "ABC123",
+      |			"telephone": "123123123",
+      |			"email": "foo@bar.com"
       |		}
       |	}]
       |}
@@ -74,45 +74,45 @@ package object controllers {
       |	"organisationType": "LimitedCompany",
       |	"action": "Add",
       |	"typeOfEntity": "GroupMember",
-      |	"dateOfApplication": "2017-09-12",
+      |	"applicationDate": "2017-09-12",
       |	"taxStartDate": "2017-09-12",
       |	"joiningDate": "2017-09-12",
       |	"leavingDate": "2017-09-12",
-      |	"customerIdentificationNumber": "1097172564",
+      |	"cin": "1097172564",
       |	"tradingName": "some trading name",
-      |	"businessContactDetails": {
-      |		"addressNotInUk": true,
-      |		"addressLine1": "line1",
-      |		"addressLine2": "line2",
-      |		"addressLine3": "line3",
-      |		"addressLine4": "line4",
-      |		"postcode": "XYZ123",
-      |		"nonUkCountry": "Ukraine",
-      |		"telephoneNumber": "123123123",
-      |		"mobileNumber": "123123123",
-      |		"emailAddress": "foo@bar.com",
-      |		"faxNumber": "123123123"
+      |	"businessContact": {
+      |		"notUKAddress": true,
+      |		"line1": "line1",
+      |		"line2": "line2",
+      |		"line3": "line3",
+      |		"line4": "line4",
+      |		"postCode": "XYZ123",
+      |		"country": "Ukraine",
+      |		"telephone": "123123123",
+      |		"mobile": "123123123",
+      |		"email": "foo@bar.com",
+      |		"fax": "123123123"
       |	},
       |	"correspondenceAddressDiffers": true,
       |	"correspondenceAddress": {
-      |		"addressNotInUk": true,
-      |		"addressLine1": "line1",
-      |		"addressLine2": "line2",
-      |		"addressLine3": "line3",
-      |		"addressLine4": "line4",
-      |		"postcode": "XYZ123",
-      |		"nonUkCountry": "Uganda",
-      |		"telephoneNumber": "123123123",
-      |		"mobileNumber": "123123123",
-      |		"emailAddress": "foo@bar.com",
-      |		"faxNumber": "123123123"
+      |		"notUKAddress": true,
+      |		"line1": "line1",
+      |		"line2": "line2",
+      |		"line3": "line3",
+      |		"line4": "line4",
+      |		"postCode": "XYZ123",
+      |		"country": "Uganda",
+      |		"telephone": "123123123",
+      |		"mobile": "123123123",
+      |		"email": "foo@bar.com",
+      |		"fax": "123123123"
       |	},
       |	"primaryPerson": {
       |		"name": "foo",
       |		"positionInCompany": "Boss",
-      |		"telephoneNumber": "123123123",
-      |		"mobileNumber": "123123123",
-      |		"emailAddress": "foo@bar.com"
+      |		"telephone": "123123123",
+      |		"mobile": "123123123",
+      |		"email": "foo@bar.com"
       |	},
       |	"softDrinksIndustryLevyDetails": {
       |		"activities": "ContractPacker",
@@ -147,17 +147,17 @@ package object controllers {
       |		"tradingName": "cats",
       |		"newSiteReference": "foobar",
       |		"address": {
-      |			"addressNotInUk": true,
-      |			"addressLine1": "line1",
-      |			"addressLine2": "line2",
-      |			"addressLine3": "line3",
-      |			"addressLine4": "line4",
-      |			"postcode": "XYZ123",
-      |			"nonUkCountry": "Uganda",
-      |			"telephoneNumber": "123123123",
-      |			"mobileNumber": "123123123",
-      |			"emailAddress": "foo@bar.com",
-      |			"faxNumber": "123123123"
+      |			"notUKAddress": true,
+      |			"line1": "line1",
+      |			"line2": "line2",
+      |			"line3": "line3",
+      |			"line4": "line4",
+      |			"postCode": "XYZ123",
+      |			"country": "Uganda",
+      |			"telephone": "123123123",
+      |			"mobile": "123123123",
+      |			"email": "foo@bar.com",
+      |			"fax": "123123123"
       |		},
       |		"typeOfSite": "Warehouse"
       |	}]
@@ -170,45 +170,45 @@ package object controllers {
       |	"organisationType": "LimitedCompany",
       |	"action": "Add",
       |	"typeOfEntity": "GroupMember",
-      |	"dateOfApplication": "2017-09-12",
+      |	"applicationDate": "2017-09-12",
       |	"taxStartDate": "2017-09-12",
       |	"joiningDate": "2017-09-12",
       |	"leavingDate": "2017-09-12",
-      |	"customerIdentificationNumber": "1097172564",
+      |	"cin": "1097172564",
       |	"tradingName": "some trading name",
-      |	"businessContactDetails": {
-      |		"addressNotInUk": true,
-      |		"addressLine1": "line1",
-      |		"addressLine2": "line2",
-      |		"addressLine3": "line3",
-      |		"addressLine4": "line4",
-      |		"postcode": "XYZ123",
-      |		"nonUkCountry": "Ukraine",
-      |		"telephoneNumber": "123123123",
-      |		"mobileNumber": "123123123",
-      |		"emailAddress": "foo@bar.com",
-      |		"faxNumber": "123123123"
+      |	"businessContact": {
+      |		"notUKAddress": true,
+      |		"line1": "line1",
+      |		"line2": "line2",
+      |		"line3": "line3",
+      |		"line4": "line4",
+      |		"postCode": "XYZ123",
+      |		"country": "Ukraine",
+      |		"telephone": "123123123",
+      |		"mobile": "123123123",
+      |		"email": "foo@bar.com",
+      |		"fax": "123123123"
       |	},
       |	"correspondenceAddressDiffers": true,
       |	"correspondenceAddress": {
-      |		"addressNotInUk": true,
-      |		"addressLine1": "line1",
-      |		"addressLine2": "line2",
-      |		"addressLine3": "line3",
-      |		"addressLine4": "line4",
-      |		"postcode": "XYZ123",
-      |		"nonUkCountry": "Uganda",
-      |		"telephoneNumber": "123123123",
-      |		"mobileNumber": "123123123",
-      |		"emailAddress": "foo@bar.com",
-      |		"faxNumber": "123123123"
+      |		"notUKAddress": true,
+      |		"line1": "line1",
+      |		"line2": "line2",
+      |		"line3": "line3",
+      |		"line4": "line4",
+      |		"postCode": "XYZ123",
+      |		"country": "Uganda",
+      |		"telephone": "123123123",
+      |		"mobile": "123123123",
+      |		"email": "foo@bar.com",
+      |		"fax": "123123123"
       |	},
       |	"primaryPerson": {
       |		"name": "foo",
       |		"positionInCompany": "Boss",
-      |		"telephoneNumber": "123123123",
-      |		"mobileNumber": "123123123",
-      |		"emailAddress": "foo@bar.com"
+      |		"telephone": "123123123",
+      |		"mobile": "123123123",
+      |		"email": "foo@bar.com"
       |	},
       |	"softDrinksIndustryLevyDetails": {
       |		"activities": "ContractPacker",
@@ -243,17 +243,17 @@ package object controllers {
       |		"tradingName": "cats",
       |		"newSiteReference": "foobar",
       |		"address": {
-      |			"addressNotInUk": true,
-      |			"addressLine1": "line1",
-      |			"addressLine2": "line2",
-      |			"addressLine3": "line3",
-      |			"addressLine4": "line4",
-      |			"postcode": "XYZ123",
-      |			"nonUkCountry": "Uganda",
-      |			"telephoneNumber": "123123123",
-      |			"mobileNumber": "123123123",
-      |			"emailAddress": "foo@bar.com",
-      |			"faxNumber": "123123123"
+      |			"notUKAddress": true,
+      |			"line1": "line1",
+      |			"line2": "line2",
+      |			"line3": "line3",
+      |			"line4": "line4",
+      |			"postCode": "XYZ123",
+      |			"country": "Uganda",
+      |			"telephone": "123123123",
+      |			"mobile": "123123123",
+      |			"email": "foo@bar.com",
+      |			"fax": "123123123"
       |		},
       |		"typeOfSite": "Warehouse"
       |	}]
@@ -264,23 +264,23 @@ package object controllers {
   val validCreateSubscriptionRequestInputWithoutOptionals: JsValue = Json.parse(
     """{
       |	"organisationType": "LimitedCompany",
-      |	"dateOfApplication": "2017-09-12",
+      |	"applicationDate": "2017-09-12",
       |	"taxStartDate": "2017-09-12",
-      |	"customerIdentificationNumber": "1097172564",
+      |	"cin": "1097172564",
       |	"tradingName": "some trading name",
-      |	"businessContactDetails": {
-      |		"addressNotInUk": false,
-      |		"addressLine1": "line1",
-      |		"addressLine2": "line2",
-      |		"postcode": "ABC123",
-      |		"telephoneNumber": "123123123",
-      |		"emailAddress": "foo@bar.com"
+      |	"businessContact": {
+      |		"notUKAddress": false,
+      |		"line1": "line1",
+      |		"line2": "line2",
+      |		"postCode": "ABC123",
+      |		"telephone": "123123123",
+      |		"email": "foo@bar.com"
       |	},
       |	"correspondenceAddressDiffers": false,
       |	"primaryPerson": {
       |		"name": "foo",
-      |		"telephoneNumber": "123123123",
-      |		"emailAddress": "foo@bar.com"
+      |		"telephone": "123123123",
+      |		"email": "foo@bar.com"
       |	},
       |	"softDrinksIndustryLevyDetails": {
       |		"activities": "ContractPacker",
@@ -296,12 +296,12 @@ package object controllers {
       |	},
       |	"sites": [{
       |		"address": {
-      |			"addressNotInUk": false,
-      |			"addressLine1": "line1",
-      |			"addressLine2": "line2",
-      |			"postcode": "ABC123",
-      |			"telephoneNumber": "123123123",
-      |			"emailAddress": "foo@bar.com"
+      |			"notUKAddress": false,
+      |			"line1": "line1",
+      |			"line2": "line2",
+      |			"postCode": "ABC123",
+      |			"telephone": "123123123",
+      |			"email": "foo@bar.com"
       |		}
       |	}]
       |}

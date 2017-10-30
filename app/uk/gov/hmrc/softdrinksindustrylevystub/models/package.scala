@@ -35,6 +35,9 @@ package object models {
 
   implicit val addressFormat: OFormat[Address] = Json.format[Address]
   implicit val contactDetailsFormat: OFormat[ContactDetails] = Json.format[ContactDetails]
+  implicit val businessContactFormat: OFormat[BusinessContact] = Json.format[BusinessContact]
+  implicit val correspondenceContactFormat: OFormat[CorrespondenceContact] = Json.format[CorrespondenceContact]
+  implicit val primaryContactFormat: OFormat[PrimaryPersonContact] = Json.format[PrimaryPersonContact]
   implicit val litresProducedFormat: OFormat[LitresProduced] = Json.format[LitresProduced]
   implicit val bankDetailsFormat: OFormat[BankDetails] = Json.format[BankDetails]
   implicit val levyDetailsFormat: OFormat[LevyDetails] = Json.format[LevyDetails]
