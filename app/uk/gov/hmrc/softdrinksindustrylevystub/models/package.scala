@@ -33,7 +33,7 @@ package object models {
   implicit val rosmResponseContactDetails: OFormat[RosmResponseContactDetails] = Json.format[RosmResponseContactDetails]
   implicit val rosmRegisterResponse: OFormat[RosmRegisterResponse] = Json.format[RosmRegisterResponse]
 
-  // create and retrieve subscription formatters
+  // SDIL create and retrieve subscription formatters
   implicit val addressFormat: OFormat[Address] = Json.format[Address]
   implicit val contactDetailsFormat: OFormat[ContactDetails] = Json.format[ContactDetails]
   implicit val businessContactFormat: OFormat[BusinessContact] = Json.format[BusinessContact]

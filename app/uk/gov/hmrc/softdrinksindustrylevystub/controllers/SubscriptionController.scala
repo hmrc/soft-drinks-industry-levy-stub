@@ -29,13 +29,18 @@ import scala.concurrent.Future
 @Singleton
 class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController {
 
-  def createSubscription(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+  def createSubscription(idType: String, idNumber: String): Action[JsValue] = Action.async(parse.json) { implicit request =>
     withJsonBody[CreateSubscriptionRequest](data =>
+      // TODO
+      // validate idType = "utr"
+      // validate id is a valid UTR
+      // validate id matches the data.registration.cin
+      // check the data is json
       Future.successful(Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(data)))))
   }
 
-  def retrieveSubscriptionDetails(utr: String) = Action {
-    desSubmissionService.retrieveSubscriptionDetails(utr) match {
+  def retrieveSubscriptionDetails(idType: String, idNumber: String) = Action {
+    desSubmissionService.retrieveSubscriptionDetails(idNumber) match {
       case Some(data) => Ok(Json.toJson(Some(data)))
       case _ => NotFound(Json.parse("""{"reason" : "unknown subscription"}"""))
     }

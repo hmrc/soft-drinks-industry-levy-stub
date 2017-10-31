@@ -39,7 +39,7 @@ object SubscriptionGenerator {
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] = {
     Gen.const(LocalDateTime.now)                             |@| // processingDate
-    pattern"99999999".gen                                        // formBundleNumber
+    pattern"999999999999".gen                                    // formBundleNumber
   }.map(CreateSubscriptionResponse.apply)
 
   private lazy val entityActionGen: Gen[EntityAction] = {
