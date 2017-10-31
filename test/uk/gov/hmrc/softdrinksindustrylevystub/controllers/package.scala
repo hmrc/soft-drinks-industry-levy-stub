@@ -71,239 +71,400 @@ package object controllers {
 
   val successfulRetrieveOutput: JsValue = Json.parse(
     """{
-      |	"organisationType": "LimitedCompany",
-      |	"action": "Add",
-      |	"typeOfEntity": "GroupMember",
-      |	"applicationDate": "2017-09-12",
-      |	"taxStartDate": "2017-09-12",
-      |	"joiningDate": "2017-09-12",
-      |	"leavingDate": "2017-09-12",
-      |	"cin": "1097172564",
-      |	"tradingName": "some trading name",
-      |	"businessContact": {
-      |		"notUKAddress": true,
-      |		"line1": "line1",
-      |		"line2": "line2",
-      |		"line3": "line3",
-      |		"line4": "line4",
-      |		"postCode": "XYZ123",
-      |		"country": "Ukraine",
-      |		"telephone": "123123123",
-      |		"mobile": "123123123",
-      |		"email": "foo@bar.com",
-      |		"fax": "123123123"
-      |	},
-      |	"correspondenceAddressDiffers": true,
-      |	"correspondenceAddress": {
-      |		"notUKAddress": true,
-      |		"line1": "line1",
-      |		"line2": "line2",
-      |		"line3": "line3",
-      |		"line4": "line4",
-      |		"postCode": "XYZ123",
-      |		"country": "Uganda",
-      |		"telephone": "123123123",
-      |		"mobile": "123123123",
-      |		"email": "foo@bar.com",
-      |		"fax": "123123123"
-      |	},
-      |	"primaryPerson": {
-      |		"name": "foo",
-      |		"positionInCompany": "Boss",
-      |		"telephone": "123123123",
-      |		"mobile": "123123123",
-      |		"email": "foo@bar.com"
-      |	},
-      |	"softDrinksIndustryLevyDetails": {
-      |		"activities": "ContractPacker",
-      |		"lessThanMillion": true,
-      |		"producerClassification": "Large",
-      |		"smallProducerExemption": false,
-      |		"usesCopacker": false,
-      |		"voluntarilyRegistered": false
-      |	},
-      |	"sdilActivity": {
-      |		"litresProducedUKLower": 1,
-      |		"litresProducedUKHigher": 2,
-      |		"litresImportedUKLower": 3,
-      |		"litresImportedUKHigher": 4,
-      |		"litresPackagedUKLower": 5,
-      |		"litresPackagedUKHigher": 6
-      |	},
-      |	"estimatedTaxAmount": 5000,
-      |	"taxObligationStartDate": "2017-09-12",
-      |	"bankDetails": {
-      |		"directDebit": false,
-      |		"accountName": "some account name",
-      |		"accountNumber": "some account number",
-      |		"sortCode": "some sort code",
-      |		"buildingSocietyRollNumber": "building society roll number"
-      |	},
-      |	"sites": [{
-      |		"action": "NewSite",
-      |		"siteReference": "foo",
-      |		"dateOfClosure": "2017-09-12",
-      |		"siteClosureReason": "rats",
-      |		"tradingName": "cats",
-      |		"newSiteReference": "foobar",
-      |		"address": {
-      |			"notUKAddress": true,
-      |			"line1": "line1",
-      |			"line2": "line2",
-      |			"line3": "line3",
-      |			"line4": "line4",
-      |			"postCode": "XYZ123",
-      |			"country": "Uganda",
-      |			"telephone": "123123123",
-      |			"mobile": "123123123",
-      |			"email": "foo@bar.com",
-      |			"fax": "123123123"
-      |		},
-      |		"typeOfSite": "Warehouse"
-      |	}]
+      |    "registration": {
+      |        "organisationType": "1",
+      |        "applicationDate": "1920-02-29",
+      |        "taxStartDate": "1920-02-29",
+      |        "cin": "1097172564",
+      |        "tradingName": "a",
+      |        "businessContact": {
+      |            "addressDetails": {
+      |                "notUKAddress": false,
+      |                "line1": "Juicey Juices",
+      |                "line2": "Some Street",
+      |                "line3": " ",
+      |                "line4": " ",
+      |                "postCode": "AB012AA",
+      |                "country": "GB"
+      |            },
+      |            "contactDetails": {
+      |                "telephone": "+44 1234567890",
+      |                "mobile": "+44-(0)7890123456",
+      |                "fax": "01234567111",
+      |                "email": "a.b@c.com"
+      |            }
+      |        },
+      |        "correspondenceContact": {
+      |            "addressDetails": {
+      |                "notUKAddress": false,
+      |                "line1": "Juicey Juices",
+      |                "line2": "Someother Street",
+      |                "line3": " ",
+      |                "line4": "Somewhere Else",
+      |                "postCode": "AB012CC",
+      |                "country": "GB"
+      |            },
+      |            "contactDetails": {
+      |                "telephone": " ",
+      |                "mobile": " ",
+      |                "email": "a.b@c.com"
+      |            },
+      |            "differentAddress": true
+      |        },
+      |        "primaryPersonContact": {
+      |            "name": "a",
+      |            "positionInCompany": "a",
+      |            "telephone": "a",
+      |            "mobile": "a",
+      |            "email": "a.b@c.com"
+      |        },
+      |        "details": {
+      |            "producer": true,
+      |            "producerDetails": {
+      |                "produceMillionLitres": true,
+      |                "producerClassification": "1",
+      |                "smallProducerExemption": true,
+      |                "useContractPacker": true,
+      |                "voluntarilyRegistered": true
+      |            },
+      |            "importer": true,
+      |            "contractPacker": true
+      |        },
+      |        "activityQuestions": {
+      |            "litresProducedUKHigher": 2,
+      |            "litresProducedUKLower": 2,
+      |            "litresImportedUKHigher": 2,
+      |            "litresImportedUKLower": 2,
+      |            "litresPackagedUKHigher": 2,
+      |            "litresPackagedUKLower": 2
+      |        },
+      |        "estimatedTaxAmount": 0.02,
+      |        "taxObligationStartDate": "1920-02-29"
+      |    },
+      |    "sites": [
+      |        {
+      |            "action": "1",
+      |            "tradingName": "a",
+      |            "newSiteRef": "a",
+      |            "siteAddress": {
+      |                "addressDetails": {
+      |                    "notUKAddress": true,
+      |                    "line1": " ",
+      |                    "line2": " ",
+      |                    "line3": " ",
+      |                    "line4": " ",
+      |                    "postCode": "A00AA",
+      |                    "country": "FR"
+      |                },
+      |                "contactDetails": {
+      |                    "telephone": " ",
+      |                    "mobile": " ",
+      |                    "email": "a.b@c.com"
+      |                }
+      |            },
+      |            "siteType": "2"
+      |        },
+      |        {
+      |            "action": "1",
+      |            "tradingName": "a",
+      |            "newSiteRef": "a",
+      |            "siteAddress": {
+      |                "addressDetails": {
+      |                    "notUKAddress": true,
+      |                    "line1": " ",
+      |                    "line2": " ",
+      |                    "line3": " ",
+      |                    "line4": " ",
+      |                    "postCode": "A00AA",
+      |                    "country": "DE"
+      |                },
+      |                "contactDetails": {
+      |                    "telephone": " ",
+      |                    "mobile": " ",
+      |                    "email": "a.b@c.com"
+      |                }
+      |            },
+      |            "siteType": "2"
+      |        }
+      |    ],
+      |    "entityAction": [
+      |        {
+      |            "action": "1",
+      |            "entityType": "4",
+      |            "organisationType": "1",
+      |            "cin": "a",
+      |            "tradingName": "a",
+      |            "businessContact": {
+      |                "addressDetails": {
+      |                    "notUKAddress": false,
+      |                    "line1": " ",
+      |                    "line2": " ",
+      |                    "line3": " ",
+      |                    "line4": " ",
+      |                    "postCode": "A00AA",
+      |                    "country": "GB"
+      |                },
+      |                "contactDetails": {
+      |                    "telephone": " ",
+      |                    "mobile": " ",
+      |                    "email": "a.b@c.com"
+      |                }
+      |            }
+      |        },
+      |        {
+      |            "action": "1",
+      |            "entityType": "4",
+      |            "organisationType": "1",
+      |            "cin": "a",
+      |            "tradingName": "a",
+      |            "businessContact": {
+      |                "addressDetails": {
+      |                    "notUKAddress": false,
+      |                    "line1": " ",
+      |                    "line2": " ",
+      |                    "line3": " ",
+      |                    "line4": " ",
+      |                    "postCode": "A00AA",
+      |                    "country": "GB"
+      |                },
+      |                "contactDetails": {
+      |                    "telephone": " ",
+      |                    "mobile": " ",
+      |                    "email": "a.b@c.com"
+      |                }
+      |            }
+      |        }
+      |    ]
       |}
     """.stripMargin
   )
 
   val validCreateSubscriptionRequestInput: JsValue = Json.parse(
     """{
-      |	"organisationType": "LimitedCompany",
-      |	"action": "Add",
-      |	"typeOfEntity": "GroupMember",
-      |	"applicationDate": "2017-09-12",
-      |	"taxStartDate": "2017-09-12",
-      |	"joiningDate": "2017-09-12",
-      |	"leavingDate": "2017-09-12",
-      |	"cin": "1097172564",
-      |	"tradingName": "some trading name",
-      |	"businessContact": {
-      |		"notUKAddress": true,
-      |		"line1": "line1",
-      |		"line2": "line2",
-      |		"line3": "line3",
-      |		"line4": "line4",
-      |		"postCode": "XYZ123",
-      |		"country": "Ukraine",
-      |		"telephone": "123123123",
-      |		"mobile": "123123123",
-      |		"email": "foo@bar.com",
-      |		"fax": "123123123"
-      |	},
-      |	"correspondenceAddressDiffers": true,
-      |	"correspondenceAddress": {
-      |		"notUKAddress": true,
-      |		"line1": "line1",
-      |		"line2": "line2",
-      |		"line3": "line3",
-      |		"line4": "line4",
-      |		"postCode": "XYZ123",
-      |		"country": "Uganda",
-      |		"telephone": "123123123",
-      |		"mobile": "123123123",
-      |		"email": "foo@bar.com",
-      |		"fax": "123123123"
-      |	},
-      |	"primaryPerson": {
-      |		"name": "foo",
-      |		"positionInCompany": "Boss",
-      |		"telephone": "123123123",
-      |		"mobile": "123123123",
-      |		"email": "foo@bar.com"
-      |	},
-      |	"softDrinksIndustryLevyDetails": {
-      |		"activities": "ContractPacker",
-      |		"lessThanMillion": true,
-      |		"producerClassification": "Large",
-      |		"smallProducerExemption": false,
-      |		"usesCopacker": false,
-      |		"voluntarilyRegistered": false
-      |	},
-      |	"sdilActivity": {
-      |		"litresProducedUKLower": 1,
-      |		"litresProducedUKHigher": 2,
-      |		"litresImportedUKLower": 3,
-      |		"litresImportedUKHigher": 4,
-      |		"litresPackagedUKLower": 5,
-      |		"litresPackagedUKHigher": 6
-      |	},
-      |	"estimatedTaxAmount": 5000,
-      |	"taxObligationStartDate": "2017-09-12",
-      |	"bankDetails": {
-      |		"directDebit": false,
-      |		"accountName": "some account name",
-      |		"accountNumber": "some account number",
-      |		"sortCode": "some sort code",
-      |		"buildingSocietyRollNumber": "building society roll number"
-      |	},
-      |	"sites": [{
-      |		"action": "NewSite",
-      |		"siteReference": "foo",
-      |		"dateOfClosure": "2017-09-12",
-      |		"siteClosureReason": "rats",
-      |		"tradingName": "cats",
-      |		"newSiteReference": "foobar",
-      |		"address": {
-      |			"notUKAddress": true,
-      |			"line1": "line1",
-      |			"line2": "line2",
-      |			"line3": "line3",
-      |			"line4": "line4",
-      |			"postCode": "XYZ123",
-      |			"country": "Uganda",
-      |			"telephone": "123123123",
-      |			"mobile": "123123123",
-      |			"email": "foo@bar.com",
-      |			"fax": "123123123"
-      |		},
-      |		"typeOfSite": "Warehouse"
-      |	}]
+      |    "registration": {
+      |        "organisationType": "1",
+      |        "applicationDate": "1920-02-29",
+      |        "taxStartDate": "1920-02-29",
+      |        "cin": "1097172564",
+      |        "tradingName": "a",
+      |        "businessContact": {
+      |            "addressDetails": {
+      |                "notUKAddress": false,
+      |                "line1": "Juicey Juices",
+      |                "line2": "Some Street",
+      |                "line3": " ",
+      |                "line4": " ",
+      |                "postCode": "AB012AA",
+      |                "country": "GB"
+      |            },
+      |            "contactDetails": {
+      |                "telephone": "+44 1234567890",
+      |                "mobile": "+44-(0)7890123456",
+      |                "fax": "01234567111",
+      |                "email": "a.b@c.com"
+      |            }
+      |        },
+      |        "correspondenceContact": {
+      |            "addressDetails": {
+      |                "notUKAddress": false,
+      |                "line1": "Juicey Juices",
+      |                "line2": "Someother Street",
+      |                "line3": " ",
+      |                "line4": "Somewhere Else",
+      |                "postCode": "AB012CC",
+      |                "country": "GB"
+      |            },
+      |            "contactDetails": {
+      |                "telephone": " ",
+      |                "mobile": " ",
+      |                "email": "a.b@c.com"
+      |            },
+      |            "differentAddress": true
+      |        },
+      |        "primaryPersonContact": {
+      |            "name": "a",
+      |            "positionInCompany": "a",
+      |            "telephone": "a",
+      |            "mobile": "a",
+      |            "email": "a.b@c.com"
+      |        },
+      |        "details": {
+      |            "producer": true,
+      |            "producerDetails": {
+      |                "produceMillionLitres": true,
+      |                "producerClassification": "1",
+      |                "smallProducerExemption": true,
+      |                "useContractPacker": true,
+      |                "voluntarilyRegistered": true
+      |            },
+      |            "importer": true,
+      |            "contractPacker": true
+      |        },
+      |        "activityQuestions": {
+      |            "litresProducedUKHigher": 2,
+      |            "litresProducedUKLower": 2,
+      |            "litresImportedUKHigher": 2,
+      |            "litresImportedUKLower": 2,
+      |            "litresPackagedUKHigher": 2,
+      |            "litresPackagedUKLower": 2
+      |        },
+      |        "estimatedTaxAmount": 0.02,
+      |        "taxObligationStartDate": "1920-02-29"
+      |    },
+      |    "sites": [
+      |        {
+      |            "action": "1",
+      |            "tradingName": "a",
+      |            "newSiteRef": "a",
+      |            "siteAddress": {
+      |                "addressDetails": {
+      |                    "notUKAddress": true,
+      |                    "line1": " ",
+      |                    "line2": " ",
+      |                    "line3": " ",
+      |                    "line4": " ",
+      |                    "postCode": "A00AA",
+      |                    "country": "FR"
+      |                },
+      |                "contactDetails": {
+      |                    "telephone": " ",
+      |                    "mobile": " ",
+      |                    "email": "a.b@c.com"
+      |                }
+      |            },
+      |            "siteType": "2"
+      |        },
+      |        {
+      |            "action": "1",
+      |            "tradingName": "a",
+      |            "newSiteRef": "a",
+      |            "siteAddress": {
+      |                "addressDetails": {
+      |                    "notUKAddress": true,
+      |                    "line1": " ",
+      |                    "line2": " ",
+      |                    "line3": " ",
+      |                    "line4": " ",
+      |                    "postCode": "A00AA",
+      |                    "country": "DE"
+      |                },
+      |                "contactDetails": {
+      |                    "telephone": " ",
+      |                    "mobile": " ",
+      |                    "email": "a.b@c.com"
+      |                }
+      |            },
+      |            "siteType": "2"
+      |        }
+      |    ],
+      |    "entityAction": [
+      |        {
+      |            "action": "1",
+      |            "entityType": "4",
+      |            "organisationType": "1",
+      |            "cin": "a",
+      |            "tradingName": "a",
+      |            "businessContact": {
+      |                "addressDetails": {
+      |                    "notUKAddress": false,
+      |                    "line1": " ",
+      |                    "line2": " ",
+      |                    "line3": " ",
+      |                    "line4": " ",
+      |                    "postCode": "A00AA",
+      |                    "country": "GB"
+      |                },
+      |                "contactDetails": {
+      |                    "telephone": " ",
+      |                    "mobile": " ",
+      |                    "email": "a.b@c.com"
+      |                }
+      |            }
+      |        },
+      |        {
+      |            "action": "1",
+      |            "entityType": "4",
+      |            "organisationType": "1",
+      |            "cin": "a",
+      |            "tradingName": "a",
+      |            "businessContact": {
+      |                "addressDetails": {
+      |                    "notUKAddress": false,
+      |                    "line1": " ",
+      |                    "line2": " ",
+      |                    "line3": " ",
+      |                    "line4": " ",
+      |                    "postCode": "A00AA",
+      |                    "country": "GB"
+      |                },
+      |                "contactDetails": {
+      |                    "telephone": " ",
+      |                    "mobile": " ",
+      |                    "email": "a.b@c.com"
+      |                }
+      |            }
+      |        }
+      |    ]
       |}
     """.stripMargin
   )
 
   val validCreateSubscriptionRequestInputWithoutOptionals: JsValue = Json.parse(
     """{
-      |	"organisationType": "LimitedCompany",
-      |	"applicationDate": "2017-09-12",
-      |	"taxStartDate": "2017-09-12",
-      |	"cin": "1097172564",
-      |	"tradingName": "some trading name",
-      |	"businessContact": {
-      |		"notUKAddress": false,
-      |		"line1": "line1",
-      |		"line2": "line2",
-      |		"postCode": "ABC123",
-      |		"telephone": "123123123",
-      |		"email": "foo@bar.com"
-      |	},
-      |	"correspondenceAddressDiffers": false,
-      |	"primaryPerson": {
-      |		"name": "foo",
-      |		"telephone": "123123123",
-      |		"email": "foo@bar.com"
-      |	},
-      |	"softDrinksIndustryLevyDetails": {
-      |		"activities": "ContractPacker",
-      |		"lessThanMillion": true,
-      |		"smallProducerExemption": false,
-      |		"usesCopacker": false,
-      |		"voluntarilyRegistered": false
-      |	},
-      |	"sdilActivity": {},
-      |	"taxObligationStartDate": "2017-09-12",
-      |	"bankDetails": {
-      |		"directDebit": false
-      |	},
-      |	"sites": [{
-      |		"address": {
-      |			"notUKAddress": false,
-      |			"line1": "line1",
-      |			"line2": "line2",
-      |			"postCode": "ABC123",
-      |			"telephone": "123123123",
-      |			"email": "foo@bar.com"
-      |		}
-      |	}]
+      |    "registration": {
+      |        "organisationType": "1",
+      |        "applicationDate": "1920-02-29",
+      |        "taxStartDate": "1920-02-29",
+      |        "cin": "1097172564",
+      |        "tradingName": "a",
+      |        "businessContact": {
+      |            "addressDetails": {
+      |                "notUKAddress": false,
+      |                "line1": "Juicey Juices",
+      |                "line2": "Some Street"
+      |            },
+      |            "contactDetails": {
+      |                "telephone": "+44 1234567890",
+      |                "email": "a.b@c.com"
+      |            }
+      |        },
+      |        "correspondenceContact": {
+      |            "addressDetails": {
+      |                "notUKAddress": false,
+      |                "line1": "Juicey Juices",
+      |                "line2": "Someother Street",
+      |                "line3": " ",
+      |                "line4": "Somewhere Else",
+      |                "postCode": "AB012CC",
+      |                "country": "GB"
+      |            },
+      |            "contactDetails": {
+      |                "telephone": " ",
+      |                "mobile": " ",
+      |                "email": "a.b@c.com"
+      |            }
+      |        },
+      |        "primaryPersonContact": {
+      |            "name": "a",
+      |			"telephone": "a",
+      |            "email": "a.b@c.com"
+      |        },
+      |        "details": {
+      |            "producer": true,
+      |            "producerDetails": {
+      |                "produceMillionLitres": true,
+      |                "producerClassification": "1"
+      |            },
+      |            "importer": true,
+      |            "contractPacker": true
+      |        },
+      |        "activityQuestions": {
+      |        },
+      |        "estimatedTaxAmount": 0.02,
+      |        "taxObligationStartDate": "1920-02-29"
+      |    },
+      |    "sites": [],
+      |    "entityAction": []
       |}
     """.stripMargin
   )

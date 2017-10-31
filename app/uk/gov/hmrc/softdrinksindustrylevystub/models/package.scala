@@ -22,7 +22,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 package object models {
 
   //ROSM register formatters
-  implicit val organisationTypeFormat: Format[RosmOrganisationType.Value] = EnumUtils.enumFormat(RosmOrganisationType)
+    implicit val organisationTypeFormat: Format[RosmOrganisationType.Value] = EnumUtils.enumFormat(RosmOrganisationType)
   implicit val individualFormatter: OFormat[Individual] = Json.format[Individual]
   implicit val organisationReqFormatter: OFormat[OrganisationRequest] = Json.format[OrganisationRequest]
   implicit val rosmRequestFormatter: OFormat[RosmRegisterRequest] = Json.format[RosmRegisterRequest]
@@ -33,16 +33,18 @@ package object models {
   implicit val rosmResponseContactDetails: OFormat[RosmResponseContactDetails] = Json.format[RosmResponseContactDetails]
   implicit val rosmRegisterResponse: OFormat[RosmRegisterResponse] = Json.format[RosmRegisterResponse]
 
+  // create and retrieve subscription formatters
   implicit val addressFormat: OFormat[Address] = Json.format[Address]
   implicit val contactDetailsFormat: OFormat[ContactDetails] = Json.format[ContactDetails]
   implicit val businessContactFormat: OFormat[BusinessContact] = Json.format[BusinessContact]
   implicit val correspondenceContactFormat: OFormat[CorrespondenceContact] = Json.format[CorrespondenceContact]
   implicit val primaryContactFormat: OFormat[PrimaryPersonContact] = Json.format[PrimaryPersonContact]
   implicit val litresProducedFormat: OFormat[LitresProduced] = Json.format[LitresProduced]
-  implicit val bankDetailsFormat: OFormat[BankDetails] = Json.format[BankDetails]
   implicit val producerDetailsFormat: OFormat[ProducerDetails] = Json.format[ProducerDetails]
   implicit val detailsFormat: OFormat[Details] = Json.format[Details]
   implicit val siteFormat: OFormat[Site] = Json.format[Site]
+  implicit val registrationFormat: OFormat[Registration] = Json.format[Registration]
+  implicit val entityActionFormat: OFormat[EntityAction] = Json.format[EntityAction]
   implicit val createSubscriptionRequestFormat: OFormat[CreateSubscriptionRequest] = Json.format[CreateSubscriptionRequest]
   implicit val createSubscriptionResponseFormat: OFormat[CreateSubscriptionResponse] = Json.format[CreateSubscriptionResponse]
 

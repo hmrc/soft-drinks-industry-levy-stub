@@ -27,8 +27,8 @@ class DesSubmissionService {
   lazy val store  = SubscriptionGenerator.store.empty
 
   def createSubscriptionResponse(data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
-    store(data.cin) = data
-    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(data.cin).get
+    store(data.registration.cin) = data
+    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(data.registration.cin).get
   }
 
   def retrieveSubscriptionDetails(utr: String): Option[CreateSubscriptionRequest] = {

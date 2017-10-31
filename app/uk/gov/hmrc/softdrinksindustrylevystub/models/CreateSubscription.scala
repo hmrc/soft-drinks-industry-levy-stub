@@ -32,7 +32,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub
 
-import java.time.{LocalDate => Date}
+import java.time.{LocalDateTime, LocalDate => Date}
 
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils
 
@@ -70,7 +70,7 @@ case class PrimaryPersonContact(
                                  telephone: String,
                                  mobile: Option[String],
                                  fax: Option[String],
-                                 email: String  // TODO ask LT if nice way to avoid dupe of ContactDetails
+                                 email: String  // TODO ask LT/NK if nice way to avoid dupe of ContactDetails
                                )
 
 case class LitresProduced(
@@ -82,23 +82,14 @@ case class LitresProduced(
                            litresPackagedUKLower: Option[Int]
                          )
 
-case class BankDetails(
-                        directDebit: Boolean,
-                        accountName: Option[String],
-                        accountNumber: Option[String],
-                        sortCode: Option[String],
-                        buildingSocietyRollNumber: Option[String]
-                      )
-
 object ProducerClassification extends Enumeration {
   type ProducerClassification = Value
   val Unknown, Large, Small = Value
   implicit val producerClassificationFormat = EnumUtils.enumFormat(ProducerClassification)
 }
 
-
 object OrganisationType extends Enumeration {
-  type OrganisationType = Value // TODO - figure out if these type statements are needed
+  type OrganisationType = Value
   val SoleProprietor, LimitedCompany, LLP, UnincorporatedBody, Partnership = Value
   implicit val organisationTypeFormat = EnumUtils.enumFormat(OrganisationType)
 }
@@ -143,34 +134,45 @@ object SiteType extends Enumeration {
 }
 
 case class Site(
-                 action: Option[SiteAction.Value],
-                 siteReference: Option[String],
-                 dateOfClosure: Option[Date],
-                 siteClosureReason: Option[String],
-                 tradingName: Option[String],
-                 newSiteReference: Option[String],
-                 address: Address,
-                 typeOfSite: Option[SiteType.Value]
+                 action: String,
+                 tradingName: String,
+                 newSiteRef: String,
+                 siteAddress: BusinessContact,
+                 siteType: String
                )
 
+case class Registration(
+                          organisationType: String,
+                          applicationDate: Date,
+                          taxStartDate: Date,
+                          cin: String,
+                          tradingName: String,
+                          businessContact: BusinessContact,
+                          correspondenceContact: CorrespondenceContact,
+                          primaryPersonContact: PrimaryPersonContact,
+                          details: Details,
+                          activityQuestions: LitresProduced,
+                          estimatedTaxAmount: Option[BigDecimal],
+                          taxObligationStartDate: Date
+                        )
+
+
+case class EntityAction(
+                  action: String,
+                  entityType: String,
+                  organisationType: String,
+                  cin: String,
+                  tradingName: String,
+                  businessContact: BusinessContact
+                )
+
 case class CreateSubscriptionRequest(
-                                      organisationType: String,
-                                      applicationDate: Date,
-                                      taxStartDate: Date,
-                                      cin: String,
-                                      tradingName: String,
-                                      businessContact: BusinessContact,
-                                      correspondenceContact: CorrespondenceContact,
-                                      primaryPersonContact: PrimaryPersonContact,
-                                      details: Details,
-                                      activityQuestions: LitresProduced,
-                                      estimatedTaxAmount: Option[BigDecimal],
-                                      taxObligationStartDate: Date,
-                                      bankDetails: BankDetails,
-                                      sites: List[Site]
+                                      registration: Registration,
+                                      sites: List[Site],
+                                      entityAction: List[EntityAction]
                                     )
 
 case class CreateSubscriptionResponse(
-                                       safeId: String,
+                                       processingDate: LocalDateTime,
                                        formBundleNumber: String
                                      )
