@@ -44,14 +44,30 @@ case class Address(
                     line4: Option[String],
                     postCode: Option[String],
                     country: Option[String]
-                  )
+                  ) {
+  def isValid: Boolean = {
+    val linePattern: String = "^[A-Za-z0-9 \\-,.&'\\/]{1,35}$"
+    Seq(
+      line1.matches(linePattern),
+      line2.matches(linePattern),
+      line3.getOrElse("v").matches(linePattern),
+      line4.getOrElse("v").matches(linePattern),
+      postCode.getOrElse("AA11AA").matches("^[A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}$|BFPO\\s?[0-9]{1,5}$"),
+      country.getOrElse("AA").length <= 2
+    ).reduce(_ && _)
+  }
+}
 
 case class ContactDetails(
                            telephone: String,
                            mobile: Option[String],
                            fax: Option[String],
                            email: String
-                         )
+                         ) {
+  def isValid: Boolean = {
+    Validation.isValidContactDetails(this)
+  }
+}
 
 case class BusinessContact(
                           addressDetails: Address,
@@ -70,17 +86,38 @@ case class PrimaryPersonContact(
                                  telephone: String,
                                  mobile: Option[String],
                                  fax: Option[String],
-                                 email: String  // TODO ask LT/NK if nice way to avoid dupe of ContactDetails
-                               )
+                                 email: String
+                               ) {
+  def isValid: Boolean = {
+    val cd = ContactDetails(telephone,mobile,fax,email)
+    Seq(
+      Validation.isValidContactDetails(cd),
+      positionInCompany.getOrElse("a").length <= 155,
+      name.length <= 40
+    ) reduce (_ && _)
+  }
+}
 
 case class LitresProduced(
-                           litresProducedUKHigher: Option[Int],
-                           litresProducedUKLower: Option[Int],
-                           litresImportedUKHigher: Option[Int],
-                           litresImportedUKLower: Option[Int],
-                           litresPackagedUKHigher: Option[Int],
-                           litresPackagedUKLower: Option[Int]
-                         )
+                           litresProducedUKHigher: Option[Long],
+                           litresProducedUKLower: Option[Long],
+                           litresImportedUKHigher: Option[Long],
+                           litresImportedUKLower: Option[Long],
+                           litresPackagedUKHigher: Option[Long],
+                           litresPackagedUKLower: Option[Long]
+                         ) {
+  def isValid: Boolean = {
+    val max = 9999999999999L
+    Seq(
+      litresProducedUKHigher.getOrElse(0) <= max,
+      litresProducedUKLower.getOrElse(0) <= max,
+      litresImportedUKHigher.getOrElse(0) <= max,
+      litresImportedUKLower.getOrElse(0) <= max,
+      litresPackagedUKHigher.getOrElse(0) <= max,
+      litresPackagedUKLower.getOrElse(0) <= max
+    ) reduce (_ && _)
+  }
+}
 
 object ProducerClassification extends Enumeration {
   type ProducerClassification = Value
@@ -116,12 +153,20 @@ case class ProducerDetails(
                             useContractPacker: Option[Boolean],
                             voluntarilyRegistered: Option[Boolean]
                           )
+
 case class Details(
                   producer: Boolean,
                   producerDetails: Option[ProducerDetails],
                   importer: Boolean,
                   contractPacker: Boolean
-                  )
+                  ) {
+  def isValid: Boolean = {
+    producerDetails match {
+      case Some(a) => a.producerClassification.matches("^[0-1]{1}$")
+      case _ => true
+    }
+  }
+}
 
 object SiteAction extends Enumeration {
   val Unknown, NewSite, AmendSite, CloseSite, TransferSite = Value
@@ -161,18 +206,74 @@ case class EntityAction(
                   action: String,
                   entityType: String,
                   organisationType: String,
-                  cin: String,
+                  cin: String, // TODO get the regex for this
                   tradingName: String,
                   businessContact: BusinessContact
-                )
+                ) {
+  def isValid: Boolean = {
+    Seq(
+      action.matches("^[1]{1}$"),
+      entityType.matches("^4$"),
+      Validation.isValidOrganisationType(organisationType),
+      Validation.isValidTradingName(tradingName),
+      businessContact.addressDetails.isValid,
+      businessContact.contactDetails.isValid
+    ) reduce(_ && _)
+  }
+}
 
 case class CreateSubscriptionRequest(
                                       registration: Registration,
                                       sites: List[Site],
                                       entityAction: List[EntityAction]
-                                    )
+                                    ) {
+  def isValid: Boolean = {
+    Seq(
+      registration.businessContact.addressDetails.isValid,
+      registration.businessContact.contactDetails.isValid,
+      registration.correspondenceContact.addressDetails.isValid,
+      registration.correspondenceContact.contactDetails.isValid,
+      registration.primaryPersonContact.isValid,
+      Validation.isValidSites(sites),
+      Validation.isValidTradingName(registration.tradingName),
+      Validation.isValidOrganisationType(registration.organisationType),
+      registration.details.isValid,
+      registration.activityQuestions.isValid,
+      registration.estimatedTaxAmount.getOrElse(BigDecimal(0)) <= BigDecimal(99999999999.99),
+    ) reduce(_ && _)
+  }
+}
 
 case class CreateSubscriptionResponse(
                                        processingDate: LocalDateTime,
                                        formBundleNumber: String
                                      )
+
+object Validation {
+
+  def isValidSites(sites: List[Site]): Boolean = {
+    sites.map(s =>
+      s.siteAddress.addressDetails.isValid &&
+        s.siteAddress.contactDetails.isValid
+    ) reduce (_ && _)
+  }
+
+  def isValidContactDetails(cd: ContactDetails): Boolean = {
+    val phonePattern: String = "^[0-9 ()+--]{1,24}$"
+    Seq(
+      cd.telephone.matches(phonePattern),
+      cd.mobile.getOrElse("1").matches(phonePattern),
+      cd.fax.getOrElse("1").matches(phonePattern),
+      cd.email.length <= 132
+    ) reduce(_ && _)
+  }
+
+  def isValidTradingName(tradingName: String): Boolean = {
+    tradingName.length <= 160
+  }
+
+  def isValidOrganisationType(organisationType: String) = {
+    organisationType.matches("^[1-5]{1}$")
+  }
+
+}

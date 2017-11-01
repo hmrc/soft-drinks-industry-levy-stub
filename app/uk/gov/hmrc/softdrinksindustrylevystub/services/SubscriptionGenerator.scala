@@ -81,16 +81,16 @@ object SubscriptionGenerator {
     Gen.alphaNumStr.sometimes                                |@| // line3
     Gen.alphaNumStr.sometimes                                |@| // line4
     Gen.alphaNumStr.sometimes                                |@| // postCode
-    Gen.alphaNumStr.sometimes                                    // country
+    pattern"AA".gen.sometimes                                    // country
   }.map(Address.apply)
 
   private lazy val litresProducedGen: Gen[LitresProduced] = {
-    Gen.choose(1, 1000000).sometimes                         |@| // litresProducedUKHigher
-    Gen.choose(1, 1000000).sometimes                         |@| // litresProducedUKLower
-    Gen.choose(1, 1000000).sometimes                         |@| // litresImportedUKHigher
-    Gen.choose(1, 1000000).sometimes                         |@| // litresImportedUKLower
-    Gen.choose(1, 1000000).sometimes                         |@| // litresPackagedUKHigher
-    Gen.choose(1, 1000000).sometimes                             // litresPackagedUKLower
+    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresProducedUKHigher
+    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresProducedUKLower
+    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresImportedUKHigher
+    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresImportedUKLower
+    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresPackagedUKHigher
+    Gen.choose(1, 9999999999999L).sometimes                      // litresPackagedUKLower
   }.map(LitresProduced.apply)
 
   private lazy val producerDetailsGen: Gen[ProducerDetails] = {
@@ -109,7 +109,7 @@ object SubscriptionGenerator {
   }.map(Details.apply)
 
   private lazy val contactDetailsGen: Gen[ContactDetails] = {
-    Gen.ukPhoneNumber                                        |@| // telephone
+    pattern"99999 999999".gen                                |@| // telephone
     pattern"99999 999999".gen.sometimes                      |@| // mobile
     pattern"99999 999999".gen.sometimes                      |@| // fax
     Gen.const("john.doe@somedomain.com")                         // email

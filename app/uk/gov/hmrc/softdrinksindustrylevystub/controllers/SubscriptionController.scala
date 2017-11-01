@@ -18,7 +18,7 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.CreateSubscriptionRequest
@@ -31,12 +31,16 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
 
   def createSubscription(idType: String, idNumber: String): Action[JsValue] = Action.async(parse.json) { implicit request =>
     withJsonBody[CreateSubscriptionRequest](data =>
+      (idType, idNumber) match {
+        case (a,_) if a != "utr" => Future.successful(BadRequest(Json.parse("""{"reason" : "WTF_UTR subscription"}""")))
+        case _ if !data.isValid => Future.successful(BadRequest(Json.parse("""{"reason" : "INVALID_PAYLOAD subscription"}""")))
+        case _ => Future.successful(Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(data))))
+      })
       // TODO
       // validate idType = "utr"
       // validate id is a valid UTR
       // validate id matches the data.registration.cin
       // check the data is json
-      Future.successful(Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(data)))))
   }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String) = Action {
