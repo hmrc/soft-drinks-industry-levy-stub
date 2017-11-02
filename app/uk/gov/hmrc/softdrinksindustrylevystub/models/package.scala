@@ -47,5 +47,7 @@ package object models {
   implicit val entityActionFormat: OFormat[EntityAction] = Json.format[EntityAction]
   implicit val createSubscriptionRequestFormat: OFormat[CreateSubscriptionRequest] = Json.format[CreateSubscriptionRequest]
   implicit val createSubscriptionResponseFormat: OFormat[CreateSubscriptionResponse] = Json.format[CreateSubscriptionResponse]
+  implicit val failureFormat: OFormat[FailureMessage] = Json.format[FailureMessage]
+  implicit val failureResponseFormat: OFormat[FailureResponse] = Json.format[FailureResponse]
 
 }

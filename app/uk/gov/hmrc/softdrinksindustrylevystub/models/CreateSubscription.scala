@@ -109,12 +109,12 @@ case class LitresProduced(
   def isValid: Boolean = {
     val max = 9999999999999L
     Seq(
-      litresProducedUKHigher.getOrElse(0) <= max,
-      litresProducedUKLower.getOrElse(0) <= max,
-      litresImportedUKHigher.getOrElse(0) <= max,
-      litresImportedUKLower.getOrElse(0) <= max,
-      litresPackagedUKHigher.getOrElse(0) <= max,
-      litresPackagedUKLower.getOrElse(0) <= max
+      litresProducedUKHigher.getOrElse(0L) <= max,
+      litresProducedUKLower.getOrElse(0L) <= max,
+      litresImportedUKHigher.getOrElse(0L) <= max,
+      litresImportedUKLower.getOrElse(0L) <= max,
+      litresPackagedUKHigher.getOrElse(0L) <= max,
+      litresPackagedUKLower.getOrElse(0L) <= max
     ) reduce (_ && _)
   }
 }
@@ -206,7 +206,7 @@ case class EntityAction(
                   action: String,
                   entityType: String,
                   organisationType: String,
-                  cin: String, // TODO get the regex for this
+                  cin: String,
                   tradingName: String,
                   businessContact: BusinessContact
                 ) {
@@ -217,7 +217,8 @@ case class EntityAction(
       Validation.isValidOrganisationType(organisationType),
       Validation.isValidTradingName(tradingName),
       businessContact.addressDetails.isValid,
-      businessContact.contactDetails.isValid
+      businessContact.contactDetails.isValid,
+      Validation.isValidUtr(cin)
     ) reduce(_ && _)
   }
 }
@@ -229,6 +230,7 @@ case class CreateSubscriptionRequest(
                                     ) {
   def isValid: Boolean = {
     Seq(
+      Validation.isValidUtr(registration.cin),
       registration.businessContact.addressDetails.isValid,
       registration.businessContact.contactDetails.isValid,
       registration.correspondenceContact.addressDetails.isValid,
@@ -239,8 +241,8 @@ case class CreateSubscriptionRequest(
       Validation.isValidOrganisationType(registration.organisationType),
       registration.details.isValid,
       registration.activityQuestions.isValid,
-      registration.estimatedTaxAmount.getOrElse(BigDecimal(0)) <= BigDecimal(99999999999.99),
-    ) reduce(_ && _)
+      registration.estimatedTaxAmount.getOrElse(BigDecimal(0)) <= BigDecimal(99999999999.99)
+    ) reduce (_ && _)
   }
 }
 
@@ -250,6 +252,27 @@ case class CreateSubscriptionResponse(
                                      )
 
 object Validation {
+
+  def isValidIdNumber(idNumber: String): Option[FailureMessage] = {
+    idNumber match {
+      case a if !isValidUtr(a) =>
+        Some(FailureMessage("INVALID_UTR", "Submission has not passed validation, invalid UTR."))
+      case _ => None
+    }
+  }
+
+  def isValidUtr(utr: String): Boolean = {
+    utr.matches("^\\d{5}[3-9]\\d{4}$")
+  }
+
+  def isValidIdType(idType: String): Option[FailureMessage] = {
+    idType match {
+      case a if a != "utr" =>
+        Some(FailureMessage("INVALID_IDTYPE", s"Submission has not passed validation, invalid idType."))
+      case _ => None
+    }
+  }
+
 
   def isValidSites(sites: List[Site]): Boolean = {
     sites.map(s =>
@@ -272,8 +295,24 @@ object Validation {
     tradingName.length <= 160
   }
 
-  def isValidOrganisationType(organisationType: String) = {
+  def isValidOrganisationType(organisationType: String): Boolean = {
     organisationType.matches("^[1-5]{1}$")
   }
 
+  def checkParams(idType: String, idNumber: String): List[FailureMessage] = {
+    List(
+      isValidIdType(idType),
+      isValidIdNumber(idNumber)
+    ) filter (_.isDefined) map (x => x.get)
+  }
+
 }
+
+case class FailureMessage(
+                    code: String,
+                    reason: String
+                  )
+
+case class FailureResponse(
+                          failures: List[FailureMessage]
+                          )

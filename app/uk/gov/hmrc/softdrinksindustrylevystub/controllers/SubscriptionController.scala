@@ -18,29 +18,35 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.libs.json.{JsError, JsValue, Json}
+import play.api.libs.json._
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.CreateSubscriptionRequest
+import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
 import scala.concurrent.Future
+import scala.util.{Success, Try}
 
 @Singleton
 class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController {
 
-  def createSubscription(idType: String, idNumber: String): Action[JsValue] = Action.async(parse.json) { implicit request =>
-    withJsonBody[CreateSubscriptionRequest](data =>
-      (idType, idNumber) match {
-        case (a,_) if a != "utr" => Future.successful(BadRequest(Json.parse("""{"reason" : "WTF_UTR subscription"}""")))
-        case _ if !data.isValid => Future.successful(BadRequest(Json.parse("""{"reason" : "INVALID_PAYLOAD subscription"}""")))
-        case _ => Future.successful(Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(data))))
-      })
-      // TODO
-      // validate idType = "utr"
-      // validate id is a valid UTR
-      // validate id matches the data.registration.cin
-      // check the data is json
+  def createSubscription(idType: String, idNumber: String): Action[JsValue] = Action.async(parse.json) {
+    implicit request: Request[JsValue] =>
+
+      (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
+        case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
+          Future.successful(Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(payload))))
+        case (Success(JsError(errs)), failures) =>
+          Future.successful(BadRequest(Json.toJson(FailureResponse(
+            failures :+ FailureMessage(
+              "INVALID_PAYLOAD",
+              "Submission has not passed validation. Invalid PAYLOAD."
+            )
+          ))))
+        case (_, failures) =>
+          Future.successful(BadRequest(Json.toJson(FailureResponse(failures))))
+      }
+
   }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String) = Action {
