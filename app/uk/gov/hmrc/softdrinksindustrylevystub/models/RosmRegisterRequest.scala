@@ -18,8 +18,6 @@ package uk.gov.hmrc.softdrinksindustrylevystub.models
 
 import java.time.LocalDate
 
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.OrganisationType
-
 case class RosmRegisterRequest(
                                 regime: String,
                                 requiresNameMatch: Boolean,

@@ -119,32 +119,6 @@ case class LitresProduced(
   }
 }
 
-object ProducerClassification extends Enumeration {
-  type ProducerClassification = Value
-  val Unknown, Large, Small = Value
-  implicit val producerClassificationFormat = EnumUtils.enumFormat(ProducerClassification)
-}
-
-object OrganisationType extends Enumeration {
-  type OrganisationType = Value
-  val SoleProprietor, LimitedCompany, LLP, UnincorporatedBody, Partnership = Value
-  implicit val organisationTypeFormat = EnumUtils.enumFormat(OrganisationType)
-}
-
-object ActionType extends Enumeration {
-  val Unknown, Add, Amend, Remove = Value
-  implicit val actionTypeFormat = EnumUtils.enumFormat(ActionType)
-}
-
-object EntityType extends Enumeration {
-  val Unknown, GroupMember, GroupRepresentativeMember, ControllingBody, Partner = Value
-  implicit val entityTypeFormat = EnumUtils.enumFormat(EntityType)
-}
-
-object ActivityType extends Enumeration {
-  val Unknown, Producer, Importer, ContractPacker = Value
-  implicit val activityTypeFormat = EnumUtils.enumFormat(ActivityType)
-}
 
 case class ProducerDetails(
                             produceMillionLitres: Boolean,
@@ -277,7 +251,11 @@ object Validation {
   def isValidSites(sites: List[Site]): Boolean = {
     sites.map(s =>
       s.siteAddress.addressDetails.isValid &&
-        s.siteAddress.contactDetails.isValid
+      s.siteAddress.contactDetails.isValid &&
+      s.action.matches("^[1]{1}$") &&
+      isValidTradingName(s.tradingName) &&
+      s.newSiteRef.length >=1 &&
+      s.newSiteRef.length <= 160
     ) reduce (_ && _)
   }
 
@@ -292,7 +270,8 @@ object Validation {
   }
 
   def isValidTradingName(tradingName: String): Boolean = {
-    tradingName.length <= 160
+    tradingName.length <= 160 &&
+    tradingName.nonEmpty
   }
 
   def isValidOrganisationType(organisationType: String): Boolean = {
@@ -306,6 +285,10 @@ object Validation {
     ) filter (_.isDefined) map (x => x.get)
   }
 
+  val payloadFailure = FailureMessage(
+    "INVALID_PAYLOAD",
+    "Submission has not passed validation. Invalid PAYLOAD."
+  )
 }
 
 case class FailureMessage(
@@ -316,3 +299,31 @@ case class FailureMessage(
 case class FailureResponse(
                           failures: List[FailureMessage]
                           )
+
+// n.b. leaving these although they are unused until we see the retrieve spec
+//object ProducerClassification extends Enumeration {
+//  type ProducerClassification = Value
+//  val Unknown, Large, Small = Value
+//  implicit val producerClassificationFormat = EnumUtils.enumFormat(ProducerClassification)
+//}
+//
+//object OrganisationType extends Enumeration {
+//  type OrganisationType = Value
+//  val SoleProprietor, LimitedCompany, LLP, UnincorporatedBody, Partnership = Value
+//  implicit val organisationTypeFormat = EnumUtils.enumFormat(OrganisationType)
+//}
+//
+//object ActionType extends Enumeration {
+//  val Unknown, Add, Amend, Remove = Value
+//  implicit val actionTypeFormat = EnumUtils.enumFormat(ActionType)
+//}
+//
+//object EntityType extends Enumeration {
+//  val Unknown, GroupMember, GroupRepresentativeMember, ControllingBody, Partner = Value
+//  implicit val entityTypeFormat = EnumUtils.enumFormat(EntityType)
+//}
+//
+//object ActivityType extends Enumeration {
+//  val Unknown, Producer, Importer, ContractPacker = Value
+//  implicit val activityTypeFormat = EnumUtils.enumFormat(ActivityType)
+//}

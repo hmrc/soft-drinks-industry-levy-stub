@@ -25,7 +25,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
 import scala.concurrent.Future
-import scala.util.{Success, Try}
+import scala.util.{Success, Try, Failure}
 
 @Singleton
 class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController {
@@ -36,13 +36,10 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
       (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
           Future.successful(Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(payload))))
-        case (Success(JsError(errs)), failures) =>
-          Future.successful(BadRequest(Json.toJson(FailureResponse(
-            failures :+ FailureMessage(
-              "INVALID_PAYLOAD",
-              "Submission has not passed validation. Invalid PAYLOAD."
-            )
-          ))))
+        case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
+          Future.successful(BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure))))
+        case (Success(JsError(_)) | Failure(_), failures) =>
+          Future.successful(BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure))))
         case (_, failures) =>
           Future.successful(BadRequest(Json.toJson(FailureResponse(failures))))
       }

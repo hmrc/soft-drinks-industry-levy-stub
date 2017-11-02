@@ -136,26 +136,26 @@ object SubscriptionGenerator {
   }.map(PrimaryPersonContact.apply)
 
   // n.b. leaving these although they are unused until we see the retrieve spec
-  private lazy val entityTypeGen: Gen[EntityType.Value] =
-    Gen.oneOf(EntityType.values.toSeq)
-
-  private lazy val actionTypeGen: Gen[ActionType.Value] =
-    Gen.oneOf(ActionType.values.toSeq)
-
-  private lazy val organisationTypeGen: Gen[OrganisationType.Value] =
-    Gen.oneOf(OrganisationType.values.toSeq)
-
-  private lazy val siteTypeGen: Gen[SiteType.Value] =
-    Gen.oneOf(SiteType.values.toSeq)
-
-  private lazy val siteActionGen: Gen[SiteAction.Value] =
-    Gen.oneOf(SiteAction.values.toSeq)
-
-  private lazy val activitiesGen: Gen[ActivityType.Value] =
-    Gen.oneOf(ActivityType.values.toSeq)
-
-  private lazy val producerClassificationGen: Gen[ProducerClassification.Value] =
-    Gen.oneOf(ProducerClassification.values.toSeq)
+//  private lazy val entityTypeGen: Gen[EntityType.Value] =
+//    Gen.oneOf(EntityType.values.toSeq)
+//
+//  private lazy val actionTypeGen: Gen[ActionType.Value] =
+//    Gen.oneOf(ActionType.values.toSeq)
+//
+//  private lazy val organisationTypeGen: Gen[OrganisationType.Value] =
+//    Gen.oneOf(OrganisationType.values.toSeq)
+//
+//  private lazy val siteTypeGen: Gen[SiteType.Value] =
+//    Gen.oneOf(SiteType.values.toSeq)
+//
+//  private lazy val siteActionGen: Gen[SiteAction.Value] =
+//    Gen.oneOf(SiteAction.values.toSeq)
+//
+//  private lazy val activitiesGen: Gen[ActivityType.Value] =
+//    Gen.oneOf(ActivityType.values.toSeq)
+//
+//  private lazy val producerClassificationGen: Gen[ProducerClassification.Value] =
+//    Gen.oneOf(ProducerClassification.values.toSeq)
 
 }
 
