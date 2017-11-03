@@ -72,15 +72,14 @@ case class PrimaryPersonContact(
                                  positionInCompany: Option[String],
                                  telephone: String,
                                  mobile: Option[String],
-                                 fax: Option[String],
                                  email: String
                                ) {
   def isValid: Boolean = {
-    val cd = ContactDetails(telephone,mobile,fax,email)
     Seq(
-      Validation.isValidContactDetails(cd),
-      positionInCompany.length <= 155,
-      name.length <= 40
+      name.matches(".{1,40}"),
+      positionInCompany.matches(".{1,155}"),
+      telephone.matches(".{1,24}"),
+      mobile.matches(".{1,24}")
     ) reduce (_ && _)
   }
 }
@@ -243,8 +242,7 @@ object Validation {
             s.siteAddress.contactDetails.isValid &&
             s.action.matches("^[1]{1}$") &&
             isValidTradingName(s.tradingName) &&
-            s.newSiteRef.length >=1 &&
-            s.newSiteRef.length <= 160
+            s.newSiteRef.matches(".{1,160}")
         ) reduce (_ && _)
     }
   }
@@ -260,8 +258,7 @@ object Validation {
   }
 
   def isValidTradingName(tradingName: String): Boolean = {
-    tradingName.length <= 160 &&
-    tradingName.nonEmpty
+    tradingName.matches(".{1,160}")
   }
 
   def isValidOrganisationType(organisationType: String): Boolean = {

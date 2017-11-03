@@ -131,7 +131,6 @@ object SubscriptionGenerator {
     Gen.alphaStr.sometimes                                   |@| // positionInCompany
     Gen.ukPhoneNumber                                        |@| // telephone
     pattern"99999 999999".gen.sometimes                      |@| // mobile
-    pattern"99999 999999".gen.sometimes                      |@| // fax
     Gen.const("john.doe@somedomain.com")                         // email
   }.map(PrimaryPersonContact.apply)
 
