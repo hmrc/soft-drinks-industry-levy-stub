@@ -17,12 +17,11 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import play.api.libs.json._
-//import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
 package object models {
 
   //ROSM register formatters
-    implicit val organisationTypeFormat: Format[RosmOrganisationType.Value] = EnumUtils.enumFormat(RosmOrganisationType)
+  implicit val organisationTypeFormat: Format[RosmOrganisationType.Value] = EnumUtils.enumFormat(RosmOrganisationType)
   implicit val individualFormatter: OFormat[Individual] = Json.format[Individual]
   implicit val organisationReqFormatter: OFormat[OrganisationRequest] = Json.format[OrganisationRequest]
   implicit val rosmRequestFormatter: OFormat[RosmRegisterRequest] = Json.format[RosmRegisterRequest]
@@ -49,6 +48,8 @@ package object models {
   implicit val createSubscriptionResponseFormat: OFormat[CreateSubscriptionResponse] = Json.format[CreateSubscriptionResponse]
   implicit val failureFormat: OFormat[FailureMessage] = Json.format[FailureMessage]
   implicit val failureResponseFormat: OFormat[FailureResponse] = Json.format[FailureResponse]
+
+  val maxL: Long = 9999999999999L
 
   private[models] implicit class ValidationOptionString(s: Option[String]) {
     def matches(regex: String): Boolean = s match {

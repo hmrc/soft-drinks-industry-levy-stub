@@ -42,7 +42,7 @@ class ErrorHandler @Inject() (implicit val config: Configuration, val env: Envir
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     exception match {
       case _ =>
-        Future.successful(BadRequest(Json.toJson(FailureResponse(
+        Future.successful(InternalServerError(Json.toJson(FailureResponse(
           List(FailureMessage(
             "500",
             "DES is currently experiencing problems that require live service intervention."

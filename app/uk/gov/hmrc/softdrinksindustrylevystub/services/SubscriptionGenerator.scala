@@ -85,12 +85,12 @@ object SubscriptionGenerator {
   }.map(Address.apply)
 
   private lazy val litresProducedGen: Gen[LitresProduced] = {
-    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresProducedUKHigher
-    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresProducedUKLower
-    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresImportedUKHigher
-    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresImportedUKLower
-    Gen.choose(1, 9999999999999L).sometimes                  |@| // litresPackagedUKHigher
-    Gen.choose(1, 9999999999999L).sometimes                      // litresPackagedUKLower
+    Gen.choose(1, maxL).sometimes                            |@| // litresProducedUKHigher
+    Gen.choose(1, maxL).sometimes                            |@| // litresProducedUKLower
+    Gen.choose(1, maxL).sometimes                            |@| // litresImportedUKHigher
+    Gen.choose(1, maxL).sometimes                            |@| // litresImportedUKLower
+    Gen.choose(1, maxL).sometimes                            |@| // litresPackagedUKHigher
+    Gen.choose(1, maxL).sometimes                                // litresPackagedUKLower
   }.map(LitresProduced.apply)
 
   private lazy val producerDetailsGen: Gen[ProducerDetails] = {
