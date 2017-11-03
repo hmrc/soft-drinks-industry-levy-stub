@@ -19,16 +19,18 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 import com.google.inject.Singleton
 import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
+import uk.gov.hmrc.softdrinksindustrylevystub.models._
+
+import scala.collection.mutable
 
 @Singleton
 class DesSubmissionService {
 
-  lazy val store  = SubscriptionGenerator.store.empty
+  lazy val store: mutable.Map[String, CreateSubscriptionRequest] = SubscriptionGenerator.store.empty
 
   def createSubscriptionResponse(data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
-    store(data.customerIdentificationNumber) = data
-    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(data.customerIdentificationNumber).get
+    store(data.registration.cin) = data
+    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(data.registration.cin).get
   }
 
   def retrieveSubscriptionDetails(utr: String): Option[CreateSubscriptionRequest] = {

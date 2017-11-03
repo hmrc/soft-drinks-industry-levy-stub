@@ -18,24 +18,35 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json._
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.CreateSubscriptionRequest
+import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
-import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 @Singleton
 class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController {
 
-  def createSubscription(): Action[JsValue] = Action.async(parse.json) { implicit request =>
-    withJsonBody[CreateSubscriptionRequest](data =>
-      Future.successful(Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(data)))))
+  def createSubscription(idType: String, idNumber: String): Action[JsValue] = Action(parse.json) {
+    implicit request: Request[JsValue] =>
+
+      (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
+        case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
+          Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(payload)))
+        case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
+          BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
+        case (Success(JsError(_)) | Failure(_), failures) =>
+          BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
+        case (_, failures) =>
+          BadRequest(Json.toJson(FailureResponse(failures)))
+      }
+
   }
 
-  def retrieveSubscriptionDetails(utr: String) = Action {
-    desSubmissionService.retrieveSubscriptionDetails(utr) match {
+  def retrieveSubscriptionDetails(idType: String, idNumber: String) = Action {
+    desSubmissionService.retrieveSubscriptionDetails(idNumber) match {
       case Some(data) => Ok(Json.toJson(Some(data)))
       case _ => NotFound(Json.parse("""{"reason" : "unknown subscription"}"""))
     }

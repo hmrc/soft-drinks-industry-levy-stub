@@ -17,7 +17,6 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import play.api.libs.json._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
 
 package object models {
 
@@ -33,13 +32,49 @@ package object models {
   implicit val rosmResponseContactDetails: OFormat[RosmResponseContactDetails] = Json.format[RosmResponseContactDetails]
   implicit val rosmRegisterResponse: OFormat[RosmRegisterResponse] = Json.format[RosmRegisterResponse]
 
+  // SDIL create and retrieve subscription formatters
   implicit val addressFormat: OFormat[Address] = Json.format[Address]
   implicit val contactDetailsFormat: OFormat[ContactDetails] = Json.format[ContactDetails]
+  implicit val businessContactFormat: OFormat[BusinessContact] = Json.format[BusinessContact]
+  implicit val correspondenceContactFormat: OFormat[CorrespondenceContact] = Json.format[CorrespondenceContact]
+  implicit val primaryContactFormat: OFormat[PrimaryPersonContact] = Json.format[PrimaryPersonContact]
   implicit val litresProducedFormat: OFormat[LitresProduced] = Json.format[LitresProduced]
-  implicit val bankDetailsFormat: OFormat[BankDetails] = Json.format[BankDetails]
-  implicit val levyDetailsFormat: OFormat[LevyDetails] = Json.format[LevyDetails]
+  implicit val producerDetailsFormat: OFormat[ProducerDetails] = Json.format[ProducerDetails]
+  implicit val detailsFormat: OFormat[Details] = Json.format[Details]
   implicit val siteFormat: OFormat[Site] = Json.format[Site]
+  implicit val registrationFormat: OFormat[Registration] = Json.format[Registration]
+  implicit val entityActionFormat: OFormat[EntityAction] = Json.format[EntityAction]
   implicit val createSubscriptionRequestFormat: OFormat[CreateSubscriptionRequest] = Json.format[CreateSubscriptionRequest]
   implicit val createSubscriptionResponseFormat: OFormat[CreateSubscriptionResponse] = Json.format[CreateSubscriptionResponse]
+  implicit val failureFormat: OFormat[FailureMessage] = Json.format[FailureMessage]
+  implicit val failureResponseFormat: OFormat[FailureResponse] = Json.format[FailureResponse]
+
+  val maxL: Long = 9999999999999L
+
+  private[models] implicit class ValidationOptionString(s: Option[String]) {
+    def matches(regex: String): Boolean = s match {
+      case Some(data) => data.matches(regex)
+      case _ => true
+    }
+
+    def length: Int = s match {
+      case Some(data) => data.length
+      case _ => 0
+    }
+  }
+
+  private[models] implicit class ValidationOptionLong(l: Option[Long]) {
+    def <=(max: Long): Boolean = l match {
+      case Some(a) => a <= max
+      case _ => true
+    }
+  }
+
+  private[models] implicit class ValidationOptionBigDecimal(bd: Option[BigDecimal]) {
+    def <=(max: BigDecimal): Boolean = bd match {
+      case Some(a) => a <= max
+      case _ => true
+    }
+  }
 
 }
