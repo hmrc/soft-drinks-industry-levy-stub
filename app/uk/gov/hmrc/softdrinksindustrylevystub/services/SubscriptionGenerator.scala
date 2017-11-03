@@ -23,7 +23,7 @@ import org.scalacheck._
 import org.scalacheck.support.cats._
 import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
+import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
 object SubscriptionGenerator {
 

@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json._
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
+import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
 import scala.concurrent.Future

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import play.api.libs.json._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub._
+//import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
 package object models {
 
@@ -49,5 +49,31 @@ package object models {
   implicit val createSubscriptionResponseFormat: OFormat[CreateSubscriptionResponse] = Json.format[CreateSubscriptionResponse]
   implicit val failureFormat: OFormat[FailureMessage] = Json.format[FailureMessage]
   implicit val failureResponseFormat: OFormat[FailureResponse] = Json.format[FailureResponse]
+
+  private[models] implicit class ValidationOptionString(s: Option[String]) {
+    def matches(regex: String): Boolean = s match {
+      case Some(data) => data.matches(regex)
+      case _ => true
+    }
+
+    def length: Int = s match {
+      case Some(data) => data.length
+      case _ => 0
+    }
+  }
+
+  private[models] implicit class ValidationOptionLong(l: Option[Long]) {
+    def <=(max: Long): Boolean = l match {
+      case Some(a) => a <= max
+      case _ => true
+    }
+  }
+
+  private[models] implicit class ValidationOptionBigDecimal(bd: Option[BigDecimal]) {
+    def <=(max: BigDecimal): Boolean = bd match {
+      case Some(a) => a <= max
+      case _ => true
+    }
+  }
 
 }

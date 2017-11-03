@@ -252,8 +252,6 @@ package object controllers {
       |                "notUKAddress": false,
       |                "line1": "Juicey Juices",
       |                "line2": "Some Street",
-      |                "line3": " ",
-      |                "line4": " ",
       |                "postCode": "AB012AA",
       |                "country": "GB"
       |            },
@@ -269,14 +267,13 @@ package object controllers {
       |                "notUKAddress": false,
       |                "line1": "Juicey Juices",
       |                "line2": "Someother Street",
-      |                "line3": " ",
       |                "line4": "Somewhere Else",
       |                "postCode": "AB012CC",
       |                "country": "GB"
       |            },
       |            "contactDetails": {
-      |                "telephone": " ",
-      |                "mobile": " ",
+      |                "telephone": "+44 1234567890",
+      |                "mobile": "+44 1234567890",
       |                "email": "a.b@c.com"
       |            },
       |            "differentAddress": true
@@ -284,8 +281,8 @@ package object controllers {
       |        "primaryPersonContact": {
       |            "name": "a",
       |            "positionInCompany": "a",
-      |            "telephone": "a",
-      |            "mobile": "a",
+      |            "telephone": "+44 1234567890",
+      |            "mobile": "+44 1234567890",
       |            "email": "a.b@c.com"
       |        },
       |        "details": {
@@ -319,16 +316,14 @@ package object controllers {
       |            "siteAddress": {
       |                "addressDetails": {
       |                    "notUKAddress": true,
-      |                    "line1": " ",
-      |                    "line2": " ",
-      |                    "line3": " ",
-      |                    "line4": " ",
+      |                    "line1": "Juicey Juices",
+      |                    "line2": "Juicey Juices",
       |                    "postCode": "A00AA",
       |                    "country": "FR"
       |                },
       |                "contactDetails": {
-      |                    "telephone": " ",
-      |                    "mobile": " ",
+      |                    "telephone": "+44 1234567890",
+      |                    "mobile": "+44 1234567890",
       |                    "email": "a.b@c.com"
       |                }
       |            },
@@ -341,16 +336,14 @@ package object controllers {
       |            "siteAddress": {
       |                "addressDetails": {
       |                    "notUKAddress": true,
-      |                    "line1": " ",
-      |                    "line2": " ",
-      |                    "line3": " ",
-      |                    "line4": " ",
+      |                    "line1": "asdasdasd",
+      |                    "line2": "asfdsdasd",
       |                    "postCode": "A00AA",
       |                    "country": "DE"
       |                },
       |                "contactDetails": {
-      |                    "telephone": " ",
-      |                    "mobile": " ",
+      |                    "telephone": "+44 1234567890",
+      |                    "mobile": "+44 1234567890",
       |                    "email": "a.b@c.com"
       |                }
       |            },
@@ -367,16 +360,14 @@ package object controllers {
       |            "businessContact": {
       |                "addressDetails": {
       |                    "notUKAddress": false,
-      |                    "line1": " ",
-      |                    "line2": " ",
-      |                    "line3": " ",
-      |                    "line4": " ",
+      |                    "line1": "asdasdas",
+      |                    "line2": "asdasd",
       |                    "postCode": "A00AA",
       |                    "country": "GB"
       |                },
       |                "contactDetails": {
-      |                    "telephone": " ",
-      |                    "mobile": " ",
+      |                    "telephone": "+44 1234567890",
+      |                    "mobile": "+44 1234567890",
       |                    "email": "a.b@c.com"
       |                }
       |            }
@@ -390,16 +381,14 @@ package object controllers {
       |            "businessContact": {
       |                "addressDetails": {
       |                    "notUKAddress": false,
-      |                    "line1": " ",
-      |                    "line2": " ",
-      |                    "line3": " ",
-      |                    "line4": " ",
+      |                    "line1": "asdasd",
+      |                    "line2": "aqasda",
       |                    "postCode": "A00AA",
       |                    "country": "GB"
       |                },
       |                "contactDetails": {
-      |                    "telephone": " ",
-      |                    "mobile": " ",
+      |                    "telephone": "+44 1234567890",
+      |                    "mobile": "+44 1234567890",
       |                    "email": "a.b@c.com"
       |                }
       |            }
@@ -433,20 +422,19 @@ package object controllers {
       |                "notUKAddress": false,
       |                "line1": "Juicey Juices",
       |                "line2": "Someother Street",
-      |                "line3": " ",
       |                "line4": "Somewhere Else",
       |                "postCode": "AB012CC",
       |                "country": "GB"
       |            },
       |            "contactDetails": {
-      |                "telephone": " ",
-      |                "mobile": " ",
+      |                "telephone": "+44 1234567890",
+      |                "mobile": "+44 1234567890",
       |                "email": "a.b@c.com"
       |            }
       |        },
       |        "primaryPersonContact": {
       |            "name": "a",
-      |			"telephone": "a",
+      |			"telephone": "+44 1234567890",
       |            "email": "a.b@c.com"
       |        },
       |        "details": {
@@ -502,14 +490,14 @@ package object controllers {
 
   val validResponseIndividual = Individual("Stephen", None, "Wood", Some(LocalDate.parse("1990-04-03")))
 
-  val validResponseOrganisation = OrganisationResponse("Big Wig", false, RosmOrganisationType.Partnership)
+  val validResponseOrganisation = OrganisationResponse("Big Wig", isAGroup = false, RosmOrganisationType.Partnership)
 
   val rosmRegisterIndividualResponse = RosmRegisterResponse(
-    "safeID", None, false, false, true, Some(validResponseIndividual), None, validRosmResponseAddress, validRosmResponseContactDetails
+    "safeID", None, isEditable = false, isAnAgent = false, isAnIndividual = true, Some(validResponseIndividual), None, validRosmResponseAddress, validRosmResponseContactDetails
   )
 
   val rosmRegisterOrganisationResponse = RosmRegisterResponse(
-    "safeID", None, false, false, true, None, Some(validResponseOrganisation), validRosmResponseAddress, validRosmResponseContactDetails
+    "safeID", None, isEditable = false, isAnAgent = false, isAnIndividual = true, None, Some(validResponseOrganisation), validRosmResponseAddress, validRosmResponseContactDetails
   )
 
 }

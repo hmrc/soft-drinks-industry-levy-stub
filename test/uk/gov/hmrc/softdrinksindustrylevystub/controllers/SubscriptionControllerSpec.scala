@@ -28,13 +28,15 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.{CreateSubscriptionRequest, CreateSubscriptionResponse}
+import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionRequest, CreateSubscriptionResponse}
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
 class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
   val mockSubscriptionController = new SubscriptionController(mockDesSubmissionService)
   implicit val hc: HeaderCarrier = new HeaderCarrier
+  val utr = "1097172565"
+  val idType = "utr"
 
   override def beforeEach() {
     reset(mockDesSubmissionService)
@@ -43,23 +45,21 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   "SubscriptionController" should {
 
     "return Status: 404 Body: reason: unknown subscription message for a unsuccessful retrieve request" in {
-      val utr = "1097172565"
       when(mockDesSubmissionService
         .retrieveSubscriptionDetails(utr)).thenReturn(None)
       val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(utr)(FakeRequest("GET", "/soft-drinks/subscription/"))
+        .retrieveSubscriptionDetails(idType, utr)(FakeRequest("GET", "/soft-drinks/subscription/"))
 
       status(response) mustBe NOT_FOUND
     }
 
     "return Status: OK Body: CreateSubscriptionRequest for a successful retrieve request" in {
-      val utr = "1097172564"
       val r = Json.fromJson[CreateSubscriptionRequest](successfulRetrieveOutput)
 
       when(mockDesSubmissionService
         .retrieveSubscriptionDetails(utr)).thenReturn(Some(r.get))
       val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(utr)(FakeRequest("GET", "/soft-drinks/subscription/"))
+        .retrieveSubscriptionDetails(idType, utr)(FakeRequest("GET", "/soft-drinks/subscription/"))
 
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).retrieveSubscriptionDetails(any())
@@ -71,7 +71,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       when(mockDesSubmissionService
         .createSubscriptionResponse(any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
-        .createSubscription()(FakeRequest("POST", "/soft-drinks/subscription")
+        .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
           .withBody(validCreateSubscriptionRequestInput))
 
       status(response) mustBe OK
@@ -86,7 +86,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       when(mockDesSubmissionService
         .createSubscriptionResponse(any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
-        .createSubscription()(FakeRequest("POST", "/soft-drinks/subscription")
+        .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
           .withBody(validCreateSubscriptionRequestInputWithoutOptionals))
 
       status(response) mustBe OK
@@ -97,7 +97,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
 
     "return Status: 400 Body: nondescript error message for submission for invalid CreateSubscriptionRequest" in {
       val response = mockSubscriptionController
-        .createSubscription()(FakeRequest("POST", "/soft-drinks/subscription").withBody(invalidCreationInput))
+        .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription").withBody(invalidCreationInput))
 
       status(response) mustBe BAD_REQUEST
       verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any())

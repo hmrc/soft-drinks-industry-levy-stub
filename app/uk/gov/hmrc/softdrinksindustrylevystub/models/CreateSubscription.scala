@@ -30,11 +30,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub
+package uk.gov.hmrc.softdrinksindustrylevystub.models
 
 import java.time.{LocalDateTime, LocalDate => Date}
 
-import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils
+import play.api.libs.json.Format
+
 
 case class Address(
                     notUKAddress: Boolean,
@@ -50,13 +51,15 @@ case class Address(
     Seq(
       line1.matches(linePattern),
       line2.matches(linePattern),
-      line3.getOrElse("v").matches(linePattern),
-      line4.getOrElse("v").matches(linePattern),
-      postCode.getOrElse("AA11AA").matches("^[A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}$|BFPO\\s?[0-9]{1,5}$"),
-      country.getOrElse("AA").length <= 2
+      line3.matches(linePattern),
+      line4.matches(linePattern),
+      postCode.matches("^[A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}$|BFPO\\s?[0-9]{1,5}$"),
+      country.length <= 2
     ).reduce(_ && _)
   }
 }
+
+
 
 case class ContactDetails(
                            telephone: String,
@@ -92,7 +95,7 @@ case class PrimaryPersonContact(
     val cd = ContactDetails(telephone,mobile,fax,email)
     Seq(
       Validation.isValidContactDetails(cd),
-      positionInCompany.getOrElse("a").length <= 155,
+      positionInCompany.length <= 155,
       name.length <= 40
     ) reduce (_ && _)
   }
@@ -109,12 +112,12 @@ case class LitresProduced(
   def isValid: Boolean = {
     val max = 9999999999999L
     Seq(
-      litresProducedUKHigher.getOrElse(0L) <= max,
-      litresProducedUKLower.getOrElse(0L) <= max,
-      litresImportedUKHigher.getOrElse(0L) <= max,
-      litresImportedUKLower.getOrElse(0L) <= max,
-      litresPackagedUKHigher.getOrElse(0L) <= max,
-      litresPackagedUKLower.getOrElse(0L) <= max
+      litresProducedUKHigher <= max,
+      litresProducedUKLower <= max,
+      litresImportedUKHigher <= max,
+      litresImportedUKLower <= max,
+      litresPackagedUKHigher <= max,
+      litresPackagedUKLower <= max
     ) reduce (_ && _)
   }
 }
@@ -144,12 +147,12 @@ case class Details(
 
 object SiteAction extends Enumeration {
   val Unknown, NewSite, AmendSite, CloseSite, TransferSite = Value
-  implicit val siteActionFormat = EnumUtils.enumFormat(SiteAction)
+  implicit val siteActionFormat: Format[SiteAction.Value] = EnumUtils.enumFormat(SiteAction)
 }
 
 object SiteType extends Enumeration {
   val Unknown, Warehouse, ProductionSite = Value
-  implicit val siteTypeFormat = EnumUtils.enumFormat(SiteType)
+  implicit val siteTypeFormat: Format[SiteType.Value] = EnumUtils.enumFormat(SiteType)
 }
 
 case class Site(
@@ -215,7 +218,7 @@ case class CreateSubscriptionRequest(
       Validation.isValidOrganisationType(registration.organisationType),
       registration.details.isValid,
       registration.activityQuestions.isValid,
-      registration.estimatedTaxAmount.getOrElse(BigDecimal(0)) <= BigDecimal(99999999999.99)
+      registration.estimatedTaxAmount <= BigDecimal(99999999999.99)
     ) reduce (_ && _)
   }
 }
@@ -249,22 +252,26 @@ object Validation {
 
 
   def isValidSites(sites: List[Site]): Boolean = {
-    sites.map(s =>
-      s.siteAddress.addressDetails.isValid &&
-      s.siteAddress.contactDetails.isValid &&
-      s.action.matches("^[1]{1}$") &&
-      isValidTradingName(s.tradingName) &&
-      s.newSiteRef.length >=1 &&
-      s.newSiteRef.length <= 160
-    ) reduce (_ && _)
+    sites match {
+      case s if s.isEmpty => true
+      case _ =>
+        sites.map(s =>
+          s.siteAddress.addressDetails.isValid &&
+            s.siteAddress.contactDetails.isValid &&
+            s.action.matches("^[1]{1}$") &&
+            isValidTradingName(s.tradingName) &&
+            s.newSiteRef.length >=1 &&
+            s.newSiteRef.length <= 160
+        ) reduce (_ && _)
+    }
   }
 
   def isValidContactDetails(cd: ContactDetails): Boolean = {
     val phonePattern: String = "^[0-9 ()+--]{1,24}$"
     Seq(
       cd.telephone.matches(phonePattern),
-      cd.mobile.getOrElse("1").matches(phonePattern),
-      cd.fax.getOrElse("1").matches(phonePattern),
+      cd.mobile.matches(phonePattern),
+      cd.fax.matches(phonePattern),
       cd.email.length <= 132
     ) reduce(_ && _)
   }

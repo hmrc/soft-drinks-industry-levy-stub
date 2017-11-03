@@ -22,7 +22,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.softdrinksindustrylevystub.models.etmp.createsub.{FailureMessage, FailureResponse}
+import uk.gov.hmrc.softdrinksindustrylevystub.models.{FailureMessage, FailureResponse}
 
 import scala.concurrent.Future
 
