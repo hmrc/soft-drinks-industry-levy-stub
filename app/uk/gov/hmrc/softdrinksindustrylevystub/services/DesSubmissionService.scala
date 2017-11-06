@@ -28,13 +28,13 @@ class DesSubmissionService {
 
   lazy val store: mutable.Map[String, CreateSubscriptionRequest] = SubscriptionGenerator.store.empty
 
-  def createSubscriptionResponse(data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
-    store(data.registration.cin) = data
-    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(data.registration.cin).get
+  def createSubscriptionResponse(idNumber: String, data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
+    store(idNumber) = data
+    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber).get
   }
 
-  def retrieveSubscriptionDetails(utr: String): Option[CreateSubscriptionRequest] = {
-    store.get(utr)
+  def retrieveSubscriptionDetails(idNumber: String): Option[CreateSubscriptionRequest] = {
+    store.get(idNumber)
   }
 
 }
