@@ -52,7 +52,9 @@ object SubscriptionGenerator {
   }.map(EntityAction.apply)
 
   private lazy val cinGen = {
-    Gen.listOfN[Char](Gen.choose(1,15).sample.get, Gen.alphaNumChar).map(_.mkString)
+    Gen.choose(1,15).flatMap { no =>
+      Gen.listOfN[Char](no, Gen.alphaNumChar).map(_.mkString)
+    }
   }
 
   private lazy val registrationGen: Gen[Registration] = {
