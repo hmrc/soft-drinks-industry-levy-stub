@@ -46,16 +46,22 @@ object SubscriptionGenerator {
     Gen.const("1")                                           |@| // action
     Gen.const("4")                                           |@| // entityType
     Gen.oneOf("1","2","3","4","5")                           |@| // organisationType
-    pattern"999999999999"                                    |@| // cin
+    cinGen                                                   |@| // cin
     Gen.alphaLowerStr                                        |@| // tradingName
     businessContactGen                                           // businessContact
   }.map(EntityAction.apply)
+
+  private lazy val cinGen = {
+    Gen.choose(1,15).flatMap { no =>
+      Gen.listOfN[Char](no, Gen.alphaNumChar).map(_.mkString)
+    }
+  }
 
   private lazy val registrationGen: Gen[Registration] = {
     Gen.oneOf("1","2","3","4","5")                           |@| // organisationType
     Gen.date(2014, 2017)                                     |@| // applicationDate
     Gen.date(2014, 2017)                                     |@| // taxStartDate
-    pattern"999999999999"                                    |@| // cin
+    cinGen                                                   |@| // cin
     Gen.alphaLowerStr                                        |@| // tradingName
     businessContactGen                                       |@| // businessContact
     correspondenceContactGen                                 |@| // correspondenceContact

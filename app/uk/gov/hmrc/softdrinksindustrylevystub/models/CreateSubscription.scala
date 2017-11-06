@@ -177,7 +177,7 @@ case class EntityAction(
       Validation.isValidTradingName(tradingName),
       businessContact.addressDetails.isValid,
       businessContact.contactDetails.isValid,
-      Validation.isValidUtr(cin)
+      Validation.isValidCin(cin)
     ) reduce(_ && _)
   }
 }
@@ -189,7 +189,7 @@ case class CreateSubscriptionRequest(
                                     ) {
   def isValid: Boolean = {
     Seq(
-      Validation.isValidUtr(registration.cin),
+      Validation.isValidCin(registration.cin),
       registration.businessContact.addressDetails.isValid,
       registration.businessContact.contactDetails.isValid,
       registration.correspondenceContact.addressDetails.isValid,
@@ -221,7 +221,11 @@ object Validation {
   }
 
   def isValidUtr(utr: String): Boolean = {
-    utr.matches("^\\d{5}[3-9]\\d{4}$")
+    utr.matches("^[0-9]{10}$")
+  }
+
+  def isValidCin(cin: String): Boolean = {
+    cin.matches(".{1,15}")
   }
 
   def isValidIdType(idType: String): Option[FailureMessage] = {

@@ -34,7 +34,7 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
 
       (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
-          Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(payload)))
+          Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(idNumber, payload)))
         case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
           BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
         case (Success(JsError(_)) | Failure(_), failures) =>
