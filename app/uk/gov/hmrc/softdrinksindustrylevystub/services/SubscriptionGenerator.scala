@@ -21,7 +21,6 @@ import java.time.LocalDateTime
 import cats.implicits._
 import org.scalacheck._
 import org.scalacheck.support.cats._
-import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
@@ -31,9 +30,10 @@ object SubscriptionGenerator {
 
   def genCreateSubscriptionRequest: Gen[CreateSubscriptionRequest] = {
     registrationGen                                          |@| // registration
-    Gen.choose(1,5).flatMap { n => Gen.listOfN(n, siteGen)}  |@| // sites
     Gen.choose(1,5).flatMap {
-      n => Gen.listOfN(n, entityActionGen)
+      n => Gen.listOfN(n, siteGen)}.sometimes                |@| // sites
+    Gen.choose(1,5).flatMap {
+      n => Gen.listOfN(n, entityActionGen).sometimes
     }                                                            // entityAction
   }.map(CreateSubscriptionRequest.apply)
 
@@ -67,8 +67,8 @@ object SubscriptionGenerator {
     correspondenceContactGen                                 |@| // correspondenceContact
     primaryPersonContactGen                                  |@| // primaryPerson
     detailsGen                                               |@| // details
-    litresProducedGen                                        |@| // sdilActivity
-    Gen.choose(1d, 10000d).map(BigDecimal.valueOf).sometimes |@| // estimatedTaxAmount
+    litresProducedGen.sometimes                              |@| // sdilActivity
+    Gen.choose(1d, 10000d).map(BigDecimal.valueOf)           |@| // estimatedTaxAmount
     Gen.date(2017, 2020)                                         // taxObligationStartDate
   }.map(Registration.apply)
 

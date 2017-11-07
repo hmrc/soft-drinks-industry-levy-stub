@@ -155,8 +155,8 @@ case class Registration(
                           correspondenceContact: CorrespondenceContact,
                           primaryPersonContact: PrimaryPersonContact,
                           details: Details,
-                          activityQuestions: LitresProduced,
-                          estimatedTaxAmount: Option[BigDecimal],
+                          activityQuestions: Option[LitresProduced],
+                          estimatedTaxAmount: BigDecimal,
                           taxObligationStartDate: Date
                         )
 
@@ -184,8 +184,8 @@ case class EntityAction(
 
 case class CreateSubscriptionRequest(
                                       registration: Registration,
-                                      sites: List[Site],
-                                      entityAction: List[EntityAction]
+                                      sites: Option[List[Site]],
+                                      entityAction: Option[List[EntityAction]]
                                     ) {
   def isValid: Boolean = {
     Seq(
@@ -237,11 +237,12 @@ object Validation {
   }
 
 
-  def isValidSites(sites: List[Site]): Boolean = {
+  def isValidSites(sites: Option[List[Site]]): Boolean = {
     sites match {
       case s if s.isEmpty => true
+      case s if s.get.isEmpty => true
       case _ =>
-        sites.map(s =>
+        sites.get.map(s =>
           s.siteAddress.addressDetails.isValid &&
             s.siteAddress.contactDetails.isValid &&
             s.action.matches("^[1]{1}$") &&
