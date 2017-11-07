@@ -69,13 +69,13 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest" in {
       val now = LocalDateTime.now
       when(mockDesSubmissionService
-        .createSubscriptionResponse(any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
+        .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
           .withBody(validCreateSubscriptionRequestInput))
 
       status(response) mustBe OK
-      verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any())
+      verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(), any())
       Json.fromJson[CreateSubscriptionResponse](contentAsJson(response))
         .getOrElse(CreateSubscriptionResponse(now, "foo")) mustBe CreateSubscriptionResponse(now, "bar")
     }
@@ -84,13 +84,13 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       "without all optional data" in {
       val now = LocalDateTime.now
       when(mockDesSubmissionService
-        .createSubscriptionResponse(any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
+        .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
           .withBody(validCreateSubscriptionRequestInputWithoutOptionals))
 
       status(response) mustBe OK
-      verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any())
+      verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(),any())
       Json.fromJson[CreateSubscriptionResponse](contentAsJson(response))
         .getOrElse(CreateSubscriptionResponse(now, "foo")) mustBe CreateSubscriptionResponse(now, "bar")
     }
@@ -100,7 +100,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription").withBody(invalidCreationInput))
 
       status(response) mustBe BAD_REQUEST
-      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any())
+      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(),any())
     }
 
   }
