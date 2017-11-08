@@ -216,7 +216,7 @@ object Validation {
   def isValidIdNumber(idNumber: String): Option[FailureMessage] = {
     idNumber match {
       case a if !isValidUtr(a) =>
-        Some(FailureMessage("INVALID_UTR", "Submission has not passed validation, invalid parameter UTR."))
+        Some(FailureMessage("INVALID_UTR", "Submission has not passed validation. Invalid parameter UTR."))
       case _ => None
     }
   }
@@ -232,7 +232,7 @@ object Validation {
   def isValidIdType(idType: String): Option[FailureMessage] = {
     idType match {
       case a if a != "utr" =>
-        Some(FailureMessage("INVALID_IDTYPE", s"Submission has not passed validation, invalid parameter idType."))
+        Some(FailureMessage("INVALID_IDTYPE", s"Submission has not passed validation. Invalid parameter IDTYPE."))
       case _ => None
     }
   }
