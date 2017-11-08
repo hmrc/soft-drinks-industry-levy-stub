@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.models
 
-import java.time.{LocalDateTime, LocalDate => Date}
+import java.time.{LocalDate => Date}
 
 import play.api.libs.json.Format
 
@@ -120,8 +120,9 @@ case class Details(
                   contractPacker: Boolean
                   ) {
   def isValid: Boolean = {
-    producerDetails match {
-      case Some(a) => a.producerClassification.matches("^[0-1]{1}$")
+    (producer, producerDetails) match {
+      case (true,Some(a)) => a.producerClassification.matches("^[0-1]{1}$")
+      case (true, None) => false
       case _ => true
     }
   }
@@ -206,7 +207,7 @@ case class CreateSubscriptionRequest(
 }
 
 case class CreateSubscriptionResponse(
-                                       processingDate: LocalDateTime,
+                                       processingDate: String,
                                        formBundleNumber: String
                                      )
 
@@ -215,7 +216,7 @@ object Validation {
   def isValidIdNumber(idNumber: String): Option[FailureMessage] = {
     idNumber match {
       case a if !isValidUtr(a) =>
-        Some(FailureMessage("INVALID_UTR", "Submission has not passed validation, invalid UTR."))
+        Some(FailureMessage("INVALID_UTR", "Submission has not passed validation, invalid parameter UTR."))
       case _ => None
     }
   }
@@ -231,7 +232,7 @@ object Validation {
   def isValidIdType(idType: String): Option[FailureMessage] = {
     idType match {
       case a if a != "utr" =>
-        Some(FailureMessage("INVALID_IDTYPE", s"Submission has not passed validation, invalid idType."))
+        Some(FailureMessage("INVALID_IDTYPE", s"Submission has not passed validation, invalid parameter idType."))
       case _ => None
     }
   }

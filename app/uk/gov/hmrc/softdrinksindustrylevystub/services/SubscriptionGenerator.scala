@@ -38,9 +38,23 @@ object SubscriptionGenerator {
   }.map(CreateSubscriptionRequest.apply)
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] = {
-    Gen.const(LocalDateTime.now)                             |@| // processingDate
+    Gen.const(LocalDateTime.now).map {
+      x => x + "Z"
+    }                                                        |@| // processingDate
     pattern"999999999999".gen                                    // formBundleNumber
   }.map(CreateSubscriptionResponse.apply)
+
+  def genCorrelationIdHeader: Gen[String] = {
+    Gen.listOfN(
+      36,
+      Gen.frequency(
+        (3,Gen.alphaUpperChar),
+        (3,Gen.alphaLowerChar),
+        (3,Gen.numChar),
+        (1, Gen.const("-"))
+      )
+    ).map(_.mkString)                                            // correlationId
+  }
 
   private lazy val entityActionGen: Gen[EntityAction] = {
     Gen.const("1")                                           |@| // action

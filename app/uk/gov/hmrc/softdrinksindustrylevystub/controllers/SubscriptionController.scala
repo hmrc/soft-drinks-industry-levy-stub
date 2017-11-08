@@ -21,8 +21,10 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json._
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
+import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
+import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genCorrelationIdHeader
 
 import scala.util.{Failure, Success, Try}
 
@@ -34,7 +36,9 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
 
       (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
-          Ok(Json.toJson(desSubmissionService.createSubscriptionResponse(idNumber, payload)))
+          Ok(Json.toJson(desSubmissionService
+            .createSubscriptionResponse(idNumber, payload)))
+            .withHeaders(("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get))
         case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
           BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
         case (Success(JsError(_)) | Failure(_), failures) =>
