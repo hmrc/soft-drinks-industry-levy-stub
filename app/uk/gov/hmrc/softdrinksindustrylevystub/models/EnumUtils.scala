@@ -17,6 +17,7 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.models
 
 import play.api.libs.json._
+import uk.gov.hmrc.smartstub._
 
 /**
   * Utility class for creating json formatters for enumerations.
@@ -42,4 +43,7 @@ object EnumUtils {
   implicit def enumFormat[E <: Enumeration](enum: E): Format[E#Value] = {
     Format(enumReads(enum), enumWrites)
   }
+
+  implicit val idEnum: Enumerable[String] = pattern"9999999999"
+
 }

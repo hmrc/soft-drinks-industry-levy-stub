@@ -50,8 +50,6 @@ package object models {
   implicit val failureFormat: OFormat[FailureMessage] = Json.format[FailureMessage]
   implicit val failureResponseFormat: OFormat[FailureResponse] = Json.format[FailureResponse]
 
-  implicit val idEnum: Enumerable[String] = pattern"9999999999"
-
   val maxL: Long = 9999999999999L
 
   private[models] implicit class ValidationOptionString(s: Option[String]) {

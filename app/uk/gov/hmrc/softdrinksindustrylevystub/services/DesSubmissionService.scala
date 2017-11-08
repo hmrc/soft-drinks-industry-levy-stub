@@ -19,6 +19,7 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 import com.google.inject.Singleton
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 
 import scala.collection.mutable
 

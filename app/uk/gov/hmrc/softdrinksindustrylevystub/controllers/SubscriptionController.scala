@@ -23,6 +23,7 @@ import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genCorrelationIdHeader
 
