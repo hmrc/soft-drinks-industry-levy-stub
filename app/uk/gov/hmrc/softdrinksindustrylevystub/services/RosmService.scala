@@ -18,7 +18,6 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import javax.inject.Singleton
 
-import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
