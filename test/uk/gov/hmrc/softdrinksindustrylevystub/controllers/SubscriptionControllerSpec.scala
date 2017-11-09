@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
+import java.time.{LocalDateTime, OffsetDateTime, ZoneOffset}
+
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -35,6 +37,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   implicit val hc: HeaderCarrier = new HeaderCarrier
   val utr = "1097172565"
   val idType = "utr"
+  val now: OffsetDateTime = LocalDateTime.now.atOffset(ZoneOffset.UTC)
 
   override def beforeEach() {
     reset(mockDesSubmissionService)
@@ -66,7 +69,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest" in {
       when(mockDesSubmissionService
-        .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse("foo", "bar"))
+        .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
           .withBody(validCreateSubscriptionRequestInput))
@@ -74,13 +77,13 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(), any())
       Json.fromJson[CreateSubscriptionResponse](contentAsJson(response))
-        .getOrElse(CreateSubscriptionResponse("bar", "foo")) mustBe CreateSubscriptionResponse("foo", "bar")
+        .getOrElse(CreateSubscriptionResponse(now, "foo")) mustBe CreateSubscriptionResponse(now, "bar")
     }
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest " +
       "without all optional data" in {
       when(mockDesSubmissionService
-        .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse("foo", "bar"))
+        .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
           .withBody(validCreateSubscriptionRequestInputWithoutOptionals))
@@ -88,7 +91,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(),any())
       Json.fromJson[CreateSubscriptionResponse](contentAsJson(response))
-        .getOrElse(CreateSubscriptionResponse("bar", "foo")) mustBe CreateSubscriptionResponse("foo", "bar")
+        .getOrElse(CreateSubscriptionResponse(now, "foo")) mustBe CreateSubscriptionResponse(now, "bar")
     }
 
     "return Status: 400 Body: nondescript error message for submission for invalid CreateSubscriptionRequest" in {

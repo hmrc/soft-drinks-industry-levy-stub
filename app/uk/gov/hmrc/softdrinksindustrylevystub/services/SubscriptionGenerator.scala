@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneOffset}
 
 import cats.implicits._
 import org.scalacheck._
@@ -39,9 +39,7 @@ object SubscriptionGenerator {
   }.map(CreateSubscriptionRequest.apply)
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] = {
-    Gen.const(LocalDateTime.now).map {
-      x => x + "Z"
-    }                                                        |@| // processingDate
+    Gen.const(LocalDateTime.now.atOffset(ZoneOffset.UTC))    |@| // processingDate
     pattern"999999999999".gen                                    // formBundleNumber
   }.map(CreateSubscriptionResponse.apply)
 

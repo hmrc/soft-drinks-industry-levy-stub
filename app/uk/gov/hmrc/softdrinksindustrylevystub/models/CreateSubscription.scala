@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.models
 
-import java.time.{LocalDate => Date}
+import java.time.{LocalDateTime, OffsetDateTime, LocalDate => Date}
 
 import play.api.libs.json.Format
 
@@ -120,10 +120,10 @@ case class Details(
                   contractPacker: Boolean
                   ) {
   def isValid: Boolean = {
-    (producer, producerDetails) match {
-      case (true,Some(a)) => a.producerClassification.matches("^[0-1]{1}$")
-      case (true, None) => false
-      case _ => true
+    producerDetails match {
+      case Some(a) if producer =>
+        a.producerClassification.matches("^[0-1]{1}$")
+      case _ => !producer
     }
   }
 }
@@ -207,7 +207,7 @@ case class CreateSubscriptionRequest(
 }
 
 case class CreateSubscriptionResponse(
-                                       processingDate: String,
+                                       processingDate: OffsetDateTime,
                                        formBundleNumber: String
                                      )
 
@@ -239,19 +239,18 @@ object Validation {
 
 
   def isValidSites(sites: Option[List[Site]]): Boolean = {
-    sites match {
-      case s if s.isEmpty => true
-      case s if s.get.isEmpty => true
-      case _ =>
-        sites.get.map(s =>
-          s.siteAddress.addressDetails.isValid &&
-            s.siteAddress.contactDetails.isValid &&
-            s.action.matches("^[1]{1}$") &&
-            isValidTradingName(s.tradingName) &&
-            s.newSiteRef.matches(".{1,160}")
-        ) reduce (_ && _)
-    }
+    sites.forall(_.forall(isValidSite))
   }
+
+  def isValidSite(site: Site): Boolean = {
+    Seq(
+      site.siteAddress.addressDetails.isValid,
+      site.action.matches("^[1]{1}$"),
+      isValidTradingName(site.tradingName),
+      site.newSiteRef.matches(".{1,160}")
+    ) reduce (_ && _)
+  }
+
 
   def isValidContactDetails(cd: ContactDetails): Boolean = {
     val phonePattern: String = "^[0-9 ()+--]{1,24}$"
