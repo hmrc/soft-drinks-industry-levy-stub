@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneOffset}
 
 import cats.implicits._
 import org.scalacheck._
 import org.scalacheck.support.cats._
-import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
 
 object SubscriptionGenerator {
 
@@ -31,16 +31,29 @@ object SubscriptionGenerator {
 
   def genCreateSubscriptionRequest: Gen[CreateSubscriptionRequest] = {
     registrationGen                                          |@| // registration
-    Gen.choose(1,5).flatMap { n => Gen.listOfN(n, siteGen)}  |@| // sites
     Gen.choose(1,5).flatMap {
-      n => Gen.listOfN(n, entityActionGen)
+      n => Gen.listOfN(n, siteGen)}.sometimes                |@| // sites
+    Gen.choose(1,5).flatMap {
+      n => Gen.listOfN(n, entityActionGen).sometimes
     }                                                            // entityAction
   }.map(CreateSubscriptionRequest.apply)
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] = {
-    Gen.const(LocalDateTime.now)                             |@| // processingDate
+    Gen.const(LocalDateTime.now.atOffset(ZoneOffset.UTC))    |@| // processingDate
     pattern"999999999999".gen                                    // formBundleNumber
   }.map(CreateSubscriptionResponse.apply)
+
+  def genCorrelationIdHeader: Gen[String] = {
+    Gen.listOfN(
+      36,
+      Gen.frequency(
+        (3,Gen.alphaUpperChar),
+        (3,Gen.alphaLowerChar),
+        (3,Gen.numChar),
+        (1, Gen.const("-"))
+      )
+    ).map(_.mkString)                                            // correlationId
+  }
 
   private lazy val entityActionGen: Gen[EntityAction] = {
     Gen.const("1")                                           |@| // action
@@ -67,8 +80,8 @@ object SubscriptionGenerator {
     correspondenceContactGen                                 |@| // correspondenceContact
     primaryPersonContactGen                                  |@| // primaryPerson
     detailsGen                                               |@| // details
-    litresProducedGen                                        |@| // sdilActivity
-    Gen.choose(1d, 10000d).map(BigDecimal.valueOf).sometimes |@| // estimatedTaxAmount
+    litresProducedGen.sometimes                              |@| // sdilActivity
+    Gen.choose(1d, 10000d).map(BigDecimal.valueOf)           |@| // estimatedTaxAmount
     Gen.date(2017, 2020)                                         // taxObligationStartDate
   }.map(Registration.apply)
 

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.models
 
-import java.time.{LocalDateTime, LocalDate => Date}
+import java.time.{LocalDateTime, OffsetDateTime, LocalDate => Date}
 
 import play.api.libs.json.Format
 
@@ -121,8 +121,9 @@ case class Details(
                   ) {
   def isValid: Boolean = {
     producerDetails match {
-      case Some(a) => a.producerClassification.matches("^[0-1]{1}$")
-      case _ => true
+      case Some(a) if producer =>
+        a.producerClassification.matches("^[0-1]{1}$")
+      case _ => !producer
     }
   }
 }
@@ -155,8 +156,8 @@ case class Registration(
                           correspondenceContact: CorrespondenceContact,
                           primaryPersonContact: PrimaryPersonContact,
                           details: Details,
-                          activityQuestions: LitresProduced,
-                          estimatedTaxAmount: Option[BigDecimal],
+                          activityQuestions: Option[LitresProduced],
+                          estimatedTaxAmount: BigDecimal,
                           taxObligationStartDate: Date
                         )
 
@@ -184,8 +185,8 @@ case class EntityAction(
 
 case class CreateSubscriptionRequest(
                                       registration: Registration,
-                                      sites: List[Site],
-                                      entityAction: List[EntityAction]
+                                      sites: Option[List[Site]],
+                                      entityAction: Option[List[EntityAction]]
                                     ) {
   def isValid: Boolean = {
     Seq(
@@ -206,7 +207,7 @@ case class CreateSubscriptionRequest(
 }
 
 case class CreateSubscriptionResponse(
-                                       processingDate: LocalDateTime,
+                                       processingDate: OffsetDateTime,
                                        formBundleNumber: String
                                      )
 
@@ -215,7 +216,7 @@ object Validation {
   def isValidIdNumber(idNumber: String): Option[FailureMessage] = {
     idNumber match {
       case a if !isValidUtr(a) =>
-        Some(FailureMessage("INVALID_UTR", "Submission has not passed validation, invalid UTR."))
+        Some(FailureMessage("INVALID_UTR", "Submission has not passed validation. Invalid parameter UTR."))
       case _ => None
     }
   }
@@ -231,25 +232,25 @@ object Validation {
   def isValidIdType(idType: String): Option[FailureMessage] = {
     idType match {
       case a if a != "utr" =>
-        Some(FailureMessage("INVALID_IDTYPE", s"Submission has not passed validation, invalid idType."))
+        Some(FailureMessage("INVALID_IDTYPE", s"Submission has not passed validation. Invalid parameter IDTYPE."))
       case _ => None
     }
   }
 
 
-  def isValidSites(sites: List[Site]): Boolean = {
-    sites match {
-      case s if s.isEmpty => true
-      case _ =>
-        sites.map(s =>
-          s.siteAddress.addressDetails.isValid &&
-            s.siteAddress.contactDetails.isValid &&
-            s.action.matches("^[1]{1}$") &&
-            isValidTradingName(s.tradingName) &&
-            s.newSiteRef.matches(".{1,160}")
-        ) reduce (_ && _)
-    }
+  def isValidSites(sites: Option[List[Site]]): Boolean = {
+    sites.forall(_.forall(isValidSite))
   }
+
+  def isValidSite(site: Site): Boolean = {
+    Seq(
+      site.siteAddress.addressDetails.isValid,
+      site.action.matches("^[1]{1}$"),
+      isValidTradingName(site.tradingName),
+      site.newSiteRef.matches(".{1,160}")
+    ) reduce (_ && _)
+  }
+
 
   def isValidContactDetails(cd: ContactDetails): Boolean = {
     val phonePattern: String = "^[0-9 ()+--]{1,24}$"

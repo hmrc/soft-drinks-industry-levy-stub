@@ -17,6 +17,7 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import play.api.libs.json._
+import uk.gov.hmrc.smartstub._
 
 package object models {
 
@@ -52,10 +53,7 @@ package object models {
   val maxL: Long = 9999999999999L
 
   private[models] implicit class ValidationOptionString(s: Option[String]) {
-    def matches(regex: String): Boolean = s match {
-      case Some(data) => data.matches(regex)
-      case _ => true
-    }
+    def matches(regex: String): Boolean = s.forall(_.matches(regex))
 
     def length: Int = s match {
       case Some(data) => data.length
@@ -64,17 +62,15 @@ package object models {
   }
 
   private[models] implicit class ValidationOptionLong(l: Option[Long]) {
-    def <=(max: Long): Boolean = l match {
-      case Some(a) => a <= max
-      case _ => true
-    }
+    def <=(max: Long): Boolean = l.forall(_ <= max)
   }
 
   private[models] implicit class ValidationOptionBigDecimal(bd: Option[BigDecimal]) {
-    def <=(max: BigDecimal): Boolean = bd match {
-      case Some(a) => a <= max
-      case _ => true
-    }
+    def <=(max: BigDecimal): Boolean = bd.forall(_ <= max)
+  }
+
+  private[models] implicit class ValidationOptionLitresProduced(lp: Option[LitresProduced]) {
+    def isValid: Boolean = lp.forall(_.isValid)
   }
 
 }

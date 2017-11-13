@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, OffsetDateTime, ZoneOffset}
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -37,6 +37,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   implicit val hc: HeaderCarrier = new HeaderCarrier
   val utr = "1097172565"
   val idType = "utr"
+  val now: OffsetDateTime = LocalDateTime.now.atOffset(ZoneOffset.UTC)
 
   override def beforeEach() {
     reset(mockDesSubmissionService)
@@ -67,7 +68,6 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     }
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest" in {
-      val now = LocalDateTime.now
       when(mockDesSubmissionService
         .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
@@ -82,7 +82,6 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest " +
       "without all optional data" in {
-      val now = LocalDateTime.now
       when(mockDesSubmissionService
         .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
