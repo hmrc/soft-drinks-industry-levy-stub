@@ -38,6 +38,9 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   val utr = "1097172565"
   val idType = "utr"
   val now: OffsetDateTime = LocalDateTime.now.atOffset(ZoneOffset.UTC)
+  val authHeader = "Authorization" -> "Bearer: abcdef12345678901234567890"
+  val envHeader = "Environment" -> "clone"
+  val badEnvHeader = "Environment" -> "test"
 
   override def beforeEach() {
     reset(mockDesSubmissionService)
@@ -72,7 +75,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
-          .withBody(validCreateSubscriptionRequestInput))
+          .withBody(validCreateSubscriptionRequestInput).withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(), any())
@@ -86,7 +89,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
-          .withBody(validCreateSubscriptionRequestInputWithoutOptionals))
+          .withBody(validCreateSubscriptionRequestInputWithoutOptionals).withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(),any())
@@ -96,9 +99,45 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
 
     "return Status: 400 Body: nondescript error message for submission for invalid CreateSubscriptionRequest" in {
       val response = mockSubscriptionController
-        .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription").withBody(invalidCreationInput))
+        .createSubscription(idType, utr)(
+          FakeRequest("POST", "/soft-drinks/subscription")
+            .withBody(invalidCreationInput)
+            .withHeaders(envHeader, authHeader))
 
       status(response) mustBe BAD_REQUEST
+      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(),any())
+    }
+
+    "return Status: 401 for submission without auth header" in {
+      val response = mockSubscriptionController
+        .createSubscription(idType, utr)(
+          FakeRequest("POST", "/soft-drinks/subscription")
+            .withBody(invalidCreationInput)
+            .withHeaders(envHeader))
+
+      status(response) mustBe UNAUTHORIZED
+      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(),any())
+    }
+
+    "return Status: 403 for submission without environment header" in {
+      val response = mockSubscriptionController
+        .createSubscription(idType, utr)(
+          FakeRequest("POST", "/soft-drinks/subscription")
+            .withBody(invalidCreationInput)
+            .withHeaders(authHeader))
+
+      status(response) mustBe FORBIDDEN
+      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(),any())
+    }
+
+    "return Status: 403 for submission with bad environment header" in {
+      val response = mockSubscriptionController
+        .createSubscription(idType, utr)(
+          FakeRequest("POST", "/soft-drinks/subscription")
+            .withBody(invalidCreationInput)
+            .withHeaders(authHeader, badEnvHeader))
+
+      status(response) mustBe FORBIDDEN
       verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(),any())
     }
 
