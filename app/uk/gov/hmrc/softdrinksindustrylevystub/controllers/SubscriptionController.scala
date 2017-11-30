@@ -22,19 +22,19 @@ import play.api.libs.json._
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
+import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genCorrelationIdHeader
 
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController {
+class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController
+  with ExtraActions {
 
-  def createSubscription(idType: String, idNumber: String): Action[JsValue] = Action(parse.json) {
+  def createSubscription(idType: String, idNumber: String): Action[JsValue] = AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
-
       (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
           Ok(Json.toJson(desSubmissionService
@@ -47,7 +47,6 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
         case (_, failures) =>
           BadRequest(Json.toJson(FailureResponse(failures)))
       }
-
   }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String) = Action {
