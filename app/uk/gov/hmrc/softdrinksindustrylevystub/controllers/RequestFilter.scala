@@ -22,10 +22,9 @@ import play.api.mvc.{ActionBuilder, ActionFilter, Request, Result}
 
 import scala.concurrent.Future
 
-object Actions {
+object RequestFilter {
 
-  val AuthAndEnvAction = AuthorisedFilterAction andThen EnvironmentFilterAction
-
+  val AuthAndEnvAction: ActionBuilder[Request] = AuthorisedFilterAction andThen EnvironmentFilterAction
 
   object AuthorisedFilterAction extends ActionBuilder[Request] with ActionFilter[Request] {
     def filter[A](request: Request[A]): Future[Option[Result]] = {
@@ -47,8 +46,11 @@ object Actions {
         ) {
           a =>
             if (a.matches("^(ist0|clone|live)$")) {
-              None }
-            else { Some(Forbidden("")) }
+              None
+            }
+            else {
+              Some(Forbidden(""))
+            }
         }
       )
     }

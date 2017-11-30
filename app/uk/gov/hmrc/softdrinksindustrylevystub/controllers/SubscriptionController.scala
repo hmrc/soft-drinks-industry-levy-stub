@@ -22,9 +22,9 @@ import play.api.libs.json._
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
+import uk.gov.hmrc.softdrinksindustrylevystub.controllers.RequestFilter.AuthAndEnvAction
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
-import Actions.AuthAndEnvAction
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genCorrelationIdHeader
 
@@ -35,20 +35,18 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
 
   def createSubscription(idType: String, idNumber: String): Action[JsValue] = AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
-          (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
-            case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
-              Ok(Json.toJson(desSubmissionService
-                .createSubscriptionResponse(idNumber, payload)))
-                .withHeaders(("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get))
-            case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
-              BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
-            case (Success(JsError(_)) | Failure(_), failures) =>
-              BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
-            case (_, failures) =>
-              BadRequest(Json.toJson(FailureResponse(failures)))
-
+      (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
+        case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
+          Ok(Json.toJson(desSubmissionService
+            .createSubscriptionResponse(idNumber, payload)))
+            .withHeaders(("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get))
+        case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
+          BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
+        case (Success(JsError(_)) | Failure(_), failures) =>
+          BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
+        case (_, failures) =>
+          BadRequest(Json.toJson(FailureResponse(failures)))
       }
-
   }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String) = Action {
