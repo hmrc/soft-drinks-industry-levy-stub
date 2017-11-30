@@ -38,9 +38,9 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   val utr = "1097172565"
   val idType = "utr"
   val now: OffsetDateTime = LocalDateTime.now.atOffset(ZoneOffset.UTC)
-  val authHeader = "Authorization" -> "Bearer: abcdef12345678901234567890"
-  val envHeader = "Environment" -> "clone"
-  val badEnvHeader = "Environment" -> "test"
+  val authHeader: (String, String) = "Authorization" -> "Bearer: abcdef12345678901234567890"
+  val envHeader: (String, String) = "Environment" -> "clone"
+  val badEnvHeader: (String, String) = "Environment" -> "test"
 
   override def beforeEach() {
     reset(mockDesSubmissionService)
