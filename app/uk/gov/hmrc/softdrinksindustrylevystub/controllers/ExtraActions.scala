@@ -45,12 +45,10 @@ trait ExtraActions {
           Some(Forbidden(""))
         ) {
           a =>
-            if (a.matches("^(ist0|clone|live)$")) {
+            if (a.matches("^(ist0|clone|live)$"))
               None
-            }
-            else {
+            else
               Some(Forbidden(""))
-            }
         }
       )
     }
