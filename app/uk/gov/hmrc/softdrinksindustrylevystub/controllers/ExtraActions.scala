@@ -22,7 +22,7 @@ import play.api.mvc.{ActionBuilder, ActionFilter, Request, Result}
 
 import scala.concurrent.Future
 
-object RequestFilter {
+trait ExtraActions {
 
   val AuthAndEnvAction: ActionBuilder[Request] = AuthorisedFilterAction andThen EnvironmentFilterAction
 

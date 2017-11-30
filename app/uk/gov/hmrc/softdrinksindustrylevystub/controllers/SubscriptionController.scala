@@ -22,7 +22,6 @@ import play.api.libs.json._
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.controllers.RequestFilter.AuthAndEnvAction
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
@@ -31,7 +30,8 @@ import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.gen
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController {
+class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController
+  with ExtraActions {
 
   def createSubscription(idType: String, idNumber: String): Action[JsValue] = AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
