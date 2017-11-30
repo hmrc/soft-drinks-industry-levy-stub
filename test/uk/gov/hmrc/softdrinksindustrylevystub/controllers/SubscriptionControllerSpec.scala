@@ -38,7 +38,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   val utr = "1097172565"
   val idType = "utr"
   val now: OffsetDateTime = LocalDateTime.now.atOffset(ZoneOffset.UTC)
-  val authHeader: (String, String) = "Authorization" -> "Bearer: abcdef12345678901234567890"
+  val authHeader: (String, String) = "Authorization" -> "auth"
   val envHeader: (String, String) = "Environment" -> "clone"
   val badEnvHeader: (String, String) = "Environment" -> "test"
 
@@ -75,7 +75,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
-          .withBody(validCreateSubscriptionRequestInput).withHeaders(envHeader, authHeader))
+          .withBody(validCreateSubscriptionRequestInput)
+          .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(), any())
@@ -89,7 +90,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
-          .withBody(validCreateSubscriptionRequestInputWithoutOptionals).withHeaders(envHeader, authHeader))
+          .withBody(validCreateSubscriptionRequestInputWithoutOptionals)
+          .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(),any())
