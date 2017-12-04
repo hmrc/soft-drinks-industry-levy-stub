@@ -25,8 +25,8 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.softdrinksindustrylevystub.services.RosmService
+import uk.gov.hmrc.http.HeaderCarrier
 
 class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
 

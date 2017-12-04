@@ -27,9 +27,9 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionRequest, CreateSubscriptionResponse}
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
+import uk.gov.hmrc.http.HeaderCarrier
 
 class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
