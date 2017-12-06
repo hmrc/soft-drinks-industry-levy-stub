@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.softdrinksindustrylevystub
+package uk.gov.hmrc.softdrinksindustrylevystub.config
 
-import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.hooks.HttpHook
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.auth.microservice.connectors.AuthConnector
-import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
-import uk.gov.hmrc.play.http.hooks.HttpHook
-import uk.gov.hmrc.play.http.ws._
+import uk.gov.hmrc.play.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.play.microservice.config.LoadAuditingConfig
 
-object WSHttp extends WSGet with WSPut with WSPost with WSDelete with WSPatch with AppName {
-  override val hooks: Seq[HttpHook] = NoneRequired
+trait WsHttp extends WSHttp with HttpGet with HttpPost with HttpPut with HttpPatch with HttpDelete {
+  override val hooks: Seq[HttpHook] = Nil
 }
+
+object WsHttp extends WsHttp
 
 object MicroserviceAuditConnector extends AuditConnector with RunMode {
   override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
 }
 
-object MicroserviceAuthConnector extends AuthConnector with ServicesConfig {
+object MicroserviceAuthConnector extends AuthConnector with ServicesConfig with WsHttp {
   override val authBaseUrl = baseUrl("auth")
 }
