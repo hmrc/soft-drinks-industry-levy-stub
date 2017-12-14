@@ -77,7 +77,7 @@ object SubscriptionGenerator {
     cinGen                                                   |@| // cin
     Gen.alphaLowerStr                                        |@| // tradingName
     businessContactGen                                       |@| // businessContact
-    correspondenceContactGen                                 |@| // correspondenceContact
+    correspondenceContactGen.sometimes                       |@| // correspondenceContact
     primaryPersonContactGen                                  |@| // primaryPerson
     detailsGen                                               |@| // details
     litresProducedGen.sometimes                              |@| // sdilActivity
