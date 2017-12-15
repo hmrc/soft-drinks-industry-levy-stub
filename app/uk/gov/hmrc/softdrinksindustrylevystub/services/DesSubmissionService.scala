@@ -26,7 +26,7 @@ import scala.collection.mutable
 @Singleton
 class DesSubmissionService {
 
-  lazy val store: mutable.Map[String, CreateSubscriptionRequest] = SubscriptionGenerator.store
+  lazy val store: mutable.Map[String, CreateSubscriptionRequest] = SubscriptionGenerator.store.empty
 
   def createSubscriptionResponse(idNumber: String, data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
     store(idNumber) = data

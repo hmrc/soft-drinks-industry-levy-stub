@@ -52,7 +52,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       when(mockDesSubmissionService
         .retrieveSubscriptionDetails(utr)).thenReturn(None)
       val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(idType, utr)(FakeRequest("GET", "/soft-drinks/subscription/"))
+        .retrieveSubscriptionDetails(idType, utr)(FakeRequest("GET", "/soft-drinks/subscription/")
+        .withHeaders(envHeader, authHeader))
 
       status(response) mustBe NOT_FOUND
     }
@@ -63,7 +64,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       when(mockDesSubmissionService
         .retrieveSubscriptionDetails(utr)).thenReturn(Some(r.get))
       val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(idType, utr)(FakeRequest("GET", "/soft-drinks/subscription/"))
+        .retrieveSubscriptionDetails(idType, utr)(FakeRequest("GET", "/soft-drinks/subscription/")
+        .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).retrieveSubscriptionDetails(any())
