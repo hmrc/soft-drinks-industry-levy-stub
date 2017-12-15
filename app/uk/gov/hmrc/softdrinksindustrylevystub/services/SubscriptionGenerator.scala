@@ -23,7 +23,7 @@ import org.scalacheck._
 import org.scalacheck.support.cats._
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
-import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
+import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 
 object SubscriptionGenerator {
 
@@ -77,7 +77,7 @@ object SubscriptionGenerator {
     cinGen                                                   |@| // cin
     Gen.alphaLowerStr                                        |@| // tradingName
     businessContactGen                                       |@| // businessContact
-    correspondenceContactGen                                 |@| // correspondenceContact
+    correspondenceContactGen.sometimes                       |@| // correspondenceContact
     primaryPersonContactGen                                  |@| // primaryPerson
     detailsGen                                               |@| // details
     litresProducedGen.sometimes                              |@| // sdilActivity
