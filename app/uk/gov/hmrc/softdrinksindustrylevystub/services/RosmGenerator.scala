@@ -19,7 +19,7 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 import cats.implicits._
 import org.scalacheck.Gen
 import org.scalacheck.support.cats._
-import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
+import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
@@ -62,7 +62,7 @@ object RosmGenerator {
     if (isAnAgent) Gen.alphaNumStr.seeded(utr) else None
   }
 
-  def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[RosmRegisterResponse] = {
+  def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[Option[RosmRegisterResponse]] = {
     Gen.alphaNumStr |@| //safeId
       shouldGenAgentRef(rosmRequest.isAnAgent, utr) |@| //agentReferenceNumber
       Gen.boolean |@| //isEditable
@@ -72,6 +72,6 @@ object RosmGenerator {
       Gen.const(shouldGenOrg(rosmRequest.organisation, utr)) |@| //individual
       genRosmResponseAddress |@| //address
       genRosmResponseContactDetails //contactDetails
-  }.map(RosmRegisterResponse.apply)
+  }.map(RosmRegisterResponse.apply).sometimes
 
 }
