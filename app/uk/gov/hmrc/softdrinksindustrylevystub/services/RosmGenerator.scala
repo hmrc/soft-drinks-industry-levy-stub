@@ -52,11 +52,11 @@ object RosmGenerator {
   }.map(RosmResponseContactDetails.apply)
 
   private def shouldGenOrg(utr: String): OrganisationResponse = {
-      import RosmOrganisationType._
-      OrganisationResponse(
-        Gen.alphaStr.seeded(utr).get, // TODO use company when there's a new release of smartstub
-        Gen.boolean.seeded(utr).get,
-        Gen.oneOf(CorporateBody, LLP, UnincorporatedBody, Unknown).seeded(utr).get)
+    import RosmOrganisationType._
+    OrganisationResponse(
+      Gen.alphaStr.seeded(utr).get, // TODO use company when there's a new release of smartstub
+      Gen.boolean.seeded(utr).get,
+      Gen.oneOf(CorporateBody, LLP, UnincorporatedBody, Unknown).seeded(utr).get)
   }
 
   private def shouldGenAgentRef(isAnAgent: Boolean, utr: String): Option[String] = {
