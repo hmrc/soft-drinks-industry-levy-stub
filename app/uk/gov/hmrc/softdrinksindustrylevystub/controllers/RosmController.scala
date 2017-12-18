@@ -34,7 +34,7 @@ class RosmController @Inject()(rosmService: RosmService) extends BaseController 
       rosmService.handleRegisterRequest(rosmRequest, utr) match {
         case Some(data) => Future successful Ok(Json.toJson(data))
         case _ => Future successful NotFound(Json.toJson(
-          FailureMessage("NOT_FOUND", "The remote endpoint has indiciated that no data can be found"))
+          FailureMessage("NOT_FOUND", "The remote endpoint has indicated that no data can be found"))
         )
       }
     )
