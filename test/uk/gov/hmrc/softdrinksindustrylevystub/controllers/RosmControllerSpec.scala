@@ -39,7 +39,7 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
     "return Status: OK Body: RosmRegisterResponse with Individual for successful valid registration request" in {
       val utr = "1234123400"
 
-      when(mockRosmService.handleRegisterRequest(any(), any())).thenReturn(rosmRegisterIndividualResponse)
+      when(mockRosmService.handleRegisterRequest(any(), any())).thenReturn(Some(rosmRegisterIndividualResponse))
 
       val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/:utr").withBody(validRosmRegisterIndividualInput))
 
@@ -50,12 +50,28 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
     "return Status: OK Body: RosmRegisterResponse with Organisation for successful valid registration request" in {
       val utr = "1234123400"
 
-      when(mockRosmService.handleRegisterRequest(any(), any())).thenReturn(rosmRegisterOrganisationResponse)
+      when(mockRosmService.handleRegisterRequest(any(), any())).thenReturn(Some(rosmRegisterOrganisationResponse))
 
       val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/:utr").withBody(validRosmRegisterOrganisationnput))
 
       status(response) mustBe OK
       contentAsJson(response) mustBe Json.toJson(rosmRegisterOrganisationResponse)
+    }
+
+    "return Status: NOT_FOUND Body: Error response" in {
+      val utr = "9999999999"
+
+      when(mockRosmService.handleRegisterRequest(any(), any())).thenReturn(None)
+
+      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/:utr").withBody(validRosmRegisterOrganisationnput))
+
+      val errorResponse = Json.parse("""{
+        "code": "NOT_FOUND",
+        "reason": "The remote endpoint has indicated that no data can be found"
+      }""".stripMargin)
+
+      status(response) mustBe NOT_FOUND
+      contentAsJson(response) mustBe errorResponse
     }
 
     "return Status: Bad Request Body: ? for invalid json request" in {
