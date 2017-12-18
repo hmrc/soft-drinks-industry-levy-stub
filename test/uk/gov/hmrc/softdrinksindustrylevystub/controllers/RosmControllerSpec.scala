@@ -32,6 +32,9 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
 
   val mockRosmService: RosmService = mock[RosmService]
   val mockRosmController = new RosmController(mockRosmService)
+  val authHeader: (String, String) = "Authorization" -> "auth"
+  val envHeader: (String, String) = "Environment" -> "clone"
+  val badEnvHeader: (String, String) = "Environment" -> "test"
 
   implicit val hc = new HeaderCarrier
 
@@ -41,7 +44,9 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
 
       when(mockRosmService.handleRegisterRequest(any(), any())).thenReturn(Some(rosmRegisterIndividualResponse))
 
-      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/:utr").withBody(validRosmRegisterIndividualInput))
+      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/organisation/:utr")
+        .withBody(validRosmRegisterIndividualInput)
+        .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
       contentAsJson(response) mustBe Json.toJson(rosmRegisterIndividualResponse)
@@ -52,7 +57,9 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
 
       when(mockRosmService.handleRegisterRequest(any(), any())).thenReturn(Some(rosmRegisterOrganisationResponse))
 
-      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/:utr").withBody(validRosmRegisterOrganisationnput))
+      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/organisation/:utr")
+        .withBody(validRosmRegisterOrganisationnput)
+        .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
       contentAsJson(response) mustBe Json.toJson(rosmRegisterOrganisationResponse)
@@ -63,7 +70,9 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
 
       when(mockRosmService.handleRegisterRequest(any(), any())).thenReturn(None)
 
-      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/:utr").withBody(validRosmRegisterOrganisationnput))
+      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/organisation/:utr")
+        .withBody(validRosmRegisterOrganisationnput)
+        .withHeaders(envHeader, authHeader))
 
       val errorResponse = Json.parse("""{
         "code": "NOT_FOUND",
@@ -77,7 +86,9 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
     "return Status: Bad Request Body: ? for invalid json request" in {
       val utr = "123"
 
-      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/:utr").withBody(Json.parse(invalidRosmRegisterInput)))
+      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/organisation/:utr")
+        .withBody(Json.parse(invalidRosmRegisterInput))
+        .withHeaders(envHeader, authHeader))
 
       status(response) mustBe BAD_REQUEST
     }

@@ -27,9 +27,9 @@ import uk.gov.hmrc.softdrinksindustrylevystub.services.RosmService
 import scala.concurrent.Future
 
 @Singleton
-class RosmController @Inject()(rosmService: RosmService) extends BaseController {
+class RosmController @Inject()(rosmService: RosmService) extends BaseController with ExtraActions {
 
-  def register(utr: String): Action[JsValue] = Action.async(parse.json) { implicit request =>
+  def register(utr: String): Action[JsValue] = AuthAndEnvAction.async(parse.json) { implicit request =>
     withJsonBody[RosmRegisterRequest](rosmRequest =>
       rosmService.handleRegisterRequest(rosmRequest, utr) match {
         case Some(data) => Future successful Ok(Json.toJson(data))

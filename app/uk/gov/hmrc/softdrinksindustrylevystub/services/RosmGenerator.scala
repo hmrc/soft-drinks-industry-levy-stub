@@ -23,6 +23,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
+
 object RosmGenerator {
 
   private def genRosmResponseAddress: Gen[RosmResponseAddress] = {
@@ -50,12 +51,12 @@ object RosmGenerator {
       genEmail.almostAlways //emailAddress
   }.map(RosmResponseContactDetails.apply)
 
-  private def shouldGenOrg(organisationReq: Option[OrganisationRequest], utr: String): Option[OrganisationResponse] = {
-    if (organisationReq.isEmpty) None
-    else {
-      val organisation = organisationReq.get
-      Some(OrganisationResponse(organisation.organisationName, Gen.boolean.seeded(utr).get, organisation.organisationType))
-    }
+  private def shouldGenOrg(utr: String): OrganisationResponse = {
+    import RosmOrganisationType._
+    OrganisationResponse(
+      Gen.alphaStr.seeded(utr).get, // TODO use company when there's a new release of smartstub
+      Gen.boolean.seeded(utr).get,
+      Gen.oneOf(CorporateBody, LLP, UnincorporatedBody, Unknown).seeded(utr).get)
   }
 
   private def shouldGenAgentRef(isAnAgent: Boolean, utr: String): Option[String] = {
@@ -68,8 +69,8 @@ object RosmGenerator {
       Gen.boolean |@| //isEditable
       rosmRequest.isAnAgent |@| //isAnAgent
       Gen.const(rosmRequest.individual.isDefined) |@| //isAnIndividual
-      Gen.const(rosmRequest.individual) |@| //organisation
-      Gen.const(shouldGenOrg(rosmRequest.organisation, utr)) |@| //individual
+      Gen.const(rosmRequest.individual) |@| //individual
+      Gen.const(shouldGenOrg(utr)).sometimes |@| //organisation
       genRosmResponseAddress |@| //address
       genRosmResponseContactDetails //contactDetails
   }.map(RosmRegisterResponse.apply).sometimes

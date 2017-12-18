@@ -3,4 +3,4 @@ POST        /subscription/:idType/:idNumber         uk.gov.hmrc.softdrinksindust
 GET         /subscription/:idType/:idNumber         uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
 
 #ROSM registration
-POST        /register/:utr                          uk.gov.hmrc.softdrinksindustrylevystub.controllers.RosmController.register(utr)
+POST        /register/organisation/utr/:utr                          uk.gov.hmrc.softdrinksindustrylevystub.controllers.RosmController.register(utr)
