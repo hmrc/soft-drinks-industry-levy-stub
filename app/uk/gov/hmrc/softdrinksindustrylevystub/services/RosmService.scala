@@ -18,14 +18,14 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import javax.inject.Singleton
 
-import uk.gov.hmrc.smartstub.Enumerable.instances.utrEnum
+import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
 @Singleton
 class RosmService {
 
-  def handleRegisterRequest(data: RosmRegisterRequest, utr: String): RosmRegisterResponse = {
+  def handleRegisterRequest(data: RosmRegisterRequest, utr: String): Option[RosmRegisterResponse] = {
     RosmGenerator.genRosmRegisterResponse(data, utr).seeded(utr).get
   }
 
