@@ -267,7 +267,7 @@ object Validation {
   }
 
   def isValidOrganisationType(organisationType: String): Boolean = {
-    organisationType.matches("^[1-5]{1}$")
+    organisationType.matches("^[1|2|3|5|7]{1}$")
   }
 
   def checkParams(idType: String, idNumber: String): List[FailureMessage] = {
