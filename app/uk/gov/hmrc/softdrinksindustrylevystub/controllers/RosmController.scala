@@ -31,12 +31,17 @@ class RosmController @Inject()(rosmService: RosmService) extends BaseController 
 
   def register(utr: String): Action[JsValue] = AuthAndEnvAction.async(parse.json) { implicit request =>
     withJsonBody[RosmRegisterRequest](rosmRequest =>
-      rosmService.handleRegisterRequest(rosmRequest, utr) match {
-        case Some(data) => Future successful Ok(Json.toJson(data))
-        case _ => Future successful NotFound(Json.toJson(
-          FailureMessage("NOT_FOUND", "The remote endpoint has indicated that no data can be found"))
+      if (rosmRequest.regime.matches("ZSDL"))
+        rosmService.handleRegisterRequest(rosmRequest, utr) match {
+          case Some(data) => Future successful Ok(Json.toJson(data))
+          case _ => Future successful NotFound(Json.toJson(
+            FailureMessage("NOT_FOUND", "The remote endpoint has indicated that no data can be found"))
+          )
+        }
+      else
+        Future successful BadRequest(Json.toJson(
+          FailureMessage("INVALID_PAYLOAD", "Submission has not passed validation. Invalid Payload."))
         )
-      }
     )
   }
 

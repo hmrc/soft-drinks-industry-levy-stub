@@ -459,7 +459,7 @@ package object controllers {
 
   val validRosmRegisterIndividualInput: JsValue = Json.parse(
     """{
-      |	"regime": "SDIL",
+      |	"regime": "ZSDL",
       |	"requiresNameMatch": true,
       |	"isAnAgent": true,
       |	"individual": {
@@ -471,6 +471,18 @@ package object controllers {
   )
 
   val validRosmRegisterOrganisationnput: JsValue = Json.parse(
+    """{
+      |	"regime": "ZSDL",
+      |	"requiresNameMatch": true,
+      |	"isAnAgent": true,
+      |	"organisation": {
+      |		"organisationName": "Big Wig",
+      |		"organisationType": "Partnership"
+      |	}
+      |}""".stripMargin
+  )
+
+  val invalidRosmRegime: JsValue = Json.parse(
     """{
       |	"regime": "SDIL",
       |	"requiresNameMatch": true,
