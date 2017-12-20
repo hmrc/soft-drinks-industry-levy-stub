@@ -26,20 +26,26 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models._
 
 object RosmGenerator {
 
+  private def variableLengthString(min: Int, max: Int) = {
+    Gen.choose(min, max).flatMap(len => Gen.listOfN(len, Gen.alphaLowerChar)).map(_.mkString)
+  }
+
+  private def addressLine = variableLengthString(0, 35)
+
   private def genRosmResponseAddress: Gen[RosmResponseAddress] = {
     Gen.oneOf("The house", "50") |@| //addressLine1
       Gen.oneOf("The Street", "The Road", "The Lane").almostAlways |@| //addressLine2
-      Gen.alphaLowerStr.almostAlways |@| //addressLine3
-      Gen.alphaLowerStr.rarely |@| //addressLine4
+      addressLine.almostAlways |@| //addressLine3
+      addressLine.rarely |@| //addressLine4
       Gen.const("GB") |@| //countryCode
       Gen.postcode //postalCode
   }.map(RosmResponseAddress.apply)
 
   private def genEmail = {
     for {
-      username <- Gen.choose(5, 8).flatMap(len => Gen.listOfN(len, Gen.alphaLowerChar)).map(_.mkString)
+      username <- variableLengthString(5, 8)
       at <- Gen.const("@")
-      domain <- Gen.choose(7, 9).flatMap(len => Gen.listOfN(len, Gen.alphaLowerChar)).map(_.mkString)
+      domain <- variableLengthString(7, 9)
       ending <- Gen.const(".com")
     } yield s"$username$at$domain$ending"
   }
