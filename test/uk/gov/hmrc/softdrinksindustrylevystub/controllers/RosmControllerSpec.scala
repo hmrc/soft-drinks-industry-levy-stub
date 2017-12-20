@@ -74,7 +74,8 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
         .withBody(validRosmRegisterOrganisationnput)
         .withHeaders(envHeader, authHeader))
 
-      val errorResponse = Json.parse("""{
+      val errorResponse = Json.parse(
+        """{
         "code": "NOT_FOUND",
         "reason": "The remote endpoint has indicated that no data can be found"
       }""".stripMargin)
@@ -83,7 +84,7 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
       contentAsJson(response) mustBe errorResponse
     }
 
-    "return Status: Bad Request Body: ? for invalid json request" in {
+    "return Status: Bad Request for invalid json request" in {
       val utr = "123"
 
       val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/organisation/:utr")
@@ -91,6 +92,19 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
         .withHeaders(envHeader, authHeader))
 
       status(response) mustBe BAD_REQUEST
+    }
+
+    "return Status: Bad Request for invalid regime" in {
+      val utr = "123"
+
+      val response = mockRosmController.register(utr)(FakeRequest("POST", "/register/organisation/:utr")
+        .withBody(invalidRosmRegime)
+        .withHeaders(envHeader, authHeader))
+
+      status(response) mustBe BAD_REQUEST
+      contentAsJson(response) mustBe Json.obj(
+        "code" -> "INVALID_PAYLOAD", "reason" -> "Submission has not passed validation. Invalid Payload."
+      )
     }
   }
 }
