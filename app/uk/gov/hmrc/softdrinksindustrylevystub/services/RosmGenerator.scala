@@ -79,6 +79,6 @@ object RosmGenerator {
       Gen.const(shouldGenOrg(utr)).sometimes |@| //organisation
       genRosmResponseAddress |@| //address
       genRosmResponseContactDetails //contactDetails
-  }.map(RosmRegisterResponse.apply).sometimes
+  }.map(RosmRegisterResponse.apply).usually
 
 }
