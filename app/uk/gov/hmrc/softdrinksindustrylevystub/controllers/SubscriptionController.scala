@@ -24,6 +24,7 @@ import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genCorrelationIdHeader
 
@@ -37,9 +38,11 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
     implicit request: Request[JsValue] =>
       (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
-          Ok(Json.toJson(desSubmissionService
-            .createSubscriptionResponse(idNumber, payload)))
-            .withHeaders(("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get))
+          Ok(Json.toJson(
+            desSubmissionService.createSubscriptionResponse(idNumber, request.body.as[Subscription](CreateFormat.subscriptionReads))
+          )).withHeaders(
+            ("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get)
+          )
         case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
           BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
         case (Success(JsError(_)) | Failure(_), failures) =>
@@ -51,8 +54,8 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String) = AuthAndEnvAction {
     desSubmissionService.retrieveSubscriptionDetails(idNumber) match {
-      case Some(data) => Ok(Json.toJson(Some(data)))
-      case _ => NotFound(Json.parse("""{"reason" : "unknown subscription"}"""))
+      case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
+      case _ => NotFound(Json.obj("reason" -> "unknown subscription"))
     }
   }
 }

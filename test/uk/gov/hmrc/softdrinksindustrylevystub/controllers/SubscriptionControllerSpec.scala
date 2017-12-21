@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
-import java.time.{LocalDateTime, OffsetDateTime, ZoneOffset}
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime, ZoneOffset}
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -27,9 +27,10 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionRequest, CreateSubscriptionResponse}
-import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.softdrinksindustrylevystub.models.CreateSubscriptionResponse
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
+import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
 class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
@@ -58,11 +59,28 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       status(response) mustBe NOT_FOUND
     }
 
-    "return Status: OK Body: CreateSubscriptionRequest for a successful retrieve request" in {
-      val r = Json.fromJson[CreateSubscriptionRequest](successfulRetrieveOutput)
+    "return OK and a Subscription for a successful retrieve request" in {
+      val r: Subscription = Subscription(
+        "1097172564",
+        "a",
+        Some("1"),
+        UkAddress(List("Juicey Juices", "Some Street"), "AB012AA"),
+        InternalActivity(
+          Map(
+            ActivityType.ProducedOwnBrand -> ((2L, 2L)),
+            ActivityType.Imported -> ((2L, 2L))
+          )
+        ),
+        LocalDate.of(1920, 2, 29),
+        List(
+          Site(ForeignAddress(List("Juicey Juices", "Juicey Juices"), "FR"), Some("a")),
+          Site(ForeignAddress(List("asdasdasd", "asfdsdasd"), "DE"), Some("a"))
+        ),
+        List(),
+        Contact(Some("a"), Some("a"), "+44 1234567890", "a.b@c.com"))
 
-      when(mockDesSubmissionService
-        .retrieveSubscriptionDetails(utr)).thenReturn(Some(r.get))
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenReturn(Some(r))
+
       val response = mockSubscriptionController
         .retrieveSubscriptionDetails(idType, utr)(FakeRequest("GET", "/soft-drinks/subscription/")
         .withHeaders(envHeader, authHeader))
@@ -75,6 +93,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest" in {
       when(mockDesSubmissionService
         .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
+
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
           .withBody(validCreateSubscriptionRequestInput)
@@ -90,6 +109,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       "without all optional data" in {
       when(mockDesSubmissionService
         .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
+
       val response = mockSubscriptionController
         .createSubscription(idType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
           .withBody(validCreateSubscriptionRequestInputWithoutOptionals)

@@ -71,170 +71,64 @@ package object controllers {
 
   val successfulRetrieveOutput: JsValue = Json.parse(
     """{
-      |    "registration": {
-      |        "organisationType": "1",
-      |        "applicationDate": "1920-02-29",
-      |        "taxStartDate": "1920-02-29",
-      |        "cin": "1097172564",
-      |        "tradingName": "a",
-      |        "businessContact": {
-      |            "addressDetails": {
-      |                "notUKAddress": false,
-      |                "line1": "Juicey Juices",
-      |                "line2": "Some Street",
-      |                "line3": " ",
-      |                "line4": " ",
-      |                "postCode": "AB012AA",
-      |                "country": "GB"
-      |            },
-      |            "contactDetails": {
-      |                "telephone": "+44 1234567890",
-      |                "mobile": "+44-(0)7890123456",
-      |                "fax": "01234567111",
-      |                "email": "a.b@c.com"
-      |            }
-      |        },
-      |        "correspondenceContact": {
-      |            "addressDetails": {
-      |                "notUKAddress": false,
-      |                "line1": "Juicey Juices",
-      |                "line2": "Someother Street",
-      |                "line3": " ",
-      |                "line4": "Somewhere Else",
-      |                "postCode": "AB012CC",
-      |                "country": "GB"
-      |            },
-      |            "contactDetails": {
-      |                "telephone": " ",
-      |                "mobile": " ",
-      |                "email": "a.b@c.com"
-      |            },
-      |            "differentAddress": true
-      |        },
-      |        "primaryPersonContact": {
-      |            "name": "a",
-      |            "positionInCompany": "a",
-      |            "telephone": "a",
-      |            "mobile": "a",
-      |            "email": "a.b@c.com"
-      |        },
-      |        "details": {
-      |            "producer": true,
-      |            "producerDetails": {
-      |                "produceMillionLitres": true,
-      |                "producerClassification": "1",
-      |                "smallProducerExemption": true,
-      |                "useContractPacker": true,
-      |                "voluntarilyRegistered": true
-      |            },
-      |            "importer": true,
-      |            "contractPacker": true
-      |        },
-      |        "activityQuestions": {
-      |            "litresProducedUKHigher": 2,
-      |            "litresProducedUKLower": 2,
-      |            "litresImportedUKHigher": 2,
-      |            "litresImportedUKLower": 2,
-      |            "litresPackagedUKHigher": 2,
-      |            "litresPackagedUKLower": 2
-      |        },
-      |        "estimatedTaxAmount": 0.02,
-      |        "taxObligationStartDate": "1920-02-29"
+      |  "businessAddress": {
+      |    "line1": "Juicey Juices",
+      |    "line2": "Some Street",
+      |    "notUKAddress": false,
+      |    "postCode": "AB012AA"
+      |  },
+      |  "businessContact": {
+      |    "email": "a.b@c.com",
+      |    "telephone": "+44 1234567890"
+      |  },
+      |  "sites": [
+      |    {
+      |      "siteAddress": {
+      |        "country": "FR",
+      |        "line1": "Juicey Juices",
+      |        "line2": "Juicey Juices",
+      |        "notUKAddress": true
+      |      },
+      |      "siteContact": {
+      |        "email": "a.b@c.com",
+      |        "telephone": "+44 1234567890"
+      |      },
+      |      "siteReference": "a",
+      |      "siteType": "2",
+      |      "tradingName": "a"
       |    },
-      |    "sites": [
-      |        {
-      |            "action": "1",
-      |            "tradingName": "a",
-      |            "newSiteRef": "a",
-      |            "siteAddress": {
-      |                "addressDetails": {
-      |                    "notUKAddress": true,
-      |                    "line1": " ",
-      |                    "line2": " ",
-      |                    "line3": " ",
-      |                    "line4": " ",
-      |                    "postCode": "A00AA",
-      |                    "country": "FR"
-      |                },
-      |                "contactDetails": {
-      |                    "telephone": " ",
-      |                    "mobile": " ",
-      |                    "email": "a.b@c.com"
-      |                }
-      |            },
-      |            "siteType": "2"
-      |        },
-      |        {
-      |            "action": "1",
-      |            "tradingName": "a",
-      |            "newSiteRef": "a",
-      |            "siteAddress": {
-      |                "addressDetails": {
-      |                    "notUKAddress": true,
-      |                    "line1": " ",
-      |                    "line2": " ",
-      |                    "line3": " ",
-      |                    "line4": " ",
-      |                    "postCode": "A00AA",
-      |                    "country": "DE"
-      |                },
-      |                "contactDetails": {
-      |                    "telephone": " ",
-      |                    "mobile": " ",
-      |                    "email": "a.b@c.com"
-      |                }
-      |            },
-      |            "siteType": "2"
-      |        }
-      |    ],
-      |    "entityAction": [
-      |        {
-      |            "action": "1",
-      |            "entityType": "4",
-      |            "organisationType": "1",
-      |            "cin": "a",
-      |            "tradingName": "a",
-      |            "businessContact": {
-      |                "addressDetails": {
-      |                    "notUKAddress": false,
-      |                    "line1": " ",
-      |                    "line2": " ",
-      |                    "line3": " ",
-      |                    "line4": " ",
-      |                    "postCode": "A00AA",
-      |                    "country": "GB"
-      |                },
-      |                "contactDetails": {
-      |                    "telephone": " ",
-      |                    "mobile": " ",
-      |                    "email": "a.b@c.com"
-      |                }
-      |            }
-      |        },
-      |        {
-      |            "action": "1",
-      |            "entityType": "4",
-      |            "organisationType": "1",
-      |            "cin": "a",
-      |            "tradingName": "a",
-      |            "businessContact": {
-      |                "addressDetails": {
-      |                    "notUKAddress": false,
-      |                    "line1": " ",
-      |                    "line2": " ",
-      |                    "line3": " ",
-      |                    "line4": " ",
-      |                    "postCode": "A00AA",
-      |                    "country": "GB"
-      |                },
-      |                "contactDetails": {
-      |                    "telephone": " ",
-      |                    "mobile": " ",
-      |                    "email": "a.b@c.com"
-      |                }
-      |            }
-      |        }
-      |    ]
+      |    {
+      |      "siteAddress": {
+      |        "country": "DE",
+      |        "line1": "asdasdasd",
+      |        "line2": "asfdsdasd",
+      |        "notUKAddress": true
+      |      },
+      |      "siteContact": {
+      |        "email": "a.b@c.com",
+      |        "telephone": "+44 1234567890"
+      |      },
+      |      "siteReference": "a",
+      |      "siteType": "2",
+      |      "tradingName": "a"
+      |    }
+      |  ],
+      |  "subscriptionDetails": {
+      |    "contractPacker": false,
+      |    "importer": true,
+      |    "largeProducer": false,
+      |    "primaryContactName": "a",
+      |    "primaryEmail": "a.b@c.com",
+      |    "primaryPositionInCompany": "a",
+      |    "primaryTelephone": "+44 1234567890",
+      |    "sdilRegistrationNumber": "unknown",
+      |    "smallProducer": true,
+      |    "taxObligationEndDate": "1921-02-28",
+      |    "taxObligationStartDate": "1920-02-29",
+      |    "tradingName": "a",
+      |    "voluntaryRegistration": false
+      |  },
+      |  "utr": "1097172564"
       |}
     """.stripMargin
   )
@@ -410,7 +304,8 @@ package object controllers {
       |            "addressDetails": {
       |                "notUKAddress": false,
       |                "line1": "Juicey Juices",
-      |                "line2": "Some Street"
+      |                "line2": "Some Street",
+      |                "postCode": "AA11 1AA"
       |            },
       |            "contactDetails": {
       |                "telephone": "+44 1234567890",
@@ -434,7 +329,7 @@ package object controllers {
       |        },
       |        "primaryPersonContact": {
       |            "name": "a",
-      |			"telephone": "+44 1234567890",
+      |            "telephone": "+44 1234567890",
       |            "email": "a.b@c.com"
       |        },
       |        "details": {

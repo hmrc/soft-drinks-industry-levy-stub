@@ -20,20 +20,21 @@ import com.google.inject.Singleton
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
 
 import scala.collection.mutable
 
 @Singleton
 class DesSubmissionService {
 
-  lazy val store: mutable.Map[String, CreateSubscriptionRequest] = SubscriptionGenerator.store.empty
+  lazy val store: mutable.Map[String, Subscription] = mutable.Map.empty
 
-  def createSubscriptionResponse(idNumber: String, data: CreateSubscriptionRequest): CreateSubscriptionResponse = {
+  def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
     store(idNumber) = data
     SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber).get
   }
 
-  def retrieveSubscriptionDetails(idNumber: String): Option[CreateSubscriptionRequest] = {
+  def retrieveSubscriptionDetails(idNumber: String): Option[Subscription] = {
     store.get(idNumber)
   }
 
