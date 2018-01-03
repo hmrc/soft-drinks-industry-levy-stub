@@ -42,7 +42,7 @@ class ErrorHandler @Inject() (implicit val config: Configuration, val env: Envir
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     exception match {
       case _ =>
-        Logger.error("this is the err", exception)
+        Logger.error("Server error", exception)
         Future.successful(InternalServerError(Json.toJson(FailureResponse(
           List(FailureMessage(
             "500",
