@@ -52,7 +52,7 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
       }
   }
 
-  def retrieveSubscriptionDetails(idType: String, idNumber: String) = AuthAndEnvAction {
+  def retrieveSubscriptionDetails(idNumber: String) = AuthAndEnvAction {
     desSubmissionService.retrieveSubscriptionDetails(idNumber) match {
       case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
       case _ => NotFound(Json.obj("reason" -> "unknown subscription"))

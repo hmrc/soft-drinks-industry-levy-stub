@@ -21,7 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
-import play.api.{Configuration, Environment}
+import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{FailureMessage, FailureResponse}
 
 import scala.concurrent.Future
@@ -42,6 +42,7 @@ class ErrorHandler @Inject() (implicit val config: Configuration, val env: Envir
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     exception match {
       case _ =>
+        Logger.error("this is the err", exception)
         Future.successful(InternalServerError(Json.toJson(FailureResponse(
           List(FailureMessage(
             "500",

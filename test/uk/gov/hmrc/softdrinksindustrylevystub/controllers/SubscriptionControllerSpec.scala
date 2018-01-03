@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
   val mockSubscriptionController = new SubscriptionController(mockDesSubmissionService)
   implicit val hc: HeaderCarrier = new HeaderCarrier
-  val utr = "1097172565"
+  val utr = "1111111111"
+  val sdilNumber = "TMSDIL5563461"
   val idType = "utr"
   val now: OffsetDateTime = LocalDateTime.now.atOffset(ZoneOffset.UTC)
   val authHeader: (String, String) = "Authorization" -> "auth"
@@ -51,9 +52,9 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
 
     "return Status: 404 Body: reason: unknown subscription message for a unsuccessful retrieve request" in {
       when(mockDesSubmissionService
-        .retrieveSubscriptionDetails(utr)).thenReturn(None)
+        .retrieveSubscriptionDetails(sdilNumber)).thenReturn(None)
       val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(idType, utr)(FakeRequest("GET", "/soft-drinks/subscription/")
+        .retrieveSubscriptionDetails(sdilNumber)(FakeRequest("GET", "/soft-drinks/subscription/")
         .withHeaders(envHeader, authHeader))
 
       status(response) mustBe NOT_FOUND
@@ -79,10 +80,10 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         List(),
         Contact(Some("a"), Some("a"), "+44 1234567890", "a.b@c.com"))
 
-      when(mockDesSubmissionService.retrieveSubscriptionDetails(utr)).thenReturn(Some(r))
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilNumber)).thenReturn(Some(r))
 
       val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(idType, utr)(FakeRequest("GET", "/soft-drinks/subscription/")
+        .retrieveSubscriptionDetails(sdilNumber)(FakeRequest("GET", "/soft-drinks/subscription/")
         .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
