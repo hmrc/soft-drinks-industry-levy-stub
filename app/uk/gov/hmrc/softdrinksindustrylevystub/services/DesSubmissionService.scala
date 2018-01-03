@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import com.google.inject.Singleton
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
+import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
 
 import scala.collection.mutable
@@ -35,7 +35,11 @@ class DesSubmissionService {
   }
 
   def retrieveSubscriptionDetails(idNumber: String): Option[Subscription] = {
-    store.get(idNumber)
+    SdilNumberTransformer.sdilToUtr(idNumber) flatMap {
+      x => {
+        store.get(x)
+      }
+    }
   }
 
 }

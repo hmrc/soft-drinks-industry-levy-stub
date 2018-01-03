@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
       }
   }
 
-  def retrieveSubscriptionDetails(idType: String, idNumber: String) = AuthAndEnvAction {
+  def retrieveSubscriptionDetails(idNumber: String) = AuthAndEnvAction {
     desSubmissionService.retrieveSubscriptionDetails(idNumber) match {
       case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
       case _ => NotFound(Json.obj("reason" -> "unknown subscription"))
