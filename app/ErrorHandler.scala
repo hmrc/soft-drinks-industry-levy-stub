@@ -31,7 +31,7 @@ class ErrorHandler @Inject() (implicit val config: Configuration, val env: Envir
   extends HttpErrorHandler with I18nSupport {
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
-    Future.successful(BadRequest(Json.toJson(FailureResponse(
+    Future.successful(Status(statusCode)(Json.toJson(FailureResponse(
       List(FailureMessage(
         statusCode.toString,
         message
