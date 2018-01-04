@@ -34,10 +34,13 @@ class DesSubmissionService {
     SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber).get
   }
 
-  def retrieveSubscriptionDetails(idNumber: String): Option[Subscription] = {
-    SdilNumberTransformer.sdilToUtr(idNumber) flatMap {
-      x => {
-        store.get(x)
+  def retrieveSubscriptionDetails(idType: String, idNumber: String): Option[Subscription] = {
+    idType match {
+      case "utr" => store.get(idNumber)
+      case "sdil" => SdilNumberTransformer.sdilToUtr(idNumber) flatMap {
+        x => {
+          store.get(x)
+        }
       }
     }
   }
