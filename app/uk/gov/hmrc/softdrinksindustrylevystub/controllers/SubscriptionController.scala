@@ -28,6 +28,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genCorrelationIdHeader
 
+import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 @Singleton
@@ -58,4 +59,10 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
       case _ => NotFound(Json.obj("reason" -> "unknown subscription"))
     }
   }
+
+  def reset: Action[AnyContent] = Action {
+    desSubmissionService.store.clear()
+    Ok
+  }
+
 }
