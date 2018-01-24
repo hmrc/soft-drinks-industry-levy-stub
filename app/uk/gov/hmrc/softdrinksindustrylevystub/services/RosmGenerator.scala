@@ -65,6 +65,15 @@ object RosmGenerator {
       Gen.oneOf(CorporateBody, LLP, UnincorporatedBody, Unknown).seeded(utr).get)
   }
 
+  private def genIndividual(utr: String): Gen[Individual] = {
+    Individual(
+      Gen.forename().seeded(utr).get,
+      Gen.forename().rarely.seeded(utr).get,
+      Gen.surname.seeded(utr).get,
+      Gen.date.seeded(utr)
+    )
+  }
+
   private def shouldGenAgentRef(isAnAgent: Boolean, utr: String): Option[String] = {
     if (isAnAgent) Gen.alphaNumStr.seeded(utr) else None
   }
@@ -75,7 +84,7 @@ object RosmGenerator {
       Gen.boolean |@| //isEditable
       rosmRequest.isAnAgent |@| //isAnAgent
       Gen.const(rosmRequest.individual.isDefined) |@| //isAnIndividual
-      Gen.const(rosmRequest.individual) |@| //individual
+      genIndividual(utr).sometimes |@| //individual
       Gen.const(shouldGenOrg(utr)).sometimes |@| //organisation
       genRosmResponseAddress |@| //address
       genRosmResponseContactDetails //contactDetails
