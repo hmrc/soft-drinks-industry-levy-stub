@@ -32,6 +32,8 @@ sealed trait Activity {
 case class InternalActivity (activity: Map[ActivityType.Value, LitreBands]) extends Activity {
   import ActivityType._
 
+  lazy val empty: LitreBands = (0, 0)
+
   val lowerRate: Long = 18
   val upperRate: Long = 24
 
@@ -47,9 +49,9 @@ case class InternalActivity (activity: Map[ActivityType.Value, LitreBands]) exte
     }
   }
 
-  def isProducer: Boolean = activity.contains(ProducedOwnBrand) || activity.contains(Copackee)
+  def isProducer: Boolean = activity(ProducedOwnBrand) != empty || activity(Copackee) != empty
   def isLarge: Boolean = sumOfLiableLitreRates._1 + sumOfLiableLitreRates._2 >= 1000000
-  def isContractPacker: Boolean = activity.keySet.contains(CopackerAll)
-  def isImporter: Boolean = activity.keySet.contains(Imported)
+  def isContractPacker: Boolean = false //never set
+  def isImporter: Boolean = activity(Imported) != empty
 }
 
