@@ -37,7 +37,7 @@ case class Address(
       line2.matches(linePattern),
       line3.matches(linePattern),
       line4.matches(linePattern),
-      postCode.matches("^[A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}$|BFPO\\s?[0-9]{1,5}$"),
+      postCode.matches("^[A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}$|BFPO\\s?[0-9]{1,3}$"),
       country.length <= 2
     ).reduce(_ && _)
   }
@@ -122,7 +122,7 @@ case class Details(
   def isValid: Boolean = {
     producerDetails match {
       case Some(a) if producer =>
-        a.producerClassification.matches("^[0-1]{1}$")
+        a.producerClassification.matches("^[01]{1}$")
       case _ => !producer
     }
   }
@@ -226,7 +226,7 @@ object Validation {
   }
 
   def isValidCin(cin: String): Boolean = {
-    cin.matches(".{1,15}")
+    cin.matches("^[a-zA-Z0-9 ,\\.\\/\\-:]{1,15}$")
   }
 
   def isValidIdType(idType: String): Option[FailureMessage] = {
@@ -253,7 +253,7 @@ object Validation {
 
 
   def isValidContactDetails(cd: ContactDetails): Boolean = {
-    val phonePattern: String = "^[0-9 ()+--]{1,24}$"
+    val phonePattern: String = "^[A-Z0-9 )/(\\-*#]{1,24}$"
     Seq(
       cd.telephone.matches(phonePattern),
       cd.mobile.matches(phonePattern),
@@ -263,11 +263,11 @@ object Validation {
   }
 
   def isValidTradingName(tradingName: String): Boolean = {
-    tradingName.matches(".{1,160}")
+    tradingName.matches("^[a-zA-Z0-9 '.&\\/]{1,160}$")
   }
 
   def isValidOrganisationType(organisationType: String): Boolean = {
-    organisationType.matches("^[1|2|3|5|7]{1}$")
+    organisationType.matches("^[12357]{1}$")
   }
 
   def checkParams(idType: String, idNumber: String): List[FailureMessage] = {
