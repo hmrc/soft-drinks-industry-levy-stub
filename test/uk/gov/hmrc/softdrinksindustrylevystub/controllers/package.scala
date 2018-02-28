@@ -151,7 +151,7 @@ package object controllers {
       |            },
       |            "contactDetails": {
       |                "telephone": "44 1234567890",
-      |                "mobile": "44-(0)7890123456",
+      |                "mobile": "+44-(0)7890123456",
       |                "fax": "01234567111",
       |                "email": "a.b@c.com"
       |            }
@@ -166,8 +166,8 @@ package object controllers {
       |                "country": "GB"
       |            },
       |            "contactDetails": {
-      |                "telephone": "44 1234567890",
-      |                "mobile": "44 1234567890",
+      |                "telephone": "+44 1234567890",
+      |                "mobile": "+44 1234567890",
       |                "email": "a.b@c.com"
       |            },
       |            "differentAddress": true
@@ -175,8 +175,8 @@ package object controllers {
       |        "primaryPersonContact": {
       |            "name": "a",
       |            "positionInCompany": "a",
-      |            "telephone": "44 1234567890",
-      |            "mobile": "44 1234567890",
+      |            "telephone": "+44 1234567890",
+      |            "mobile": "+44 1234567890",
       |            "email": "a.b@c.com"
       |        },
       |        "details": {
@@ -216,8 +216,8 @@ package object controllers {
       |                    "country": "FR"
       |                },
       |                "contactDetails": {
-      |                    "telephone": "44 1234567890",
-      |                    "mobile": "44 1234567890",
+      |                    "telephone": "+44 1234567890",
+      |                    "mobile": "+44 1234567890",
       |                    "email": "a.b@c.com"
       |                }
       |            },
@@ -236,8 +236,8 @@ package object controllers {
       |                    "country": "DE"
       |                },
       |                "contactDetails": {
-      |                    "telephone": "44 1234567890",
-      |                    "mobile": "44 1234567890",
+      |                    "telephone": "+44 1234567890",
+      |                    "mobile": "+44 1234567890",
       |                    "email": "a.b@c.com"
       |                }
       |            },
@@ -260,8 +260,8 @@ package object controllers {
       |                    "country": "GB"
       |                },
       |                "contactDetails": {
-      |                    "telephone": "44 1234567890",
-      |                    "mobile": "44 1234567890",
+      |                    "telephone": "+44 1234567890",
+      |                    "mobile": "+44 1234567890",
       |                    "email": "a.b@c.com"
       |                }
       |            }
@@ -281,8 +281,8 @@ package object controllers {
       |                    "country": "GB"
       |                },
       |                "contactDetails": {
-      |                    "telephone": "44 1234567890",
-      |                    "mobile": "44 1234567890",
+      |                    "telephone": "+44 1234567890",
+      |                    "mobile": "+44 1234567890",
       |                    "email": "a.b@c.com"
       |                }
       |            }
@@ -308,7 +308,7 @@ package object controllers {
       |                "postCode": "AA11 1AA"
       |            },
       |            "contactDetails": {
-      |                "telephone": "44 1234567890",
+      |                "telephone": "+44 1234567890",
       |                "email": "a.b@c.com"
       |            }
       |        },
@@ -322,14 +322,14 @@ package object controllers {
       |                "country": "GB"
       |            },
       |            "contactDetails": {
-      |                "telephone": "44 1234567890",
-      |                "mobile": "44 1234567890",
+      |                "telephone": "+44 1234567890",
+      |                "mobile": "+44 1234567890",
       |                "email": "a.b@c.com"
       |            }
       |        },
       |        "primaryPersonContact": {
       |            "name": "a",
-      |            "telephone": "44 1234567890",
+      |            "telephone": "+44 1234567890",
       |            "email": "a.b@c.com"
       |        },
       |        "details": {

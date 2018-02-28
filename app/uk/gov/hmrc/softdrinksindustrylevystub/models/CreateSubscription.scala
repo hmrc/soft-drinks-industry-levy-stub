@@ -76,10 +76,10 @@ case class PrimaryPersonContact(
                                ) {
   def isValid: Boolean = {
     Seq(
-      name.matches(".{1,40}"),
-      positionInCompany.matches(".{1,155}"),
-      telephone.matches(".{1,24}"),
-      mobile.matches(".{1,24}")
+      name.matches("^[a-zA-Z &`\\-\\'\\.^]{1,40}$"),
+      positionInCompany.matches("^[a-zA-Z &`\\-\\'\\.^]{1,155}$"),
+      Validation.isValidPhone(telephone),
+      Validation.isValidPhone(mobile)
     ) reduce (_ && _)
   }
 }
@@ -247,19 +247,28 @@ object Validation {
       site.siteAddress.addressDetails.isValid,
       site.action.matches("^[1]{1}$"),
       isValidTradingName(site.tradingName),
-      site.newSiteRef.matches(".{1,160}")
+      site.newSiteRef.matches("^[a-zA-Z0-9 ,.\\/]{1,20}$")
     ) reduce (_ && _)
   }
 
 
   def isValidContactDetails(cd: ContactDetails): Boolean = {
-    val phonePattern: String = "^[A-Z0-9 )/(\\-*#]{1,24}$"
     Seq(
-      cd.telephone.matches(phonePattern),
-      cd.mobile.matches(phonePattern),
-      cd.fax.matches(phonePattern),
+      isValidPhone(cd.telephone),
+      isValidPhone(cd.mobile),
+      isValidPhone(cd.fax),
       cd.email.length <= 132
     ) reduce(_ && _)
+  }
+
+  val phonePattern = "^[A-Z0-9 )/(\\-*#+]{1,24}$"
+
+  def isValidPhone(phone: Option[String]): Boolean = {
+    phone.matches(phonePattern)
+  }
+
+  def isValidPhone(phone: String): Boolean = {
+    phone.matches(phonePattern)
   }
 
   def isValidTradingName(tradingName: String): Boolean = {
