@@ -150,7 +150,7 @@ package object controllers {
       |                "country": "GB"
       |            },
       |            "contactDetails": {
-      |                "telephone": "+44 1234567890",
+      |                "telephone": "44 1234567890",
       |                "mobile": "+44-(0)7890123456",
       |                "fax": "01234567111",
       |                "email": "a.b@c.com"
