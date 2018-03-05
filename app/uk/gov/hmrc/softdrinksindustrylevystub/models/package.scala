@@ -50,6 +50,15 @@ package object models {
   implicit val failureFormat: OFormat[FailureMessage] = Json.format[FailureMessage]
   implicit val failureResponseFormat: OFormat[FailureResponse] = Json.format[FailureResponse]
 
+  // SDIL return formatters
+  implicit val valueNodeFormat: OFormat[ValueNode] = Json.format[ValueNode]
+  implicit val volumeFormat: OFormat[Volume] = Json.format[Volume]
+  implicit val itemFormat: OFormat[Item] = Json.format[Item]
+  implicit val packagedFormat: OFormat[Packaged] = Json.format[Packaged]
+  implicit val producedFormat: OFormat[Produced] = Json.format[Produced]
+  implicit val returnFormat: OFormat[Return] = Json.format[Return]
+  implicit val successResponseFormat: OFormat[SuccessResponse] = Json.format[SuccessResponse]
+
   val maxL: Long = 9999999999999L
 
   private[models] implicit class ValidationOptionString(s: Option[String]) {

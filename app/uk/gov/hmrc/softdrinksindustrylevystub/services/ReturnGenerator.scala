@@ -16,22 +16,14 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import java.time.{LocalDateTime, ZoneOffset}
-
-import cats.implicits._
-import org.scalacheck._
-import org.scalacheck.support.cats._
+import org.scalacheck.Gen
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.SuccessResponse
 
-object SubscriptionGenerator {
+object ReturnGenerator {
 
-  def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] = {
-    Gen.const(LocalDateTime.now.atOffset(ZoneOffset.UTC))    |@| // processingDate
+  def genCreateReturnResponse: Gen[SuccessResponse] = {
     pattern"999999999999".gen                                    // formBundleNumber
-  }.map(CreateSubscriptionResponse.apply)
-
+  }.map(SuccessResponse.apply)
 
 }
-
-

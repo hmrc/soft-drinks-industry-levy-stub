@@ -28,6 +28,7 @@ import scala.collection.mutable
 class DesSubmissionService {
 
   lazy val store: mutable.Map[String, Subscription] = mutable.Map.empty
+  lazy val returnStore: mutable.Map[String, Return] = mutable.Map.empty
 
   def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
     store(idNumber) = data
@@ -43,6 +44,11 @@ class DesSubmissionService {
         }
       }
     }
+  }
+
+  def createReturnResponse(payload: Return): SuccessResponse = {
+    returnStore(payload.sdilRef) = payload
+    ReturnGenerator.genCreateReturnResponse.seeded(payload.sdilRef).get
   }
 
 }
