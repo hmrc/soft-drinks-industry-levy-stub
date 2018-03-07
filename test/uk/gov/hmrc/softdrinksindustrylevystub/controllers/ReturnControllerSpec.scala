@@ -62,7 +62,6 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
     }
 
     "return 400 bad request for malformed periodKey in json payload " in {
-//      val r: Subscription = Json.fromJson[Subscription](validCreateSubscriptionRequestInput).get
 
       when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(subscription))
 
@@ -87,7 +86,6 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
 
     "return 200 for successful return " in {
 
-//      val r: Subscription = Json.fromJson[Subscription](validCreateSubscriptionRequestInput).get
       val ret = Json.fromJson[Return](validReturnPayload).get
       val res = Json.fromJson[ReturnSuccessResponse](validReturnResponse).get
 
@@ -101,5 +99,17 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       status(response) mustBe OK
     }
 
+    "return 400 bad request when sending invalid return  payload " in {
+      val ret = Json.fromJson[Return](invalidReturnPayload).get
+
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(subscription))
+
+      val response = mockReturnController.createReturn(FakeRequest("POST", "/soft-drinks/return/")
+        .withBody(validReturnPayload)
+        .withHeaders(envHeader, authHeader))
+
+      status(response) mustBe BAD_REQUEST
+
+    }
   }
 }
