@@ -100,12 +100,11 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
     }
 
     "return 400 bad request when sending invalid return  payload " in {
-      val ret = Json.fromJson[Return](invalidReturnPayload).get
 
       when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(subscription))
 
       val response = mockReturnController.createReturn(FakeRequest("POST", "/soft-drinks/return/")
-        .withBody(validReturnPayload)
+        .withBody(invalidReturnPayload)
         .withHeaders(envHeader, authHeader))
 
       status(response) mustBe BAD_REQUEST
