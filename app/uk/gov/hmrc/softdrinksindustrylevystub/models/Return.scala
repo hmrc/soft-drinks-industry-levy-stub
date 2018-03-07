@@ -18,17 +18,16 @@ package uk.gov.hmrc.softdrinksindustrylevystub.models
 
 import play.api.Logger
 
-
 case class Return(
                    periodKey: String,
                    fbType: String,
                    sdilRef: String,
                    revenueType: String,
                    netLevyDueTotal: BigDecimal,
-                   packaging: Packaged,
-                   importing: Produced,
-                   exporting: Produced,
-                   wastage: Produced
+                   packaging: Option[Packaging],
+                   importing: Option[Importing],
+                   exporting: Option[ExpoWasted],
+                   wastage: Option[ExpoWasted]
                  ) {
 
 
@@ -39,30 +38,76 @@ case class Return(
       validateString("fbType", fbType, fbTypePattern),
       validateString("sdilRef", sdilRef, sdilRefPattern),
       validateString("revenueType", revenueType, revenueTypePattern),
-      validateMonetary("netLevyDueTotal", netLevyDueTotal)
+      validateMonetary("netLevyDueTotal", netLevyDueTotal),
+      packaging.forall(_.isValid),
+      importing.forall(_.isValid),
+      exporting.forall(_.isValid),
+      wastage.forall(_.isValid)
     ).reduce(_ & _)
 
   }
 }
 
+case class ExpoWasted(
+                    volumeNode: Option[Volume],
+                    valueNode: Option[ValueNode]
+                    ) {
+  def isValid: Boolean = {
+    Seq(
+      volumeNode.forall(_.isValid),
+      valueNode.forall(_.isValid)
+    ).reduce( _ & _ )
+  }
+}
+
+case class Importing(
+                    volumeSmall: Option[Volume],
+                    volumeLarge: Option[Volume],
+                    valueNode: Option[ValueNode]
+                    ) {
+  def isValid: Boolean = {
+    Seq(
+      volumeSmall.forall(_.isValid),
+      volumeLarge.forall(_.isValid),
+      valueNode.forall(_.isValid)
+    ).reduce( _ & _ )
+  }
+}
+
+case class Packaging(
+                    volumeSmall: Option[List[Item]],
+                    volumeLarge: Option[Volume],
+                    valueNode: Option[ValueNode]
+                    ) {
+  def isValid: Boolean = {
+    Seq(
+      volumeSmall.forall(_.forall(_.isValid)),
+      volumeLarge.forall(_.isValid),
+      valueNode.forall(_.isValid)).reduce( _ & _ )
+//    volumeSmall.map(x => x.isValid) :+ volumeLarge.isValid :+ valueNode.isValid reduce( _ & _ )
+  }
+}
+
 case class Item(
-                producerRef: String,
-                volume: Volume
+                producerRef: Option[String],
+                lowVolume: Option[String],
+                highVolume: Option[String]
                 ) {
 
   def isValid: Boolean = {
     import ReturnValidation._
     Seq(
       validateString("producerRef", producerRef, sdilRefPattern),
-      volume.isValid
+      validateString("lowVolume", lowVolume, volumeStringPattern),
+      validateString("highVolume", highVolume, volumeStringPattern)
     ).reduce( _ & _ )
   }
 
 }
 
 case class Volume(
-                 lowVolume: String,
-                 highVolume: String
+                 lowVolume: Option[String],
+                 highVolume: Option[String]
                  ) {
 
   def isValid: Boolean = {
@@ -77,9 +122,9 @@ case class Volume(
 }
 
 case class ValueNode(
-                      lowVolume: BigDecimal,
-                      highVolume: BigDecimal,
-                      levyTotal: BigDecimal
+                      lowVolume: Option[BigDecimal],
+                      highVolume: Option[BigDecimal],
+                      levyTotal: Option[BigDecimal]
                     ) {
 
   def isValid: Boolean = {
@@ -92,31 +137,13 @@ case class ValueNode(
   }
 }
 
-case class Packaged(
-                      items: List[Item],
-                      produced: Produced
-                    ) {
-  def isValid: Boolean = {
-    items.map(x => x.isValid) :+ produced.isValid reduce( _ & _ )
-  }
-}
-
-case class Produced (
-                      volumeNode: Volume,
-                      valueNode: ValueNode
-                    ) {
-
-  def isValid: Boolean = {
-    Seq(
-      volumeNode.isValid,
-      valueNode.isValid
-    ).reduce( _ & _ )
-  }
-
-}
-
-case class SuccessResponse(
+case class ReturnSuccessResponse(
                             formBundleNumber: String
+                          )
+
+case class ReturnFailureResponse(
+                          code: String,
+                          reason: String
                           )
 
 object ReturnValidation {
@@ -137,10 +164,30 @@ object ReturnValidation {
     }
   }
 
+  def validateString(label: String, value: Option[String], regex: String): Boolean = {
+    val r = regex.r
+    value match {
+      case None | Some(r()) => true
+      case _ =>
+        Logger.error(s"Invalid Return: $label ${value.getOrElse("<empty>")} doesn't match $regex")
+        false
+    }
+  }
+
+  def validateMonetary(label: String, value: Option[BigDecimal]): Boolean = {
+    val n: BigDecimal = 99999999999.99
+    value match {
+      case Some(a) if a >= -n && a <= n => true
+      case _ =>
+        Logger.error(s"Invalid Return: $label $value is either > $n or < -$n")
+        false
+    }
+  }
+
   def validateMonetary(label: String, value: BigDecimal): Boolean = {
     val n: BigDecimal = 99999999999.99
     value match {
-      case a if a > -n && a < n => true
+      case a if a >= -n && a <= n => true
       case _ =>
         Logger.error(s"Invalid Return: $label $value is either > $n or < -$n")
         false

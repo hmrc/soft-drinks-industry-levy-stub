@@ -24,7 +24,7 @@ object SdilNumberTransformer {
 
   val tolerantUtr = pattern"9999999999"
 
-  val sdilRefEnum = pattern"ZZ9999999".imap{
+  val sdilRefEnum: Enumerable[String] = pattern"ZZ9999999".imap{
     i => i.take(2) ++ "SDIL" ++ i.takeRight(7)
   }{ b => b.take(2) ++ b.takeRight(7) }
 

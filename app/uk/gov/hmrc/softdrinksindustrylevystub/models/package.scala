@@ -53,11 +53,14 @@ package object models {
   // SDIL return formatters
   implicit val valueNodeFormat: OFormat[ValueNode] = Json.format[ValueNode]
   implicit val volumeFormat: OFormat[Volume] = Json.format[Volume]
+  implicit val expoWastedFormat: OFormat[ExpoWasted] = Json.format[ExpoWasted]
+  implicit val importingFormat: OFormat[Importing] = Json.format[Importing]
   implicit val itemFormat: OFormat[Item] = Json.format[Item]
-  implicit val packagedFormat: OFormat[Packaged] = Json.format[Packaged]
-  implicit val producedFormat: OFormat[Produced] = Json.format[Produced]
+
+  implicit val packagingFormat: OFormat[Packaging] = Json.format[Packaging]
   implicit val returnFormat: OFormat[Return] = Json.format[Return]
-  implicit val successResponseFormat: OFormat[SuccessResponse] = Json.format[SuccessResponse]
+  implicit val returnSuccessResponseFormat: OFormat[ReturnSuccessResponse] = Json.format[ReturnSuccessResponse]
+  implicit val returnFailureResponseFormat: OFormat[ReturnFailureResponse] = Json.format[ReturnFailureResponse]
 
   val maxL: Long = 9999999999999L
 

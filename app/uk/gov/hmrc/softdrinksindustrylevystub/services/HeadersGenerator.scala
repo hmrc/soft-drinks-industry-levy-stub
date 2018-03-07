@@ -20,6 +20,8 @@ import org.scalacheck.Gen
 
 object HeadersGenerator {
 
+  implicit val sdilToLong = SdilNumberTransformer.sdilRefEnum
+
   def genCorrelationIdHeader: Gen[String] = {
     Gen.listOfN(
       36,

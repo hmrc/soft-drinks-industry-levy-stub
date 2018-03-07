@@ -18,7 +18,6 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import com.google.inject.Singleton
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
 
@@ -28,9 +27,10 @@ import scala.collection.mutable
 class DesSubmissionService {
 
   lazy val store: mutable.Map[String, Subscription] = mutable.Map.empty
-  lazy val returnStore: mutable.Map[String, Return] = mutable.Map.empty
+  lazy private val returnStore: mutable.Map[String, Return] = mutable.Map.empty
 
   def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
+    import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
     store(idNumber) = data
     SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber).get
   }
@@ -46,9 +46,15 @@ class DesSubmissionService {
     }
   }
 
-  def createReturnResponse(payload: Return): SuccessResponse = {
-    returnStore(payload.sdilRef) = payload
+  def createReturnResponse(payload: Return): ReturnSuccessResponse = {
+    import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
+    implicit val sdilRefToLong: Enumerable[String] = sdilRefEnum
+    returnStore(payload.sdilRef ++ payload.periodKey) = payload
     ReturnGenerator.genCreateReturnResponse.seeded(payload.sdilRef).get
+  }
+
+  def checkForExistingReturn(sdilRefAndPeriodKey: String): Boolean = {
+    returnStore.get(sdilRefAndPeriodKey).nonEmpty
   }
 
 }

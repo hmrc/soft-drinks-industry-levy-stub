@@ -18,12 +18,12 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import org.scalacheck.Gen
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.SuccessResponse
+import uk.gov.hmrc.softdrinksindustrylevystub.models.ReturnSuccessResponse
 
 object ReturnGenerator {
 
-  def genCreateReturnResponse: Gen[SuccessResponse] = {
+  def genCreateReturnResponse: Gen[ReturnSuccessResponse] = {
     pattern"999999999999".gen                                    // formBundleNumber
-  }.map(SuccessResponse.apply)
+  }.map(ReturnSuccessResponse.apply)
 
 }
