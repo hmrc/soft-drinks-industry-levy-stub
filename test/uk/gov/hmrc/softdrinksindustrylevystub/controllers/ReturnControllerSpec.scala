@@ -38,11 +38,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
   val periodKey = "17C4"
   val authHeader: (String, String) = "Authorization" -> "auth"
   val envHeader: (String, String) = "Environment" -> "clone"
-  val badEnvHeader: (String, String) = "Environment" -> "test"
   val sdilIdType = "sdil"
   val subscription: Subscription = Json.fromJson[Subscription](validCreateSubscriptionRequestInput).get
-
-
 
   override def beforeEach() {
     reset(mockDesSubmissionService)
