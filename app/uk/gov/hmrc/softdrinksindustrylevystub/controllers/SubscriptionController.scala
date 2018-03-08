@@ -26,7 +26,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
-import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genCorrelationIdHeader
+import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}

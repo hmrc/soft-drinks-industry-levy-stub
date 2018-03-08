@@ -16,33 +16,14 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import org.scalacheck._
+import org.scalacheck.Gen
 import uk.gov.hmrc.smartstub._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.ReturnSuccessResponse
 
+object ReturnGenerator {
 
-object SdilNumberTransformer {
-
-  val tolerantUtr = pattern"9999999999"
-
-  val sdilRefEnum: Enumerable[String] = pattern"ZZ9999999".imap{
-    i => i.take(2) ++ "SDIL" ++ i.takeRight(7)
-  }{ b => b.take(2) ++ b.takeRight(7) }
-
-  def convertEnum[A,B](enumA: Enumerable[A], enumB: Enumerable[B])(input: A): Option[B] =
-    enumB.get(enumA.asLong(input))
-
-  val utrToSdil = convertEnum(tolerantUtr, sdilRefEnum) _
-  val sdilToUtr = convertEnum(sdilRefEnum, tolerantUtr) _
-
-  def showTable(num: Int): Unit = {
-    for {
-      i <- 1 to num
-      utr <- tolerantUtr.get(i)
-      sdilRef <- sdilRefEnum.get(i)
-    } yield {
-      println(s"| $utr | $sdilRef |")
-    }
-
-  }
+  def genCreateReturnResponse: Gen[ReturnSuccessResponse] = {
+    pattern"999999999999".gen                                    // formBundleNumber
+  }.map(ReturnSuccessResponse.apply)
 
 }

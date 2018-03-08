@@ -2,6 +2,9 @@
 POST        /soft-drinks/subscription/:idType/:idNumber                uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.createSubscription(idType, idNumber)
 GET         /soft-drinks/subscription/details/:idType/:idNumber        uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
 
+#SDIL Return
+POST        /soft-drinks/return                                        uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.createReturn
+
 #ROSM registration
 POST        /registration/organisation/utr/:utr                        uk.gov.hmrc.softdrinksindustrylevystub.controllers.RosmController.register(utr)
 

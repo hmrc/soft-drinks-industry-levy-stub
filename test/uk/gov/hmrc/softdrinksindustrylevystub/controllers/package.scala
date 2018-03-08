@@ -407,4 +407,205 @@ package object controllers {
     "safeID", None, isEditable = false, isAnAgent = false, isAnIndividual = true, None, Some(validResponseOrganisation), validRosmResponseAddress, validRosmResponseContactDetails
   )
 
+  val validReturnPayload: JsValue = Json.parse(
+    """{
+      |    "periodKey": "17C4",
+      |    "fbType": "ZSD1",
+      |    "sdilRef": "XVSDIL000987654",
+      |    "revenueType": "Z045",
+      |    "netLevyDueTotal": 99999999999.99,
+      |    "packaging": {
+      |        "volumeSmall": [
+      |            {
+      |                "producerRef": "XVSDIL000987654",
+      |                "lowVolume": "1234",
+      |                "highVolume": "9876543"
+      |            }
+      |        ],
+      |        "volumeLarge": {
+      |            "lowVolume": "432",
+      |            "highVolume": "123234435"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 8712.01,
+      |            "highVolume": 854480.01,
+      |            "levyTotal": 639946.01
+      |        }
+      |    },
+      |    "importing": {
+      |        "volumeSmall": {
+      |            "lowVolume": "44",
+      |            "highVolume": "5675688"
+      |        },
+      |        "volumeLarge": {
+      |            "lowVolume": "453435",
+      |            "highVolume": "345456567"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 74859.01,
+      |            "highVolume": 436644.01,
+      |            "levyTotal": 2470039.01
+      |        }
+      |    },
+      |    "exporting": {
+      |        "volumeNode": {
+      |            "lowVolume": "8768",
+      |            "highVolume": "784676534"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 8068.01,
+      |            "highVolume": 172698.01,
+      |            "levyTotal": 62699738186.01
+      |        }
+      |    },
+      |    "wastage": {
+      |        "volumeNode": {
+      |            "lowVolume": "234",
+      |            "highVolume": "9874653465"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 41212.01,
+      |            "highVolume": 262503151.01,
+      |            "levyTotal": 52304161984.01
+      |        }
+      |    }
+      |}""".stripMargin
+  )
+
+  val invalidReturnPayload: JsValue = Json.parse(
+    """{
+      |    "periodKey": "17C4",
+      |    "fbType": "ZSD1WFT",
+      |    "sdilRef": "XVSDIL000987654",
+      |    "revenueType": "Z045",
+      |    "netLevyDueTotal": 99999999999.99,
+      |    "packaging": {
+      |        "volumeSmall": [
+      |            {
+      |                "producerRef": "XVSDIL000987654",
+      |                "lowVolume": "1234",
+      |                "highVolume": "9876543"
+      |            }
+      |        ],
+      |        "volumeLarge": {
+      |            "lowVolume": "432",
+      |            "highVolume": "123234435"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 8712.01,
+      |            "highVolume": 854480.01,
+      |            "levyTotal": 639946.01
+      |        }
+      |    },
+      |    "importing": {
+      |        "volumeSmall": {
+      |            "lowVolume": "44",
+      |            "highVolume": "5675688"
+      |        },
+      |        "volumeLarge": {
+      |            "lowVolume": "453435",
+      |            "highVolume": "345456567"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 74859.01,
+      |            "highVolume": 436644.01,
+      |            "levyTotal": 2470039.01
+      |        }
+      |    },
+      |    "exporting": {
+      |        "volumeNode": {
+      |            "lowVolume": "8768",
+      |            "highVolume": "784676534"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 8068.01,
+      |            "highVolume": 172698.01,
+      |            "levyTotal": 62699738186.01
+      |        }
+      |    },
+      |    "wastage": {
+      |        "volumeNode": {
+      |            "lowVolume": "234",
+      |            "highVolume": "9874653465"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 41212.01,
+      |            "highVolume": 262503151.01,
+      |            "levyTotal": 52304161984.01
+      |        }
+      |    }
+      |}""".stripMargin
+  )
+
+  val invalidPeriodKeyReturnPayload: JsValue = Json.parse(
+    """{
+      |    "periodKey": "17C4WTF",
+      |    "fbType": "ZSD1",
+      |    "sdilRef": "XVSDIL000987654",
+      |    "revenueType": "Z045",
+      |    "netLevyDueTotal": 99999999999.99,
+      |    "packaging": {
+      |        "volumeSmall": [
+      |            {
+      |                "producerRef": "XVSDIL000987654",
+      |                "lowVolume": "1234",
+      |                "highVolume": "9876543"
+      |            }
+      |        ],
+      |        "volumeLarge": {
+      |            "lowVolume": "432",
+      |            "highVolume": "123234435"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 8712.01,
+      |            "highVolume": 854480.01,
+      |            "levyTotal": 639946.01
+      |        }
+      |    },
+      |    "importing": {
+      |        "volumeSmall": {
+      |            "lowVolume": "44",
+      |            "highVolume": "5675688"
+      |        },
+      |        "volumeLarge": {
+      |            "lowVolume": "453435",
+      |            "highVolume": "345456567"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 74859.01,
+      |            "highVolume": 436644.01,
+      |            "levyTotal": 2470039.01
+      |        }
+      |    },
+      |    "exporting": {
+      |        "volumeNode": {
+      |            "lowVolume": "8768",
+      |            "highVolume": "784676534"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 8068.01,
+      |            "highVolume": 172698.01,
+      |            "levyTotal": 62699738186.01
+      |        }
+      |    },
+      |    "wastage": {
+      |        "volumeNode": {
+      |            "lowVolume": "234",
+      |            "highVolume": "9874653465"
+      |        },
+      |        "valueNode": {
+      |            "lowVolume": 41212.01,
+      |            "highVolume": 262503151.01,
+      |            "levyTotal": 52304161984.01
+      |        }
+      |    }
+      |}""".stripMargin
+  )
+
+  val validReturnResponse: JsValue = Json.parse(
+    """{
+      |    "formBundleNumber": "531989282162"
+      |}""".stripMargin
+  )
+
 }
