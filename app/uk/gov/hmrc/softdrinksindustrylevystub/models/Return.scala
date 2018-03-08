@@ -84,7 +84,6 @@ case class Packaging(
       volumeSmall.forall(_.forall(_.isValid)),
       volumeLarge.forall(_.isValid),
       valueNode.forall(_.isValid)).reduce( _ & _ )
-//    volumeSmall.map(x => x.isValid) :+ volumeLarge.isValid :+ valueNode.isValid reduce( _ & _ )
   }
 }
 
