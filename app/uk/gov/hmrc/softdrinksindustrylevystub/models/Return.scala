@@ -146,6 +146,30 @@ case class ReturnFailureResponse(
                           reason: String
                           )
 
+case object ReturnFailureResponse {
+
+  val noBpKey = ReturnFailureResponse(
+    "NOT_FOUND_BPKEY",
+    "The remote endpoint has indicated that business partner key information cannot be found for the idNumber."
+  )
+
+  val invalidPeriodKey = ReturnFailureResponse(
+    "INVALID_PERIOD_KEY",
+    "The remote endpoint has indicated that the period key in the request is invalid."
+  )
+
+  val obligationFilled = ReturnFailureResponse(
+    "OBLIGATION_FULFILLED",
+    "The remote endpoint has indicated that the obligation for the period is already fulfilled."
+  )
+
+  val invalidPayload = ReturnFailureResponse(
+    "INVALID_PAYLOAD",
+    "Submission has not passed validation. Invalid Payload."
+  )
+
+}
+
 object ReturnValidation {
 
   val sdilRefPattern = "^X[A-Z]{1}SDIL000[0-9]{6}$"

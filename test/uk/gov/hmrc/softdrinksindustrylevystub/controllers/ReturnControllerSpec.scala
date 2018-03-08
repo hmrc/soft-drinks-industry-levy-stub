@@ -24,9 +24,9 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.{Return, ReturnSuccessResponse}
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.CreateFormat.subscriptionReads
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
+import uk.gov.hmrc.softdrinksindustrylevystub.models.{Return, ReturnFailureResponse, ReturnSuccessResponse, returnSuccessResponseFormat}
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 
 class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
@@ -35,7 +35,7 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
   val mockReturnController = new ReturnController(mockDesSubmissionService)
   val utr = "9024987803"
   val sdilNumber = "XVSDIL000987654"
-  val periodKey = "18C1"
+  val periodKey = "17C4"
   val authHeader: (String, String) = "Authorization" -> "auth"
   val envHeader: (String, String) = "Environment" -> "clone"
   val badEnvHeader: (String, String) = "Environment" -> "test"
@@ -59,6 +59,10 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
         .withHeaders(envHeader, authHeader))
 
       status(response) mustBe FORBIDDEN
+
+      Json.fromJson[ReturnFailureResponse](contentAsJson(response))
+        .getOrElse(ReturnFailureResponse("UNKNOWN", "this didn't work")) mustBe ReturnFailureResponse.noBpKey
+
     }
 
     "return 400 bad request for malformed periodKey in json payload " in {
@@ -70,11 +74,12 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
         .withHeaders(envHeader, authHeader))
 
       status(response) mustBe BAD_REQUEST
+      Json.fromJson[ReturnFailureResponse](contentAsJson(response))
+        .getOrElse(ReturnFailureResponse("UNKNOWN", "this didn't work")) mustBe ReturnFailureResponse.invalidPeriodKey
     }
 
     "return 403 forbidden for already filed return " in {
-
-      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(None)
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(subscription))
       when(mockDesSubmissionService.checkForExistingReturn(sdilNumber + periodKey)).thenReturn(true)
 
       val response = mockReturnController.createReturn(FakeRequest("POST", "/soft-drinks/return/")
@@ -82,6 +87,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
         .withHeaders(envHeader, authHeader))
 
       status(response) mustBe FORBIDDEN
+      Json.fromJson[ReturnFailureResponse](contentAsJson(response))
+        .getOrElse(ReturnFailureResponse("UNKNOWN", "this didn't work")) mustBe ReturnFailureResponse.obligationFilled
     }
 
     "return 200 for successful return " in {
@@ -97,6 +104,9 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
         .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
+      Json.fromJson[ReturnSuccessResponse](contentAsJson(response))
+        .getOrElse(Nil) mustBe res
+
     }
 
     "return 400 bad request when sending invalid return  payload " in {
@@ -108,6 +118,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
         .withHeaders(envHeader, authHeader))
 
       status(response) mustBe BAD_REQUEST
+      Json.fromJson[ReturnFailureResponse](contentAsJson(response))
+        .getOrElse(ReturnFailureResponse("UNKNOWN", "this didn't work")) mustBe ReturnFailureResponse.invalidPayload
 
     }
   }

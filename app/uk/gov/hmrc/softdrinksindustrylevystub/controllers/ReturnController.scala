@@ -33,11 +33,11 @@ class ReturnController @Inject()(desSubmissionService: DesSubmissionService) ext
     implicit request: Request[JsValue] =>
       request.body.validate[Return] match {
         case JsSuccess(a,_) if desSubmissionService.retrieveSubscriptionDetails("sdil",a.sdilRef).isEmpty =>
-          Forbidden(Json.toJson(noBpKey))
+          Forbidden(Json.toJson(ReturnFailureResponse.noBpKey))
         case JsSuccess(a,_) if !a.periodKey.matches(ReturnValidation.periodKeyPattern) =>
-          BadRequest(Json.toJson(invalidPeriodKey))
+          BadRequest(Json.toJson(ReturnFailureResponse.invalidPeriodKey))
         case JsSuccess(a,_) if desSubmissionService.checkForExistingReturn(a.sdilRef + a.periodKey) =>
-          Forbidden(Json.toJson(obligationFilled))
+          Forbidden(Json.toJson(ReturnFailureResponse.obligationFilled))
         case JsSuccess(a,_) if a.isValid =>
           Ok(Json.toJson(
             desSubmissionService.createReturnResponse(a)
@@ -45,33 +45,14 @@ class ReturnController @Inject()(desSubmissionService: DesSubmissionService) ext
             ("CorrelationId", genCorrelationIdHeader.seeded(a.sdilRef)(SdilNumberTransformer.sdilRefEnum).get)
           )
         case _ =>
-          BadRequest(Json.toJson(invalidPayload))
+          BadRequest(Json.toJson(ReturnFailureResponse.invalidPayload))
       }
   }
-
-  val noBpKey = ReturnFailureResponse(
-    "NOT_FOUND_BPKEY",
-    "The remote endpoint has indicated that business partner key information cannot be found for the idNumber."
-  )
-
-  val invalidPeriodKey = ReturnFailureResponse(
-    "INVALID_PERIOD_KEY",
-    "The remote endpoint has indicated that the period key in the request is invalid."
-  )
-
-  val obligationFilled = ReturnFailureResponse(
-    "OBLIGATION_FULFILLED",
-    "The remote endpoint has indicated that the obligation for the period is already fulfilled."
-  )
-
-  val invalidPayload = ReturnFailureResponse(
-    "INVALID_PAYLOAD",
-    "Submission has not passed validation. Invalid Payload."
-  )
 
   implicit val sdilToLong: Enumerable[String] = pattern"ZZ9999999994".imap{
     i => i.take(2) ++ "SDIL" ++ i.substring(2,7) ++ "C" ++ i.takeRight(1)
   }{ b => b.take(2) ++ b.takeRight(9) }
 
-
 }
+
+
