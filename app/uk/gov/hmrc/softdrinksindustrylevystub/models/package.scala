@@ -51,7 +51,7 @@ package object models {
   implicit val failureResponseFormat: OFormat[FailureResponse] = Json.format[FailureResponse]
 
   // SDIL return formatters
-  implicit val monetaryValuesFormat: OFormat[monetaryValues] = Json.format[monetaryValues]
+  implicit val monetaryValuesFormat: OFormat[MonetaryValues] = Json.format[MonetaryValues]
   implicit val volumeFormat: OFormat[Volume] = Json.format[Volume]
   implicit val expoWastedFormat: OFormat[ExpoWasted] = Json.format[ExpoWasted]
   implicit val importingFormat: OFormat[Importing] = Json.format[Importing]

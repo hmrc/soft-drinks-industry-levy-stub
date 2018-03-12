@@ -46,7 +46,7 @@ case class Return(
 
 case class ExpoWasted(
                     values: Option[Volume],
-                    monetaryValues: Option[monetaryValues]
+                    monetaryValues: Option[MonetaryValues]
                     ) {
   def isValid: Boolean = {
     Seq(
@@ -59,7 +59,7 @@ case class ExpoWasted(
 case class Importing(
                     volumeSmall: Option[Volume],
                     volumeLarge: Option[Volume],
-                    monetaryValues: Option[monetaryValues]
+                    monetaryValues: Option[MonetaryValues]
                     ) {
   def isValid: Boolean = {
     Seq(
@@ -73,7 +73,7 @@ case class Importing(
 case class Packaging(
                     volumeSmall: Option[List[Item]],
                     volumeLarge: Option[Volume],
-                    monetaryValues: Option[monetaryValues]
+                    monetaryValues: Option[MonetaryValues]
                     ) {
   def isValid: Boolean = {
     Seq(
@@ -116,7 +116,7 @@ case class Volume(
 
 }
 
-case class monetaryValues(
+case class MonetaryValues(
                       lowVolume: Option[BigDecimal],
                       highVolume: Option[BigDecimal],
                       levySubtotal: Option[BigDecimal]
