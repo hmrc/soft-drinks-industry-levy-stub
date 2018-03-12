@@ -20,9 +20,7 @@ import play.api.Logger
 
 case class Return(
                    periodKey: String,
-                   fbType: String,
-                   sdilRef: String,
-                   revenueType: String,
+                   formBundleType: String,
                    netLevyDueTotal: BigDecimal,
                    packaging: Option[Packaging],
                    importing: Option[Importing],
@@ -35,9 +33,7 @@ case class Return(
     import ReturnValidation._
     Seq(
       validateString("periodKey", periodKey, periodKeyPattern),
-      validateString("fbType", fbType, fbTypePattern),
-      validateString("sdilRef", sdilRef, sdilRefPattern),
-      validateString("revenueType", revenueType, revenueTypePattern),
+      validateString("formBundleType", formBundleType, formBundleTypePattern),
       validateMonetary("netLevyDueTotal", netLevyDueTotal),
       packaging.forall(_.isValid),
       importing.forall(_.isValid),
@@ -49,13 +45,13 @@ case class Return(
 }
 
 case class ExpoWasted(
-                    volumeNode: Option[Volume],
-                    valueNode: Option[ValueNode]
+                    values: Option[Volume],
+                    monetaryValues: Option[monetaryValues]
                     ) {
   def isValid: Boolean = {
     Seq(
-      volumeNode.forall(_.isValid),
-      valueNode.forall(_.isValid)
+      values.forall(_.isValid),
+      monetaryValues.forall(_.isValid)
     ).reduce( _ & _ )
   }
 }
@@ -63,13 +59,13 @@ case class ExpoWasted(
 case class Importing(
                     volumeSmall: Option[Volume],
                     volumeLarge: Option[Volume],
-                    valueNode: Option[ValueNode]
+                    monetaryValues: Option[monetaryValues]
                     ) {
   def isValid: Boolean = {
     Seq(
       volumeSmall.forall(_.isValid),
       volumeLarge.forall(_.isValid),
-      valueNode.forall(_.isValid)
+      monetaryValues.forall(_.isValid)
     ).reduce( _ & _ )
   }
 }
@@ -77,13 +73,13 @@ case class Importing(
 case class Packaging(
                     volumeSmall: Option[List[Item]],
                     volumeLarge: Option[Volume],
-                    valueNode: Option[ValueNode]
+                    monetaryValues: Option[monetaryValues]
                     ) {
   def isValid: Boolean = {
     Seq(
       volumeSmall.forall(_.forall(_.isValid)),
       volumeLarge.forall(_.isValid),
-      valueNode.forall(_.isValid)).reduce( _ & _ )
+      monetaryValues.forall(_.isValid)).reduce( _ & _ )
   }
 }
 
@@ -120,10 +116,10 @@ case class Volume(
 
 }
 
-case class ValueNode(
+case class monetaryValues(
                       lowVolume: Option[BigDecimal],
                       highVolume: Option[BigDecimal],
-                      levyTotal: Option[BigDecimal]
+                      levySubtotal: Option[BigDecimal]
                     ) {
 
   def isValid: Boolean = {
@@ -131,7 +127,7 @@ case class ValueNode(
     Seq(
       validateMonetary("lowVolume", lowVolume),
       validateMonetary("highVolume", highVolume),
-      validateMonetary("levyTotal", levyTotal)
+      validateMonetary("levySubtotal", levySubtotal)
     ).reduce( _ & _ )
   }
 }
@@ -167,14 +163,18 @@ case object ReturnFailureResponse {
     "Submission has not passed validation. Invalid Payload."
   )
 
+  val invalidSdilRef = ReturnFailureResponse(
+    "INVALID_SDIL_REFERENCE",
+    "Submission has not passed validation. Invalid parameter sdilReference."
+  )
+
 }
 
 object ReturnValidation {
 
-  val sdilRefPattern = "^X[A-Z]{1}SDIL000[0-9]{6}$"
+  val sdilRefPattern = "^X[A-Z]SDIL000[0-9]{6}$"
   val periodKeyPattern = "^[0-9]{2}C[1-4]{1}$"
-  val fbTypePattern = "^ZSD1$"
-  val revenueTypePattern = "^Z045$"
+  val formBundleTypePattern = "^ZSD1$"
   val volumeStringPattern = "^[0-9]{1,13}$"
 
   def validateString(label: String, value: String, regex: String): Boolean = {

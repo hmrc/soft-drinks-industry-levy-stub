@@ -34,7 +34,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
   val mockReturnController = new ReturnController(mockDesSubmissionService)
   val utr = "9024987803"
-  val sdilNumber = "XVSDIL000987654"
+  val sdilRef = "XVSDIL000987654"
+  val invalidSdilRef = "XVSDIL000987654WTF"
   val periodKey = "17C4"
   val authHeader: (String, String) = "Authorization" -> "auth"
   val envHeader: (String, String) = "Environment" -> "clone"
@@ -49,9 +50,9 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
 
     "return 403 forbidden for no business partner record for given SDIL ref number " in {
       when(mockDesSubmissionService
-        .retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(None)
+        .retrieveSubscriptionDetails(sdilIdType, sdilRef)).thenReturn(None)
 
-      val response = mockReturnController.createReturn(FakeRequest("POST", "/soft-drinks/return/")
+      val response = mockReturnController.createReturn(sdilRef)(FakeRequest("POST", "/soft-drinks/return/")
         .withBody(validReturnPayload)
         .withHeaders(envHeader, authHeader))
 
@@ -62,11 +63,24 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
 
     }
 
+    "return 400 bad request for malformed sdilRef parameter " in {
+
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilRef)).thenReturn(Some(subscription))
+
+      val response = mockReturnController.createReturn(invalidSdilRef)(FakeRequest("POST", "/soft-drinks/return/")
+        .withBody(validReturnPayload)
+        .withHeaders(envHeader, authHeader))
+
+      status(response) mustBe BAD_REQUEST
+      Json.fromJson[ReturnFailureResponse](contentAsJson(response))
+        .getOrElse(ReturnFailureResponse("UNKNOWN", "this didn't work")) mustBe ReturnFailureResponse.invalidSdilRef
+    }
+
     "return 400 bad request for malformed periodKey in json payload " in {
 
-      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(subscription))
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilRef)).thenReturn(Some(subscription))
 
-      val response = mockReturnController.createReturn(FakeRequest("POST", "/soft-drinks/return/")
+      val response = mockReturnController.createReturn(sdilRef)(FakeRequest("POST", "/soft-drinks/return/")
         .withBody(invalidPeriodKeyReturnPayload)
         .withHeaders(envHeader, authHeader))
 
@@ -75,15 +89,15 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
         .getOrElse(ReturnFailureResponse("UNKNOWN", "this didn't work")) mustBe ReturnFailureResponse.invalidPeriodKey
     }
 
-    "return 403 forbidden for already filed return " in {
-      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(subscription))
-      when(mockDesSubmissionService.checkForExistingReturn(sdilNumber + periodKey)).thenReturn(true)
+    "return 409 conflict for already filed return " in {
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilRef)).thenReturn(Some(subscription))
+      when(mockDesSubmissionService.checkForExistingReturn(sdilRef + periodKey)).thenReturn(true)
 
-      val response = mockReturnController.createReturn(FakeRequest("POST", "/soft-drinks/return/")
+      val response = mockReturnController.createReturn(sdilRef)(FakeRequest("POST", "/soft-drinks/return/")
         .withBody(validReturnPayload)
         .withHeaders(envHeader, authHeader))
 
-      status(response) mustBe FORBIDDEN
+      status(response) mustBe CONFLICT
       Json.fromJson[ReturnFailureResponse](contentAsJson(response))
         .getOrElse(ReturnFailureResponse("UNKNOWN", "this didn't work")) mustBe ReturnFailureResponse.obligationFilled
     }
@@ -93,10 +107,10 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val ret = Json.fromJson[Return](validReturnPayload).get
       val res = Json.fromJson[ReturnSuccessResponse](validReturnResponse).get
 
-      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(subscription))
-      when(mockDesSubmissionService.createReturnResponse(ret)).thenReturn(res)
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilRef)).thenReturn(Some(subscription))
+      when(mockDesSubmissionService.createReturnResponse(ret, sdilRef)).thenReturn(res)
 
-      val response = mockReturnController.createReturn(FakeRequest("POST", "/soft-drinks/return/")
+      val response = mockReturnController.createReturn(sdilRef)(FakeRequest("POST", "/soft-drinks/return/")
         .withBody(validReturnPayload)
         .withHeaders(envHeader, authHeader))
 
@@ -108,9 +122,9 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
 
     "return 400 bad request when sending invalid return  payload " in {
 
-      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(subscription))
+      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilRef)).thenReturn(Some(subscription))
 
-      val response = mockReturnController.createReturn(FakeRequest("POST", "/soft-drinks/return/")
+      val response = mockReturnController.createReturn(sdilRef)(FakeRequest("POST", "/soft-drinks/return/")
         .withBody(invalidReturnPayload)
         .withHeaders(envHeader, authHeader))
 
