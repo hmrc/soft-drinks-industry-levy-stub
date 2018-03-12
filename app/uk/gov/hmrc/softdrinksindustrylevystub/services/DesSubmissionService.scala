@@ -46,11 +46,11 @@ class DesSubmissionService {
     }
   }
 
-  def createReturnResponse(payload: Return): ReturnSuccessResponse = {
+  def createReturnResponse(payload: Return, sdilRef: String): ReturnSuccessResponse = {
     import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
     implicit val sdilRefToLong: Enumerable[String] = sdilRefEnum
-    returnStore(payload.sdilRef ++ payload.periodKey) = payload
-    ReturnGenerator.genCreateReturnResponse.seeded(payload.sdilRef).get
+    returnStore(sdilRef ++ payload.periodKey) = payload
+    ReturnGenerator.genCreateReturnResponse.seeded(sdilRef).get
   }
 
   def checkForExistingReturn(sdilRefAndPeriodKey: String): Boolean = {

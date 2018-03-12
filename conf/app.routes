@@ -3,7 +3,7 @@ POST        /soft-drinks/subscription/:idType/:idNumber                uk.gov.hm
 GET         /soft-drinks/subscription/details/:idType/:idNumber        uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
 
 #SDIL Return
-POST        /soft-drinks/return                                        uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.createReturn
+POST        /soft-drinks/:sdilRef/return                               uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.createReturn(sdilRef)
 
 #ROSM registration
 POST        /registration/organisation/utr/:utr                        uk.gov.hmrc.softdrinksindustrylevystub.controllers.RosmController.register(utr)

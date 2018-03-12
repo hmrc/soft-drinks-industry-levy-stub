@@ -29,20 +29,22 @@ import uk.gov.hmrc.softdrinksindustrylevystub.services.{DesSubmissionService, Sd
 class ReturnController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController
   with ExtraActions {
 
-  def createReturn: Action[JsValue] = AuthAndEnvAction(parse.json) {
+  def createReturn(sdilRef: String): Action[JsValue] = AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
       request.body.validate[Return] match {
-        case JsSuccess(a,_) if desSubmissionService.retrieveSubscriptionDetails("sdil",a.sdilRef).isEmpty =>
+        case JsSuccess(_,_) if !sdilRef.matches(ReturnValidation.sdilRefPattern) =>
+          BadRequest(Json.toJson(ReturnFailureResponse.invalidSdilRef))
+        case JsSuccess(a,_) if desSubmissionService.retrieveSubscriptionDetails("sdil",sdilRef).isEmpty =>
           Forbidden(Json.toJson(ReturnFailureResponse.noBpKey))
         case JsSuccess(a,_) if !a.periodKey.matches(ReturnValidation.periodKeyPattern) =>
           BadRequest(Json.toJson(ReturnFailureResponse.invalidPeriodKey))
-        case JsSuccess(a,_) if desSubmissionService.checkForExistingReturn(a.sdilRef + a.periodKey) =>
-          Forbidden(Json.toJson(ReturnFailureResponse.obligationFilled))
+        case JsSuccess(a,_) if desSubmissionService.checkForExistingReturn(sdilRef + a.periodKey) =>
+          Conflict(Json.toJson(ReturnFailureResponse.obligationFilled))
         case JsSuccess(a,_) if a.isValid =>
           Ok(Json.toJson(
-            desSubmissionService.createReturnResponse(a)
+            desSubmissionService.createReturnResponse(a, sdilRef)
           )).withHeaders(
-            ("CorrelationId", genCorrelationIdHeader.seeded(a.sdilRef)(SdilNumberTransformer.sdilRefEnum).get)
+            ("CorrelationId", genCorrelationIdHeader.seeded(sdilRef)(SdilNumberTransformer.sdilRefEnum).get)
           )
         case _ =>
           BadRequest(Json.toJson(ReturnFailureResponse.invalidPayload))
