@@ -198,7 +198,7 @@ object ReturnValidation {
   }
 
   def validateMonetary(label: String, value: Option[BigDecimal]): Boolean = {
-    val n: BigDecimal = 99999999999.99
+    val n: BigDecimal = 49999999999.99
     value match {
       case Some(a) if a >= -n && a <= n => true
       case _ =>
@@ -208,7 +208,7 @@ object ReturnValidation {
   }
 
   def validateMonetary(label: String, value: BigDecimal): Boolean = {
-    val n: BigDecimal = 99999999999.99
+    val n: BigDecimal = 49999999999.99
     value match {
       case a if a >= -n && a <= n => true
       case _ =>
