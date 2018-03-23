@@ -411,7 +411,7 @@ package object controllers {
     """{
       |    "periodKey": "17C4",
       |    "formBundleType": "ZSD1",
-      |    "netLevyDueTotal": 99999999999.99,
+      |    "netLevyDueTotal": 50000000000.00,
       |    "packaging": {
       |        "volumeSmall": [
       |            {
@@ -446,25 +446,25 @@ package object controllers {
       |        }
       |    },
       |    "exporting": {
-      |        "values": {
+      |        "volumes": {
       |            "lowVolume": "8768",
       |            "highVolume": "784676534"
       |        },
       |        "monetaryValues": {
       |            "lowVolume": 8068.01,
       |            "highVolume": 172698.01,
-      |            "levySubtotal": 62699738186.01
+      |            "levySubtotal": 6699738186.01
       |        }
       |    },
       |    "wastage": {
-      |        "values": {
+      |        "volumes": {
       |            "lowVolume": "234",
       |            "highVolume": "9874653465"
       |        },
       |        "monetaryValues": {
       |            "lowVolume": 41212.01,
       |            "highVolume": 262503151.01,
-      |            "levySubtotal": 52304161984.01
+      |            "levySubtotal": 5304161984.01
       |        }
       |    }
       |}""".stripMargin
