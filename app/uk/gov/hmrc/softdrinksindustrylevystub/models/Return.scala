@@ -176,6 +176,7 @@ object ReturnValidation {
   val periodKeyPattern = "^[0-9]{2}C[1-4]{1}$"
   val formBundleTypePattern = "^ZSD1$"
   val volumeStringPattern = "^[0-9]{1,13}$"
+  val monetaryHighLow: BigDecimal = 50000000000.00
 
   def validateString(label: String, value: String, regex: String): Boolean = {
     val r = regex.r
@@ -198,21 +199,19 @@ object ReturnValidation {
   }
 
   def validateMonetary(label: String, value: Option[BigDecimal]): Boolean = {
-    val n: BigDecimal = 99999999999.99
     value match {
-      case Some(a) if a >= -n && a <= n => true
+      case Some(a) if a >= -monetaryHighLow && a <= monetaryHighLow => true
       case _ =>
-        Logger.error(s"Invalid Return: $label $value is either > $n or < -$n")
+        Logger.error(s"Invalid Return: $label $value is either > $monetaryHighLow or < -$monetaryHighLow")
         false
     }
   }
 
   def validateMonetary(label: String, value: BigDecimal): Boolean = {
-    val n: BigDecimal = 99999999999.99
     value match {
-      case a if a >= -n && a <= n => true
+      case a if a >= -monetaryHighLow && a <= monetaryHighLow => true
       case _ =>
-        Logger.error(s"Invalid Return: $label $value is either > $n or < -$n")
+        Logger.error(s"Invalid Return: $label $value is either > $monetaryHighLow or < -$monetaryHighLow")
         false
     }
   }
