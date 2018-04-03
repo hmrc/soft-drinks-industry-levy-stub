@@ -9,4 +9,5 @@ POST        /soft-drinks/:sdilRef/return                               uk.gov.hm
 POST        /registration/organisation/utr/:utr                        uk.gov.hmrc.softdrinksindustrylevystub.controllers.RosmController.register(utr)
 
 # reset
-GET         /reset                                                     uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.reset
+GET         /reset-registration                                        uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.reset
+GET         /reset-returns                                             uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.resetReturns
