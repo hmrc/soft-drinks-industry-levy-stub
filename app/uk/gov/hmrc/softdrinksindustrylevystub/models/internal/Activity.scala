@@ -51,7 +51,7 @@ case class InternalActivity (activity: Map[ActivityType.Value, LitreBands]) exte
 
   def isProducer: Boolean = activity(ProducedOwnBrand) != empty || activity(Copackee) != empty
   def isLarge: Boolean = sumOfLiableLitreRates._1 + sumOfLiableLitreRates._2 >= 1000000
-  def isContractPacker: Boolean = false //never set
+  def isContractPacker: Boolean = activity(CopackerAll) != empty
   def isImporter: Boolean = activity(Imported) != empty
 }
 
