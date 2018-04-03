@@ -24,11 +24,13 @@ object SdilNumberTransformer {
 
   val tolerantUtr = pattern"9999999999"
 
-  val sdilRefEnum: Enumerable[String] = pattern"ZZ9999999".imap{
-    i => i.take(2) ++ "SDIL" ++ i.takeRight(7)
-  }{ b => b.take(2) ++ b.takeRight(7) }
+  val sdilRefEnum: Enumerable[String] = pattern"Z999999".imap {
+    i => s"X${i.head}SDIL000${i.tail}"
+  } { b =>
+    b.tail.head + b.drop(9)
+  }
 
-  def convertEnum[A,B](enumA: Enumerable[A], enumB: Enumerable[B])(input: A): Option[B] =
+  def convertEnum[A, B](enumA: Enumerable[A], enumB: Enumerable[B])(input: A): Option[B] =
     enumB.get(enumA.asLong(input))
 
   val utrToSdil = convertEnum(tolerantUtr, sdilRefEnum) _

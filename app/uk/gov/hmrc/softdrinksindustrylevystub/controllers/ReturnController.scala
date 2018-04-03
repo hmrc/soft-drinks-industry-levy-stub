@@ -19,7 +19,7 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 import javax.inject.Inject
 
 import play.api.libs.json.{JsSuccess, JsValue, Json}
-import play.api.mvc.{Action, Request}
+import play.api.mvc.{Action, AnyContent, Request}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
@@ -54,6 +54,11 @@ class ReturnController @Inject()(desSubmissionService: DesSubmissionService) ext
   implicit val sdilToLong: Enumerable[String] = pattern"ZZ9999999994".imap{
     i => i.take(2) ++ "SDIL" ++ i.substring(2,7) ++ "C" ++ i.takeRight(1)
   }{ b => b.take(2) ++ b.takeRight(9) }
+
+  def resetReturns: Action[AnyContent] = Action {
+    desSubmissionService.returnStore.clear
+    Ok
+  }
 
 }
 
