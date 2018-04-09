@@ -82,7 +82,9 @@ object CreateFormat {
         val imported = ActivityType.Imported -> litreReads("Imported")
         val packaged = ActivityType.Copackee -> litreReads("Packaged")
 
-        InternalActivity(Map(produced, imported, packaged))
+        val copacks: LitreBands = (regJson \ "details" \ "contractPacker").toOption.fold(0L -> 0L)(_ => 1L -> 1L)
+
+        InternalActivity(Map(produced, imported, packaged, ActivityType.CopackerAll -> copacks))
       }
 
       JsSuccess(Subscription(
