@@ -50,6 +50,15 @@ object RosmGenerator {
     } yield s"$username$at$domain$ending"
   }
 
+  private def genSafeId = {
+    for {
+      a <- Gen.const("X")
+      b <- Gen.alphaUpperChar
+      c <- Gen.const("000")
+      d <- Gen.listOfN(10, Gen.numChar).map(_.mkString)
+    } yield s"$a$b$c$d"
+  }
+
   private def genRosmResponseContactDetails: Gen[RosmResponseContactDetails] = {
     Gen.ukPhoneNumber.almostAlways |@| //primaryPhoneNumber
       Gen.ukPhoneNumber.sometimes |@| //secondaryPhoneNumber
@@ -79,15 +88,15 @@ object RosmGenerator {
   }
 
   def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[Option[RosmRegisterResponse]] = {
-    Gen.alphaNumStr |@| //safeId
+      genSafeId                                     |@| //safeId
       shouldGenAgentRef(rosmRequest.isAnAgent, utr) |@| //agentReferenceNumber
-      Gen.boolean |@| //isEditable
-      rosmRequest.isAnAgent |@| //isAnAgent
-      Gen.const(rosmRequest.individual.isDefined) |@| //isAnIndividual
-      genIndividual(utr).sometimes |@| //individual
-      Gen.const(shouldGenOrg(utr)).sometimes |@| //organisation
-      genRosmResponseAddress |@| //address
-      genRosmResponseContactDetails //contactDetails
+      Gen.boolean                                   |@| //isEditable
+      rosmRequest.isAnAgent                         |@| //isAnAgent
+      Gen.const(rosmRequest.individual.isDefined)   |@| //isAnIndividual
+      genIndividual(utr).sometimes                  |@| //individual
+      Gen.const(shouldGenOrg(utr)).sometimes        |@| //organisation
+      genRosmResponseAddress                        |@| //address
+      genRosmResponseContactDetails                     //contactDetails
   }.map(RosmRegisterResponse.apply).usually
 
 }
