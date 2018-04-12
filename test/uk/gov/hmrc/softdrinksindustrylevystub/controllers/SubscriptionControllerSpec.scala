@@ -72,7 +72,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
             ActivityType.ProducedOwnBrand -> ((2L, 2L)),
             ActivityType.Imported -> ((2L, 2L)),
             ActivityType.CopackerAll -> ((0L, 0L))
-          )
+          ),
+          isLarge = false
         ),
         LocalDate.of(1920, 2, 29),
         List(

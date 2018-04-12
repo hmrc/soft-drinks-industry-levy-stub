@@ -29,7 +29,8 @@ sealed trait Activity {
   def isSmallProducer: Boolean = isProducer && !isLarge
 }
 
-case class InternalActivity (activity: Map[ActivityType.Value, LitreBands]) extends Activity {
+case class InternalActivity(activity: Map[ActivityType.Value, LitreBands], isLarge: Boolean) extends Activity {
+
   import ActivityType._
 
   lazy val empty: LitreBands = (0, 0)
@@ -38,10 +39,10 @@ case class InternalActivity (activity: Map[ActivityType.Value, LitreBands]) exte
   val upperRate: Long = 24
 
   val add: (Litres, Litres) = activity
-    .filter(x => List(ProducedOwnBrand,CopackerAll,Imported).contains(x._1))
-    .values.foldLeft((0L,0L)){
-      case ((aL,aH), (pL,pH)) => (aL+pL, aH+pH)
-    }
+    .filter(x => List(ProducedOwnBrand, CopackerAll, Imported).contains(x._1))
+    .values.foldLeft((0L, 0L)) {
+    case ((aL, aH), (pL, pH)) => (aL + pL, aH + pH)
+  }
 
   def sumOfLiableLitreRates: LitreBands = {
     activity.get(CopackerSmall).fold(add) {
@@ -49,9 +50,10 @@ case class InternalActivity (activity: Map[ActivityType.Value, LitreBands]) exte
     }
   }
 
-  def isProducer: Boolean = activity(ProducedOwnBrand) != empty || activity(Copackee) != empty
-  def isLarge: Boolean = sumOfLiableLitreRates._1 + sumOfLiableLitreRates._2 >= 1000000
+  def isProducer: Boolean = activity(ProducedOwnBrand) != empty
+
   def isContractPacker: Boolean = activity(CopackerAll) != empty
+
   def isImporter: Boolean = activity(Imported) != empty
 }
 
