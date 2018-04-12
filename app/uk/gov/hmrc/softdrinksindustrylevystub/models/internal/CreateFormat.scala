@@ -82,9 +82,9 @@ object CreateFormat {
         val imported = ActivityType.Imported -> litreReads("Imported")
         val packaged = ActivityType.CopackerAll -> litreReads("Packaged")
 
-        val isLarge = (regJson \ "details" \ "producerDetails" \ ("produce" /*LessThan*/ + "MillionLitres")).asOpt[Boolean].getOrElse(false)
+        val isSmall = (regJson \ "details" \ "producerDetails" \ ("produce" /*LessThan*/ + "MillionLitres")).asOpt[Boolean].getOrElse(true)
 
-        InternalActivity(Map(produced, imported, packaged), isLarge)
+        InternalActivity(Map(produced, imported, packaged), isLarge = !isSmall)
       }
 
       JsSuccess(Subscription(
