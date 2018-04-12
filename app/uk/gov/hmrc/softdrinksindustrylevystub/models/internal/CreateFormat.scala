@@ -80,11 +80,11 @@ object CreateFormat {
       def activity = {
         val produced = ActivityType.ProducedOwnBrand -> litreReads("Produced")
         val imported = ActivityType.Imported -> litreReads("Imported")
-        val packaged = ActivityType.Copackee -> litreReads("Packaged")
+        val packaged = ActivityType.CopackerAll -> litreReads("Packaged")
 
-        val copacks: LitreBands = (regJson \ "details" \ "contractPacker").toOption.fold(0L -> 0L)(_ => 1L -> 1L)
+        val isLarge = (regJson \ "details" \ "producerDetails" \ ("produce" /*LessThan*/ + "MillionLitres")).asOpt[Boolean].getOrElse(false)
 
-        InternalActivity(Map(produced, imported, packaged, ActivityType.CopackerAll -> copacks))
+        InternalActivity(Map(produced, imported, packaged), isLarge)
       }
 
       JsSuccess(Subscription(
