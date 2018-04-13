@@ -26,23 +26,19 @@ import scala.collection.mutable
 @Singleton
 class DesSubmissionService {
 
-  lazy val store: mutable.Map[String, Subscription] = mutable.Map.empty
+  lazy val store: mutable.Map[String, Option[Subscription]] = SubscriptionGenerator.store
   lazy val returnStore: mutable.Map[String, Return] = mutable.Map.empty
 
   def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
     import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
-    store(idNumber) = data
+    store(idNumber) = Some(data)
     SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber).get
   }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Option[Subscription] = {
     idType match {
-      case "utr" => store.get(idNumber)
-      case "sdil" => SdilNumberTransformer.sdilToUtr(idNumber) flatMap {
-        x => {
-          store.get(x)
-        }
-      }
+      case "utr" => store.get(idNumber).flatten
+      case "sdil" => SdilNumberTransformer.sdilToUtr(idNumber) flatMap { store.get(_).flatten }
     }
   }
 
