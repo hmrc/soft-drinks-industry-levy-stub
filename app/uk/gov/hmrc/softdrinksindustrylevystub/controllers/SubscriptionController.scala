@@ -17,7 +17,6 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.libs.json._
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.controller.BaseController
@@ -28,7 +27,6 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 
-import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 @Singleton

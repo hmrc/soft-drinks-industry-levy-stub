@@ -50,10 +50,10 @@ case class InternalActivity(activity: Map[ActivityType.Value, LitreBands], isLar
     }
   }
 
-  def isProducer: Boolean = activity(ProducedOwnBrand) != empty
+  def isProducer: Boolean = activity.get(ProducedOwnBrand).exists(_ != empty)
 
-  def isContractPacker: Boolean = activity(CopackerAll) != empty
+  def isContractPacker: Boolean = activity.get(CopackerAll).exists(_ != empty)
 
-  def isImporter: Boolean = activity(Imported) != empty
+  def isImporter: Boolean = activity.get(Imported).exists(_ != empty)
 }
 
