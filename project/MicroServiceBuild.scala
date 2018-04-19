@@ -13,7 +13,7 @@ object MicroServiceBuild extends Build with MicroService {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "stub-data-generator" % "0.4.0",
+    "uk.gov.hmrc" %% "stub-data-generator" % "0.5.0",
     "uk.gov.hmrc" %% "microservice-bootstrap" % "6.14.0",
     "uk.gov.hmrc" %% "play-url-binders" % "2.1.0",
     "uk.gov.hmrc" %% "domain" % "4.1.0",
