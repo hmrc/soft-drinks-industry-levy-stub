@@ -99,5 +99,5 @@ object RosmGenerator {
     contactDetails <- genRosmResponseContactDetails
   } yield {
     RosmRegisterResponse(safeId, agentReferenceNumber, isEditable, isAnAgent, isAnIndividual, individual, organisation, address, contactDetails)
-  }).rarely
+  }).usually
 }
