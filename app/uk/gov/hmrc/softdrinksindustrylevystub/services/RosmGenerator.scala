@@ -32,14 +32,14 @@ object RosmGenerator {
 
   private def addressLine = variableLengthString(0, 35)
 
-  private def genRosmResponseAddress: Gen[RosmResponseAddress] = {
-    Gen.oneOf("The house", "50") |@| //addressLine1
-      Gen.oneOf("The Street", "The Road", "The Lane").almostAlways |@| //addressLine2
-      addressLine.almostAlways |@| //addressLine3
-      addressLine.rarely |@| //addressLine4
-      Gen.const("GB") |@| //countryCode
-      Gen.postcode //postalCode
-  }.map(RosmResponseAddress.apply)
+  private def genRosmResponseAddress: Gen[RosmResponseAddress] = (
+    Gen.oneOf("The house", "50"), //addressLine1
+    Gen.oneOf("The Street", "The Road", "The Lane").almostAlways, //addressLine2
+    addressLine.almostAlways, //addressLine3
+    addressLine.rarely, //addressLine4
+    Gen.const("GB"), //countryCode
+    Gen.postcode //postalCode
+  ).mapN(RosmResponseAddress.apply)
 
   private def genEmail = {
     for {
@@ -59,12 +59,12 @@ object RosmGenerator {
     } yield s"$a$b$c$d"
   }
 
-  private def genRosmResponseContactDetails: Gen[RosmResponseContactDetails] = {
-    Gen.ukPhoneNumber.almostAlways |@| //primaryPhoneNumber
-      Gen.ukPhoneNumber.sometimes |@| //secondaryPhoneNumber
-      Gen.ukPhoneNumber.rarely |@| //faxNumber
-      genEmail.almostAlways //emailAddress
-  }.map(RosmResponseContactDetails.apply)
+  private def genRosmResponseContactDetails: Gen[RosmResponseContactDetails] = (
+    Gen.ukPhoneNumber.almostAlways, //primaryPhoneNumber
+    Gen.ukPhoneNumber.sometimes, //secondaryPhoneNumber
+    Gen.ukPhoneNumber.rarely, //faxNumber
+    genEmail.almostAlways //emailAddress
+  ).mapN(RosmResponseContactDetails.apply)
 
   private def shouldGenOrg(utr: String): OrganisationResponse = {
     import RosmOrganisationType._
@@ -87,16 +87,17 @@ object RosmGenerator {
     if (isAnAgent) Gen.alphaNumStr.seeded(utr) else None
   }
 
-  def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[Option[RosmRegisterResponse]] = {
-      genSafeId                                     |@| //safeId
-      shouldGenAgentRef(rosmRequest.isAnAgent, utr) |@| //agentReferenceNumber
-      Gen.boolean                                   |@| //isEditable
-      rosmRequest.isAnAgent                         |@| //isAnAgent
-      Gen.const(rosmRequest.individual.isDefined)   |@| //isAnIndividual
-      genIndividual(utr).sometimes                  |@| //individual
-      Gen.const(shouldGenOrg(utr)).sometimes        |@| //organisation
-      genRosmResponseAddress                        |@| //address
-      genRosmResponseContactDetails                     //contactDetails
-  }.map(RosmRegisterResponse.apply).usually
-
+  def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[Option[RosmRegisterResponse]] = (for {
+    safeId <- genSafeId
+    agentReferenceNumber = shouldGenAgentRef(rosmRequest.isAnAgent, utr)
+    isEditable <- Gen.boolean
+    isAnAgent = rosmRequest.isAnAgent
+    isAnIndividual <- Gen.const(rosmRequest.individual.isDefined)
+    individual <- genIndividual(utr).sometimes
+    organisation <- Gen.const(shouldGenOrg(utr)).sometimes
+    address <- genRosmResponseAddress
+    contactDetails <- genRosmResponseContactDetails
+  } yield {
+    RosmRegisterResponse(safeId, agentReferenceNumber, isEditable, isAnAgent, isAnIndividual, individual, organisation, address, contactDetails)
+  }).rarely
 }

@@ -18,36 +18,43 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import java.time.{LocalDateTime, ZoneOffset}
 
-import cats.implicits._
 import org.scalacheck._
-import org.scalacheck.support.cats._
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.maxL
-import ActivityType._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.CreateSubscriptionResponse
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.ActivityType._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse, maxL}
 
 object SubscriptionGenerator {
 
-  lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription.asMutable[String]
+  lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription.rarely.asMutable[String]
 
-  def genSubscription: Gen[Option[Subscription]] = {
-    SdilNumberTransformer.tolerantUtr.gen |@|
-      orgNameGen |@|
-      Gen.oneOf("1", "2", "3", "4", "5").almostAlways |@|
-      addressGen |@|
-      internalActivityGen |@|
-      Gen.date(2018, 2028) |@|
-      Gen.choose(0, 10).flatMap(Gen.listOfN(_, siteGen)) |@|
-      Gen.choose(0, 10).flatMap(Gen.listOfN(_, siteGen)) |@|
-      contactGen
-  } map { Subscription.apply } rarely
+  def genSubscription: Gen[Subscription] = for {
+    utr <- SdilNumberTransformer.tolerantUtr.gen
+    orgName <- orgNameGen
+    orgType <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
+    address <- addressGen
+    activity <- internalActivityGen
+    liabilityDate <- Gen.date(2018, 2028)
+    productionSites <-
+      if (activity.isProducer || activity.isContractPacker)
+        Gen.choose(0, 10).flatMap(Gen.listOfN(_, siteGen))
+      else
+        Gen.const(Nil)
+    warehouseSites <-
+      if (activity.isVoluntaryRegistration)
+        Gen.const(Nil)
+      else
+        Gen.choose(0, 10).flatMap(Gen.listOfN(_, siteGen))
+    contact <- contactGen
+  } yield {
+    Subscription(utr, orgName, orgType, address, activity, liabilityDate, productionSites, warehouseSites, contact)
+  }
 
-  def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] = {
-    Gen.const(LocalDateTime.now.atOffset(ZoneOffset.UTC)) |@| // processingDate
-      pattern"999999999999".gen // formBundleNumber
-  }.map(CreateSubscriptionResponse.apply)
+  def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] = for {
+    processingDate <- Gen.const(LocalDateTime.now.atOffset(ZoneOffset.UTC))
+    formBundleNumber <- pattern"999999999999".gen
+  } yield CreateSubscriptionResponse(processingDate, formBundleNumber)
 
   private lazy val internalActivityGen: Gen[Activity] = for {
     produced <- activityGen(ProducedOwnBrand).sometimes
