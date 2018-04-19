@@ -26,8 +26,8 @@ import scala.collection.mutable
 @Singleton
 class DesSubmissionService {
 
-  lazy val store: mutable.Map[String, Option[Subscription]] = SubscriptionGenerator.store
-  lazy val returnStore: mutable.Map[String, Return] = mutable.Map.empty
+  private lazy val store: mutable.Map[String, Option[Subscription]] = SubscriptionGenerator.store
+  private lazy val returnStore: mutable.Map[String, Return] = mutable.Map.empty
 
   def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
     import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
@@ -51,6 +51,15 @@ class DesSubmissionService {
 
   def checkForExistingReturn(sdilRefAndPeriodKey: String): Boolean = {
     returnStore.get(sdilRefAndPeriodKey).nonEmpty
+  }
+
+  // TODO smart stub should override `clear()` to only clear the state changes
+  def resetSubscriptions(): Unit = {
+    SubscriptionGenerator.store.state.clear()
+  }
+
+  def resetReturns(): Unit = {
+    returnStore.clear()
   }
 
 }

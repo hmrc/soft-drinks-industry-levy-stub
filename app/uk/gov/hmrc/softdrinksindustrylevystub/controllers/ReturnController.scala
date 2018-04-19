@@ -56,7 +56,7 @@ class ReturnController @Inject()(desSubmissionService: DesSubmissionService) ext
   }{ b => b.take(2) ++ b.takeRight(9) }
 
   def resetReturns: Action[AnyContent] = Action {
-    desSubmissionService.returnStore.clear
+    desSubmissionService.resetReturns()
     Ok
   }
 
