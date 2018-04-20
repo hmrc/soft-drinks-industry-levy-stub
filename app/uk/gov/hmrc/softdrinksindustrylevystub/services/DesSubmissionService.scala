@@ -36,10 +36,10 @@ class DesSubmissionService {
   }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Option[Subscription] = {
-    idType match {
+    (idType match {
       case "utr" => store.get(idNumber).flatten
       case "sdil" => SdilNumberTransformer.sdilToUtr(idNumber) flatMap { store.get(_).flatten }
-    }
+    }).map(_.copy(utr = idNumber))
   }
 
   def createReturnResponse(payload: Return, sdilRef: String): ReturnSuccessResponse = {
