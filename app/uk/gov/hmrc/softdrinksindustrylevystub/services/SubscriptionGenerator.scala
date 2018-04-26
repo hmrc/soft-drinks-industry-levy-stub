@@ -97,8 +97,8 @@ object SubscriptionGenerator {
 
   private lazy val siteGen: Gen[Site] = for {
     address <- addressGen
-    ref <- Gen.alphaStr.almostAlways
-  } yield Site(address, ref)
+    ref <- Gen.posNum[Int]
+  } yield Site(address, Some(ref.toString))
 
   private lazy val addressGen: Gen[Address] = {
     Gen.ukAddress.map { lines =>
