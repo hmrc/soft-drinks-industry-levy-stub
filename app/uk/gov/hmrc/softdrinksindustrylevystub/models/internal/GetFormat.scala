@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.models.internal
 
+import java.time.LocalDate
+
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -56,12 +58,6 @@ object GetFormat {
     }
   }
 
-  implicit val siteWrites: Writes[Site] = (
-    (JsPath \ "siteAddress").write[Address] and
-      (JsPath \ "siteReference").writeNullable[String]
-    ) (unlift(Site.unapply))
-
-
   val subscriptionWrites: Writes[Subscription] = new Writes[Subscription] {
 
     override def writes(o: Subscription): JsValue = {
@@ -77,6 +73,7 @@ object GetFormat {
                 "telephone" -> o.contact.phoneNumber,
                 "email" -> o.contact.email
               ),
+              "closureDate" -> site.closureDate,
               "siteType" -> (if (isWarehouse) "1" else "2"))
 
         }
