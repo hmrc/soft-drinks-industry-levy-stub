@@ -77,8 +77,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         ),
         LocalDate.of(1920, 2, 29),
         List(
-          Site(ForeignAddress(List("Juicey Juices", "Juicey Juices"), "FR"), Some("a"), LocalDate.of(2050, 1, 1)),
-          Site(ForeignAddress(List("asdasdasd", "asfdsdasd"), "DE"), Some("a"), LocalDate.of(2050, 1, 1))
+          Site(ForeignAddress(List("Juicey Juices", "Juicey Juices"), "FR"), Some("a"), None),
+          Site(ForeignAddress(List("asdasdasd", "asfdsdasd"), "DE"), Some("a"), None)
         ),
         List(),
         Contact(Some("a"), Some("a"), "+44 1234567890", "a.b@c.com"))

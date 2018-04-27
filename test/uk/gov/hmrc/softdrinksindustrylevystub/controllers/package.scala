@@ -95,7 +95,8 @@ package object controllers {
       |      },
       |      "siteReference": "a",
       |      "siteType": "2",
-      |      "tradingName": "a"
+      |      "tradingName": "a",
+      |      "closureDate": null
       |    },
       |    {
       |      "siteAddress": {
@@ -110,7 +111,8 @@ package object controllers {
       |      },
       |      "siteReference": "a",
       |      "siteType": "2",
-      |      "tradingName": "a"
+      |      "tradingName": "a",
+      |      "closureDate": null
       |    }
       |  ],
       |  "subscriptionDetails": {

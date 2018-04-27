@@ -69,7 +69,7 @@ object CreateFormat {
           Site(
             address = (site \ "siteAddress" \ "addressDetails").as[Address],
             ref = (site \ "newSiteRef").asOpt[String],
-            closureDate = LocalDate.of(2050, 1, 1)
+            closureDate = None
           )
         }
       }.toList

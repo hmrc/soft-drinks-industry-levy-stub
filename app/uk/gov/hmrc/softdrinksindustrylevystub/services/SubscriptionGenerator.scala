@@ -99,7 +99,7 @@ object SubscriptionGenerator {
     address <- addressGen
     ref <- Gen.posNum[Int]
     closureDate <- Gen.date(2016, 2020)
-  } yield Site(address, Some(ref.toString), closureDate)
+  } yield Site(address, Some(ref.toString), Some(closureDate))
 
   private lazy val addressGen: Gen[Address] = {
     Gen.ukAddress.map { lines =>
