@@ -38,7 +38,7 @@ object SubscriptionGenerator {
     liabilityDate <- Gen.date(2018, 2028)
     productionSites <-
       if (activity.isLarge || activity.isContractPacker)
-        Gen.choose(0, 10).flatMap(Gen.listOfN(_, siteGen))
+        Gen.choose(1, 10).flatMap(Gen.listOfN(_, siteGen))
       else
         Gen.const(Nil)
     warehouseSites <-
