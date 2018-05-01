@@ -45,7 +45,7 @@ object SubscriptionGenerator {
       if (activity.isVoluntaryRegistration)
         Gen.const(Nil)
       else
-        Gen.choose(0, 10).flatMap(Gen.listOfN(_, siteGen))
+        Gen.choose(1, 10).flatMap(Gen.listOfN(_, siteGen))
     contact <- contactGen
   } yield {
     Subscription(utr, orgName, orgType, address, activity, liabilityDate, productionSites, warehouseSites, contact)
