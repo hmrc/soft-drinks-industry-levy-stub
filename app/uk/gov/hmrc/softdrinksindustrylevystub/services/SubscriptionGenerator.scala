@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import java.time.{LocalDateTime, ZoneOffset}
+import java.time.{LocalDate, LocalDateTime, ZoneOffset}
 
 import org.scalacheck._
 import uk.gov.hmrc.smartstub._
@@ -38,14 +38,14 @@ object SubscriptionGenerator {
     liabilityDate <- Gen.date(2018, 2028)
     productionSites <-
       if (activity.isLarge || activity.isContractPacker)
-        Gen.choose(1, 10).flatMap(Gen.listOfN(_, siteGen))
+        Gen.choose(1, 10).flatMap(Gen.listOfN(_, siteGen)).retryUntil(_.exists(_.closureDate.forall(_.isAfter(LocalDate.now))))
       else
         Gen.const(Nil)
     warehouseSites <-
       if (activity.isVoluntaryRegistration)
         Gen.const(Nil)
       else
-        Gen.choose(1, 10).flatMap(Gen.listOfN(_, siteGen))
+        Gen.choose(1, 10).flatMap(Gen.listOfN(_, siteGen)).retryUntil(_.exists(_.closureDate.forall(_.isAfter(LocalDate.now))))
     contact <- contactGen
   } yield {
     Subscription(utr, orgName, orgType, address, activity, liabilityDate, productionSites, warehouseSites, contact)
