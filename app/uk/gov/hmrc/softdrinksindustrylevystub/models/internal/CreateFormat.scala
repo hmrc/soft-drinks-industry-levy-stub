@@ -69,6 +69,7 @@ object CreateFormat {
           Site(
             address = (site \ "siteAddress" \ "addressDetails").as[Address],
             ref = (site \ "newSiteRef").asOpt[String],
+            tradingName = (site \ "tradingName").asOpt[String],
             closureDate = None
           )
         }

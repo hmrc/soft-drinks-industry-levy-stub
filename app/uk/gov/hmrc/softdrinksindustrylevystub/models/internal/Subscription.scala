@@ -39,6 +39,6 @@ case class UkAddress(lines: Seq[String], postCode: String) extends Address {
 
 case class ForeignAddress(lines: Seq[String], country: String) extends Address
 
-case class Site(address: Address, ref: Option[String], closureDate: Option[LocalDate])
+case class Site(address: Address, ref: Option[String], tradingName: Option[String], closureDate: Option[LocalDate])
 
 case class Contact(name: Option[String], positionInCompany: Option[String], phoneNumber: String, email: String)

@@ -66,7 +66,7 @@ object GetFormat {
         sites map {
           site =>
             Json.obj(
-              "tradingName" -> o.orgName,
+              "tradingName" -> site.tradingName,
               "siteReference" -> site.ref,
               "siteAddress" -> site.address,
               "siteContact" -> Json.obj(
