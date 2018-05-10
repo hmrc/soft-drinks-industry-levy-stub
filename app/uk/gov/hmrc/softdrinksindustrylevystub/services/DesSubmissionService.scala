@@ -23,7 +23,6 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
 
 import scala.collection.mutable
 
-@Singleton
 class DesSubmissionService {
 
   private lazy val store: mutable.Map[String, Option[Subscription]] = SubscriptionGenerator.store
