@@ -22,12 +22,12 @@ import uk.gov.hmrc.smartstub._
 
 object SdilNumberTransformer {
 
-  val tolerantUtr = pattern"9999999999"
+  val tolerantUtr = pattern"9999999999".imap(_.reverse)(_.reverse)
 
-  val sdilRefEnum: Enumerable[String] = pattern"Z999999".imap {
-    i => s"X${i.head}SDIL000${i.tail}"
+  val sdilRefEnum: Enumerable[String] = pattern"999999Z".imap {
+    i => s"X${i.last}SDIL000${i.init.reverse}"
   } { b =>
-    b.tail.head + b.drop(9)
+    b.drop(9).reverse + b.tail.head
   }
 
   def convertEnum[A, B](enumA: Enumerable[A], enumB: Enumerable[B])(input: A): Option[B] =

@@ -82,7 +82,7 @@ object GetFormat {
       Json.obj(
         "utr" -> o.utr,
         "subscriptionDetails" -> Json.obj(
-          "sdilRegistrationNumber" -> "unknown",
+          "sdilRegistrationNumber" -> o.sdilRef,
           "taxObligationStartDate" -> o.liabilityDate.toString,
           "taxObligationEndDate" -> o.liabilityDate.plusYears(1).toString,
           "tradingName" -> o.orgName,
