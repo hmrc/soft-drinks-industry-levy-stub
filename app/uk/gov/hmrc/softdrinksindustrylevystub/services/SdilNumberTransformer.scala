@@ -30,7 +30,7 @@ object SdilNumberTransformer {
 
   val sdilRefEnum: Enumerable[String] = pattern"999999000".imap {
     i =>
-    val sum = ModulusCheck(i.reverse)
+    val sum = ModulusCheck("SDIL" ++ i.reverse)
     s"X${sum}SDIL${i.reverse}"
   } { b =>
     b.drop(6).reverse
