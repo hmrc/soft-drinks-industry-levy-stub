@@ -64,7 +64,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
 
     "return OK and a Subscription for a successful retrieve request" in {
       val r: Subscription = Subscription(
-        "1097172564",
+        "0000000560",
         "a",
         Some("1"),
         UkAddress(List("Juicey Juices", "Some Street"), "AB012AA"),
