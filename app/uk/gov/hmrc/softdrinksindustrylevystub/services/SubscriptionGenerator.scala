@@ -24,6 +24,8 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.ActivityType._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse, maxL}
+import cats.implicits._
+import org.scalacheck.support.cats._
 
 object SubscriptionGenerator {
 
@@ -108,14 +110,14 @@ object SubscriptionGenerator {
     }
   }
 
-  // TODO: use smart stub for these
-  private lazy val orgNameGen: Gen[String] = Gen.oneOf(orgNames)
-
-  private lazy val orgNames: Seq[String] = Seq(
-    "All-Natural Gluten-free Vegan Organic Drinks Ltd",
-    "All-Artifical Soft Drinks Inc",
-    "Adam's Dyes (Also Soft Drinks)"
-  )
+  private lazy val orgNameGen: Gen[String] = for {
+    a <- Gen.oneOf("Vivid", "Vegan", "Soft", "Star", "Verdant", "Monster",
+                   "Highly Addictive", "Frenzy", "Wild", "Party",
+                   "Fire", "Lightning", "Crackling", "Mega", "Super", "Key")
+    b <- Gen.oneOf("Cola","Juice","Can","Drinks", "Products",
+                   "Bottle", "Confectionry", "Lemonade")
+    c <- Gen.oneOf("Plc", "Ltd", "Group")
+  } yield (s"$a $b $c")
 
   private lazy val jobTitleGen: Gen[String] = for {
     grade <- Gen.oneOf(gradeList)

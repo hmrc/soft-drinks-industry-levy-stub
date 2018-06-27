@@ -19,19 +19,20 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 import com.google.inject.Singleton
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.softdrinksindustrylevystub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
 
 import scala.collection.mutable
 
 class DesSubmissionService {
 
-  private lazy val store: mutable.Map[String, Option[Subscription]] = SubscriptionGenerator.store
   private lazy val returnStore: mutable.Map[String, Return] = mutable.Map.empty
 
   def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
-    import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
-    store(idNumber) = Some(data)
-    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber).get
+    import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.tolerantUtr
+    val sdilRef = Store.unusedSdilRefs.head
+    Store.add{data.copy(sdilRef = sdilRef)} 
+    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber)(tolerantUtr).get
   }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Option[Subscription] = {
@@ -40,7 +41,7 @@ class DesSubmissionService {
         case "utr" => Some(idNumber)
         case "sdil" => SdilNumberTransformer.sdilToUtr(idNumber)
       }
-      subscription <- store.get(utr).flatten
+      subscription <- Store.fromUtr(utr)
     } yield {
       subscription.copy(utr = utr)
     }

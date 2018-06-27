@@ -19,18 +19,23 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json._
 import play.api.mvc._
+import scala.concurrent.{ ExecutionContext, Future }
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
-import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
+import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
+import uk.gov.hmrc.softdrinksindustrylevystub.Store
 
 import scala.util.{Failure, Success, Try}
 
+import des._
+import cats.implicits._
+
 @Singleton
-class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController
+class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService)(implicit ec: ExecutionContext) extends BaseController
   with ExtraActions {
 
   def createSubscription(idType: String, idNumber: String): Action[JsValue] = AuthAndEnvAction(parse.json) {
@@ -51,11 +56,20 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
       }
   }
 
-  def retrieveSubscriptionDetails(idType: String, idNumber: String) = AuthAndEnvAction {
-    desSubmissionService.retrieveSubscriptionDetails(idType, idNumber) match {
-      case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
-      case _ => NotFound(Json.obj("reason" -> "unknown subscription"))
+  def retrieveSubscriptionDetails(idType: String, idNumber: String) = AuthAndEnvAction.async {
+
+    val sdil: String = idType match {
+      case "sdil"  => idNumber
+      case "utr" => Store.utrToSdil(idNumber).last
+      case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
     }
+
+    Future.successful(
+      Store.fromSdilRef(sdil) match {
+        case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
+        case _ => NotFound(Json.obj("reason" -> "unknown subscription"))
+      }
+    ).desify(idNumber)
   }
 
   def reset: Action[AnyContent] = Action {
