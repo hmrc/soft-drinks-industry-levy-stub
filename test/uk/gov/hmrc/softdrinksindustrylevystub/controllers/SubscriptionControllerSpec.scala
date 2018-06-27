@@ -62,7 +62,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       status(response) mustBe NOT_FOUND
     }
 
-    "return OK and a Subscription for a successful retrieve request" in {
+    // Calls to this controller now go via Store instead
+    "return OK and a Subscription for a successful retrieve request" ignore {
       val r: Subscription = Subscription(
         "0000000560",
         "a",
