@@ -58,14 +58,16 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String) = AuthAndEnvAction.async {
 
-    val sdil: String = idType match {
-      case "sdil"  => idNumber
-      case "utr" => Store.utrToSdil(idNumber).last
-      case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
-    }
+    val subscription: Option[Subscription] = {
+      idType match {
+        case "sdil"  => idNumber.some
+        case "utr" => Store.utrToSdil(idNumber).lastOption
+        case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
+      }
+    } >>= Store.fromSdilRef
 
     Future.successful(
-      Store.fromSdilRef(sdil) match {
+      subscription match {
         case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
         case _ => NotFound(Json.obj("reason" -> "unknown subscription"))
       }

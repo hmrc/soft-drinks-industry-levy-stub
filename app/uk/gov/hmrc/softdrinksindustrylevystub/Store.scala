@@ -55,9 +55,10 @@ object Store {
       case '5' => generate(_.activity.isVoluntaryRegistration)
       case _ => genSubscription.seeded(sdil)
     }
-    seeded.map{
+
+    seeded.map {
       _.copy(
-        utr = sdilToUtr(sdil),
+        utr = sdilToUtr(sdil).getOrElse(""),
         sdilRef = sdil
       ) }
   }
@@ -73,9 +74,9 @@ object Store {
     SdilNumberTransformer.utrToSdil(utr).toList
   }
 
-  def sdilToUtr(sdil: String): String = utrToSdil.toSeq
-    .collectFirst{case (utr,allSdils) if allSdils.contains(sdil) => utr}
-    .getOrElse(SdilNumberTransformer.sdilToUtr(sdil).get)
+  def sdilToUtr(sdil: String): Option[String] = utrToSdil.toSeq
+    .collectFirst{case (utr,allSdils) if allSdils.contains(sdil) => utr.some}
+    .getOrElse(SdilNumberTransformer.sdilToUtr(sdil))
 
   def unusedSdilRefs: Iterable[String] = {
     val overriddenUtrs = utrToSdil.toList.flatMap { _._2};

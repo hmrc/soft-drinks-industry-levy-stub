@@ -14,43 +14,61 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.softdrinksindustrylevystub.controllers
+package uk.gov.hmrc.softdrinksindustrylevystub
 
 import java.io.{ BufferedWriter, FileWriter }
+import scala.collection.parallel.ParSeq
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import SubscriptionGenerator.genSubscription
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
+import sys.process._
 
 object Report extends App {
 
-  def apply(qty: Int): Iterable[String] = {
-    for {
-      i <- 1 to qty
+  implicit def boolToStr(i: Boolean): String = if (i) "yes" else "no"
+
+  def postcode(addr: Address): String = addr match {
+    case UkAddress(_, pc) => pc
+    case _                => ""
+  }
+
+  def apply(qty: Int) = {
+    val records = for {
+      i <- (1 to qty).par
     } yield {
       val utr: String = SdilNumberTransformer.tolerantUtr(i)
-      val sdil: Option[String] = if (utr.last == '0') None else Some(SdilNumberTransformer.sdilRefEnum(i))
-      val rtype = (utr.last) match {
-        case '0' => None
-        case '1' => Some("Small")
-        case '2' => Some("Large")
-        case '3' => Some("Importer")
-        case '4' => Some("Copacker")
-        case '5' => Some("Voluntary")
-        case '6' => Some("Any")
-        case '7' => Some("Simulate DES Slowdown")
-        case '8' => Some("Simulate DES Unreliability")
-        case '9' => Some("DES Deluxe")
-      }
+      val record = Store.fromUtr(utr)
+      (utr, record)
+    }
 
-      s"$utr, ${sdil.getOrElse("-")}, ${rtype.getOrElse("-")}"
+    records.map { case (utr, optSub) => 
+      "\"" ++ utr ++ "\"" :: {
+        optSub match {
+          case Some(sub) => List[String](
+            sub.sdilRef,
+            sub.orgName,
+            postcode(sub.address),
+            sub.activity.isLarge,
+            sub.activity.isImporter,
+            sub.activity.isProducer,
+            sub.activity.isSmallProducer,
+            sub.activity.isContractPacker,
+            sub.activity.isVoluntaryRegistration
+          )
+          case _ => List.empty[String]
+        }
+      }
     }
   }
 
   val outFile = new java.io.File("target/ids.csv")
   val bw = new BufferedWriter(new FileWriter(outFile))
-  bw.write("UTR, SDIL Ref, Account Type\n")
-  for(x <- apply(1000000)){
-    bw.write(x)
+  bw.write("UTR, SDIL Ref, Name, Postcode, Large, Importer, Producer, Small Producer, Contract Packer, Voluntary \n")
+
+  for(x <- apply(100000).toList){
+    bw.write(x.mkString(","))
     bw.write("\n")
   }
   bw.close
+  s"gnumeric target/ids.csv".!
 }
