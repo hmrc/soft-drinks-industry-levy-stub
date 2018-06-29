@@ -17,7 +17,8 @@ object MicroServiceBuild extends Build with MicroService {
     "uk.gov.hmrc" %% "microservice-bootstrap" % "6.14.0",
     "uk.gov.hmrc" %% "play-url-binders" % "2.1.0",
     "uk.gov.hmrc" %% "domain" % "4.1.0",
-    "org.scalacheck" %% "scalacheck" % "1.13.5"
+    "org.scalacheck" %% "scalacheck" % "1.13.5",
+    "com.github.fge" % "json-schema-validator" % "2.2.6"
   )
 
   def test(scope: String = "test,it") = Seq(
