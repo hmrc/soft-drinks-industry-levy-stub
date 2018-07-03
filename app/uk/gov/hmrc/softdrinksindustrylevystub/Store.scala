@@ -41,6 +41,11 @@ object Store {
 
   import SubscriptionGenerator.genSubscription
 
+  def clear = {
+    _store.clear
+    utrToSdil.clear
+  }
+
   val _store = mutable { sdil: String =>
 
     def generate(pred: Subscription => Boolean) =
