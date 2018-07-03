@@ -37,7 +37,7 @@ object SubscriptionGenerator {
     orgType <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
     address <- addressGen
     activity <- internalActivityGen
-    liabilityDate <- Gen.date(2018, 2028)
+    liabilityDate <- Gen.date(LocalDate.of(2018, 4, 15), LocalDate.of(2018,7,3))
     productionSites <-
       if (activity.isLarge || activity.isContractPacker)
         Gen.choose(1, 10).flatMap(Gen.listOfN(_, siteGen)).retryUntil(_.exists(_.closureDate.forall(_.isAfter(LocalDate.now))))
@@ -79,13 +79,13 @@ object SubscriptionGenerator {
   }
 
   private lazy val contactGen: Gen[Contact] = for {
-    fname <- Gen.forename().usually
+    fname <- Gen.forename()
     lname <- Gen.surname
-    position <- jobTitleGen.usually
+    position <- jobTitleGen
     phoneNumber <- pattern"9999 999999"
     email <- genEmail
   } yield {
-    Contact(fname.map(f => s"$f $lname"), position, "0" + phoneNumber, email)
+    Contact(Some(s"$fname $lname"), Some(position), "0" + phoneNumber, email)
   }
 
   private lazy val genEmail: Gen[String] = for {
