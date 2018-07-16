@@ -1,5 +1,4 @@
 {
-    "status": "OK",
     "processingDate": "2018-07-06T11:52:01Z",
     "idType": "ZSDL",
     "idNumber": "XGSDIL000100601",
@@ -22,16 +21,16 @@
             "chargeReference": "XF004100002943",
             "mainTransaction": "4810",
             "subTransaction": "1540",
-            "originalAmount": "512345.0",
-            "clearedAmount": "512345.0",
+            "originalAmount": 512345.0,
+            "clearedAmount": 512345.0,
             "items": [{
                 "subItem": "000",
                 "dueDate": "2018-04-30",
-                "amount": "512345.0",
+                "amount": 512345.0,
                 "clearingDate": "2018-07-06",
                 "clearingReason": "Incoming Payment",
                 "paymentReference": "XF004100002943",
-                "paymentAmount": "512345.0",
+                "paymentAmount": 512345.0,
                 "paymentMethod": "PAYMENTS MADE BY CHEQUE",
                 "paymentLot": "PG001180506",
                 "paymentLotItem": "000001",
@@ -53,12 +52,12 @@
             "chargeReference": "XZ003580002831",
             "mainTransaction": "4815",
             "subTransaction": "2215",
-            "originalAmount": "2821.4",
-            "outstandingAmount": "2821.4",
+            "originalAmount": 2821.4,
+            "outstandingAmount": 2821.4,
             "items": [{
                 "subItem": "000",
                 "dueDate": "2018-07-06",
-                "amount": "2821.4"
+                "amount": 2821.4
             }]
         }
     ]

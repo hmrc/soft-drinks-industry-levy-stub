@@ -1,5 +1,4 @@
 {
-    "status": "OK",
     "processingDate": "2018-07-06T16:00:25Z",
     "idType": "ZSDL",
     "idNumber": "XHSDIL000100602",
@@ -21,13 +20,13 @@
         "chargeReference": "XY002750002902",
         "mainTransaction": "4810",
         "subTransaction": "1540",
-        "originalAmount": "25000.0",
-        "outstandingAmount": "25000.0",
-        "accruedInterest": "137.67",
+        "originalAmount": 25000.0,
+        "outstandingAmount": 25000.0,
+        "accruedInterest": 137.67,
         "items": [{
             "subItem": "000",
             "dueDate": "2018-04-30",
-            "amount": "25000.0"
+            "amount": 25000.0
         }]
     }]
 }
