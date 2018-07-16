@@ -1,0 +1,52 @@
+{
+    "Status": "OK",
+    "ProcessingDate": "2018-07-06T15:46:20Z",
+    "ResponseBody": {
+        "IDType": "ZSDL",
+        "IDNumber": "XGSDIL000100601",
+        "RegimeType": "ZSDL",
+        "FinancialTransactions": [
+            {
+                "ChargeType": "SDIL Return Charge",
+                "MainType": "SDIL Return Charge",
+                "PeriodKey": "18C3",
+                "PeriodKeyDescription": "July 2018 - September 2018",
+                "TaxPeriodFrom": "2018-07-01",
+                "TaxPeriodTo": "2018-09-30",
+                "BusinessPartner": "0100064315",
+                "ContractAccountCategory": "32",
+                "ContractAccount": "000916001322",
+                "ContractObjectType": "ZSDL",
+                "ContractObject": "00000000000560000905",
+                "SAPDocumentNumber": "003370001995",
+                "SAPDocumentNumberItem": "0001",
+                "ChargeReference": "XC005000002996",
+                "MainTransaction": "4810",
+                "SubTransaction": "1540",
+                "OriginalAmount": "4000.0",
+                "OutstandingAmount": "2000.0",
+                "ClearedAmount": "2000.0",
+                "Items": [
+                    {
+                        "SubItem": "000",
+                        "DueDate": "2018-10-30",
+                        "Amount": "2000.0"
+                    },
+                    {
+                        "SubItem": "001",
+                        "DueDate": "2018-10-30",
+                        "Amount": "2000.0",
+                        "ClearingDate": "2018-07-06",
+                        "ClearingReason": "Incoming Payment",
+                        "PaymentReference": "XC005000002996",
+                        "PaymentAmount": "2000.0",
+                        "PaymentMethod": "PAYMENTS MADE BY CHEQUE",
+                        "PaymentLot": "PG002180506",
+                        "PaymentLotItem": "000001",
+                        "ClearingSAPDocument": "001810000290"
+                    }
+                ]
+            }
+        ]
+    }
+}

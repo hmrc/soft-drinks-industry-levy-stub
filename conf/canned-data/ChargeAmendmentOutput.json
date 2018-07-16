@@ -1,0 +1,71 @@
+{
+    "Status": "OK",
+    "ProcessingDate": "2018-07-06T17:29:15Z",
+    "ResponseBody": {
+        "IDType": "ZSDL",
+        "IDNumber": "XXSDIL000100603",
+        "RegimeType": "ZSDL",
+        "FinancialTransactions": {
+            "ChargeType": "SDIL Return Charge",
+            "MainType": "SDIL Return Charge",
+            "PeriodKey": "18C1",
+            "PeriodKeyDescription": "January 2018 - March 2018",
+            "TaxPeriodFrom": "2018-01-01",
+            "TaxPeriodTo": "2018-03-31",
+            "BusinessPartner": "0100064318",
+            "ContractAccountCategory": "32",
+            "ContractAccount": "000916001324",
+            "ContractObjectType": "ZSDL",
+            "ContractObject": "00000000000560000907",
+            "SAPDocumentNumber": "002740000913",
+            "SAPDocumentNumberItem": "0001",
+            "ChargeReference": "XJ004100002945",
+            "MainTransaction": "4810",
+            "SubTransaction": "1540",
+            "OriginalAmount": "1000.0",
+            "OutstandingAmount": "1000.0",
+            "AccruedInterest": "5.5",
+            "Items": {
+                "SubItem": "000",
+                "DueDate": "2018-04-30",
+                "Amount": "1000.0"
+            }
+        }
+    }
+}
+
+{
+    "Status": "OK",
+    "ProcessingDate": "2018-07-06T17:29:15Z",
+    "ResponseBody": {
+        "IDType": "ZSDL",
+        "IDNumber": "XXSDIL000100603",
+        "RegimeType": "ZSDL",
+        "FinancialTransactions": [{
+            "ChargeType": "SDIL Return Charge",
+            "MainType": "SDIL Return Charge",
+            "PeriodKey": "18C1",
+            "PeriodKeyDescription": "January 2018 - March 2018",
+            "TaxPeriodFrom": "2018-01-01",
+            "TaxPeriodTo": "2018-03-31",
+            "BusinessPartner": "0100064318",
+            "ContractAccountCategory": "32",
+            "ContractAccount": "000916001324",
+            "ContractObjectType": "ZSDL",
+            "ContractObject": "00000000000560000907",
+            "SAPDocumentNumber": "003050003197",
+            "SAPDocumentNumberItem": "0001",
+            "ChargeReference": "XJ004100002945",
+            "MainTransaction": "4810",
+            "SubTransaction": "1540",
+            "OriginalAmount": "500.0",
+            "OutstandingAmount": "500.0",
+            "AccruedInterest": "2.75",
+            "Items": [{
+                "SubItem": "000",
+                "DueDate": "2018-04-30",
+                "Amount": "500.0"
+            }]
+        }]
+    }
+}

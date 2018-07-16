@@ -1,0 +1,42 @@
+{
+    "Status": "OK",
+    "ProcessingDate": "2018-07-06T11:31:27Z",
+    "ResponseBody": {
+        "IDType": "ZSDL",
+        "IDNumber": "XGSDIL000100601",
+        "RegimeType": "ZSDL",
+        "FinancialTransactions": [{
+            "ChargeType": "SDIL Return Charge",
+            "MainType": "SDIL Return Charge",
+            "PeriodKey": "18C2",
+            "PeriodKeyDescription": "April 2018 - June 2018",
+            "TaxPeriodFrom": "2018-04-01",
+            "TaxPeriodTo": "2018-06-30",
+            "BusinessPartner": "0100064315",
+            "ContractAccountCategory": "32",
+            "ContractAccount": "000916001322",
+            "ContractObjectType": "ZSDL",
+            "ContractObject": "00000000000560000905",
+            "SAPDocumentNumber": "003390002422",
+            "SAPDocumentNumberItem": "0001",
+            "ChargeReference": "XM002750002901",
+            "MainTransaction": "4810",
+            "SubTransaction": "1540",
+            "OriginalAmount": "3000000.0",
+            "ClearedAmount": "3000000.0",
+            "Items": [{
+                "SubItem": "000",
+                "DueDate": "2018-07-30",
+                "Amount": "3000000.0",
+                "ClearingDate": "2018-07-06",
+                "ClearingReason": "Incoming Payment",
+                "PaymentReference": "XM002750002901",
+                "PaymentAmount": "3000000.0",
+                "PaymentMethod": "PAYMENTS MADE BY CHEQUE",
+                "PaymentLot": "PG00180506",
+                "PaymentLotItem": "000001",
+                "ClearingSAPDocument": "001860000730"
+            }]
+        }]
+    }
+}
