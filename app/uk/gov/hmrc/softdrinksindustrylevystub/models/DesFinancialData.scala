@@ -21,7 +21,7 @@ import java.time._
 case class FinancialTransaction (
   chargeType: String,
   mainType: Option[String],
-  periodKey: String,
+  periodKey: Option[String],
   taxPeriodFrom: Option[LocalDate],
   taxPeriodTo: Option[LocalDate],
   businessPartner: Option[String],
