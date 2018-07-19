@@ -17,6 +17,7 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import javax.inject.{Inject, Singleton}
+import org.scalacheck.Gen
 import play.api.libs.json._
 import play.api.mvc._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -26,6 +27,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
+import sdil.models.des.FinancialTransactionResponse
 
 import scala.util.{Failure, Success, Try}
 
@@ -88,5 +90,12 @@ object Store {
     {0 to 99999}
       .map{x => SdilNumberTransformer.sdilRefEnum{x * 10}}
       .filterNot { overriddenUtrs.contains }
+  }
+
+  def financialHistory(sdilRef: String): FinancialTransactionResponse = {
+    // if one of them fails I'd rather the whole thing fail
+    // so I know there is a parse error
+    CannedFinancialData.canned.map{_.toTry}.sequence
+      .map (x => Gen.oneOf(x).seeded(sdilRef).get).get
   }
 }

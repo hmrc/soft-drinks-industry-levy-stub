@@ -28,11 +28,10 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 import uk.gov.hmrc.softdrinksindustrylevystub.Store
-
 import scala.util.{Failure, Success, Try}
-
 import des._
 import cats.implicits._
+import sdil.models.des.FinancialTransaction._
 
 @Singleton
 class FinancialDataController @Inject()()(implicit ec: ExecutionContext) extends BaseController
@@ -45,8 +44,8 @@ class FinancialDataController @Inject()()(implicit ec: ExecutionContext) extends
     calculateAccruedInterest: Boolean,
     customerPaymentInformation: Boolean
   ): Action[AnyContent] = Action {
-    val stream = getClass.getResourceAsStream("/des-financial-data.sample.json")
-    Ok(Json.parse(stream))
+    val data = Store.financialHistory(sdilRef)
+    Ok(Json.toJson(data))
   }
 
 }
