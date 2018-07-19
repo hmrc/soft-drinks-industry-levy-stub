@@ -11,3 +11,5 @@ POST        /registration/organisation/utr/:utr                        uk.gov.hm
 # reset
 GET         /reset-registrations                                       uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.reset
 GET         /reset-returns                                             uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.resetReturns
+
+GET         /enterprise/financial-data/ZSDL/:sdilRef/ZSDL              uk.gov.hmrc.softdrinksindustrylevystub.controllers.FinancialDataController.test(sdilRef: String, onlyOpenItems: Boolean, includeLocks: Boolean, calculateAccruedInterest: Boolean, customerPaymentInformation: Boolean)

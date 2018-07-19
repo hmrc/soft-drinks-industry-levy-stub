@@ -1,0 +1,66 @@
+{
+    "processingDate": "2018-07-06T15:56:35Z",
+    "idType": "ZSDL",
+    "idNumber": "XHSDIL000100602",
+    "regimeType": "ZSDL",
+    "financialTransactions": [
+        {
+            "chargeType": "Payment on account",
+            "mainType": "On Account",
+            "businessPartner": "0100064317",
+            "contractAccountCategory": "32",
+            "contractAccount": "000916001323",
+            "contractObjectType": "ZSDL",
+            "contractObject": "00000000000560000906",
+            "sapDocumentNumber": "002300000291",
+            "sapDocumentNumberItem": "0001",
+            "mainTransaction": "0060",
+            "subTransaction": "0100",
+            "originalAmount": -5000.0,
+            "outstandingAmount": -5000.0,
+            "items": [{
+                "subItem": "000",
+                "dueDate": "2018-07-06",
+                "amount": -5000.0,
+                "paymentReference": "XE005000002997",
+                "paymentAmount": 15000.0,
+                "paymentMethod": "PAYMENTS MADE BY CHEQUE",
+                "paymentLot": "PG003180506",
+                "paymentLotItem": "000001"
+            }]
+        },
+        {
+            "chargeType": "SDIL Return Charge",
+            "mainType": "SDIL Return Charge",
+            "periodKey": "18C2",
+            "periodKeyDescription": "April 2018 - June 2018",
+            "taxPeriodFrom": "2018-04-01",
+            "taxPeriodTo": "2018-06-30",
+            "businessPartner": "0100064317",
+            "contractAccountCategory": "32",
+            "contractAccount": "000916001323",
+            "contractObjectType": "ZSDL",
+            "contractObject": "00000000000560000906",
+            "sapDocumentNumber": "003420002824",
+            "sapDocumentNumberItem": "0001",
+            "chargeReference": "XE005000002997",
+            "mainTransaction": "4810",
+            "subTransaction": "1540",
+            "originalAmount": 10000.0,
+            "clearedAmount": 10000.0,
+            "items": [{
+                "subItem": "000",
+                "dueDate": "2018-07-30",
+                "amount": 10000.0,
+                "clearingDate": "2018-07-06",
+                "clearingReason": "Incoming Payment",
+                "paymentReference": "XE005000002997",
+                "paymentAmount": 15000.0,
+                "paymentMethod": "PAYMENTS MADE BY CHEQUE",
+                "paymentLot": "PG003180506",
+                "paymentLotItem": "000001",
+                "clearingSAPDocument": "002300000291"
+            }]
+        }
+    ]
+}

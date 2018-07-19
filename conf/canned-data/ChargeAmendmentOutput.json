@@ -1,0 +1,32 @@
+{
+    "processingDate": "2018-07-06T17:29:15Z",
+    "idType": "ZSDL",
+    "idNumber": "XXSDIL000100603",
+    "regimeType": "ZSDL",
+    "financialTransactions": [{
+        "chargeType": "SDIL Return Charge",
+        "mainType": "SDIL Return Charge",
+        "periodKey": "18C1",
+        "periodKeyDescription": "January 2018 - March 2018",
+        "taxPeriodFrom": "2018-01-01",
+        "taxPeriodTo": "2018-03-31",
+        "businessPartner": "0100064318",
+        "contractAccountCategory": "32",
+        "contractAccount": "000916001324",
+        "contractObjectType": "ZSDL",
+        "contractObject": "00000000000560000907",
+        "sapDocumentNumber": "002740000913",
+        "sapDocumentNumberItem": "0001",
+        "chargeReference": "XJ004100002945",
+        "mainTransaction": "4810",
+        "subTransaction": "1540",
+        "originalAmount": 1000.0,
+        "outstandingAmount": 1000.0,
+        "accruedInterest": 5.5,
+        "items": [{
+            "subItem": "000",
+            "dueDate": "2018-04-30",
+            "amount": 1000.0
+        }]
+    }]
+}
