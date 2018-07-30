@@ -95,7 +95,7 @@ object Store {
   def financialHistory(sdilRef: String): FinancialTransactionResponse = {
     // if one of them fails I'd rather the whole thing fail
     // so I know there is a parse error
-    CannedFinancialData.canned.map{_.toTry}.sequence
+    CannedFinancialData.canned.map{case (_,v) => v.toTry}.sequence
       .map (x => Gen.oneOf(x).seeded(sdilRef).get).get
   }
 }

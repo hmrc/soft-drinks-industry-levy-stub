@@ -19,6 +19,7 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 import scala.collection.JavaConverters._
 import java.io._
 import play.api.libs.json._
+import play.api.Logger
 import scala.io.Source
 import scala.util.Try
 import cats.implicits._
@@ -30,6 +31,8 @@ import com.github.fge.jackson.JsonLoader
 import com.github.fge.jsonschema.main.JsonSchemaFactory
 import com.github.fge.jsonschema.core.report.ProcessingReport
 import com.github.fge.jsonschema.core.exceptions.ProcessingException
+import uk.gov.hmrc.smartstub.Enumerable
+import uk.gov.hmrc.smartstub.Enumerable.ops._
 
 object CannedFinancialData {
 
@@ -63,7 +66,7 @@ object CannedFinancialData {
   } yield ( obj )
 
   val path = getClass.getResource("/canned-data").getPath
-  lazy val canned = (new File(path)).listFiles.toList.map{ read }
+  lazy val canned = (new File(path)).listFiles.toList.map{ f => (f,read(f)) }
 
   def bad = (new File(path)).listFiles.toList.flatMap { f =>
     read(f) match {
