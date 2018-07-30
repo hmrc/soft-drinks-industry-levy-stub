@@ -23,7 +23,7 @@ class CannedFinancialDataSpec extends FlatSpec with Matchers {
 
   "CannedFinancialData" should "load all the files" in {
     CannedFinancialData.canned.collect{
-      case Left(e) => e
+      case (_,Left(e)) => e
     } shouldBe (Nil)
   }
 }
