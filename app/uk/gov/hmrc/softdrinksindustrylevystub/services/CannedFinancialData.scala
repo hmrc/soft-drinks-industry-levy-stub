@@ -66,7 +66,8 @@ object CannedFinancialData {
   } yield ( obj )
 
   val path = getClass.getResource("/canned-data").getPath
-  lazy val canned = (new File(path)).listFiles.toList.map{ f => (f,read(f)) }
+  lazy val canned = (new File(path)).listFiles.toList
+    .sortBy(_.getName).map{ f => (f,read(f)) }
 
   def bad = (new File(path)).listFiles.toList.flatMap { f =>
     read(f) match {
