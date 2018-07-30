@@ -54,7 +54,7 @@ class FinancialDataController @Inject()()(implicit ec: ExecutionContext) extends
     canned(id.toInt) match {
       case (file, Left(e))     => throw new IllegalStateException(s"unable to parse $file", e)
       case (file, Right(json)) =>
-        logger.info(s"Serving $file")
+        logger.info(s"Serving ${file.getName}")
         Ok(Json.toJson(json))
     }
 
