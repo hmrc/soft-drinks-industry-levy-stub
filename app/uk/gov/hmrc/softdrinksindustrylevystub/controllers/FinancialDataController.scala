@@ -19,10 +19,10 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json._
 import play.api.mvc._
+import play.api.Logger
 import scala.concurrent.{ ExecutionContext, Future }
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
@@ -37,6 +37,11 @@ import sdil.models.des.FinancialTransaction._
 class FinancialDataController @Inject()()(implicit ec: ExecutionContext) extends BaseController
     with ExtraActions {
 
+  val logger = Logger("FinancialDataController")
+  val canned = CannedFinancialData.canned
+
+  implicit val sdilEnum = SdilNumberTransformer.sdilRefEnum
+
   def test(
     sdilRef: String,
     onlyOpenItems: Boolean,
@@ -44,8 +49,15 @@ class FinancialDataController @Inject()()(implicit ec: ExecutionContext) extends
     calculateAccruedInterest: Boolean,
     customerPaymentInformation: Boolean
   ): Action[AnyContent] = Action {
-    val data = Store.financialHistory(sdilRef)
-    Ok(Json.toJson(data))
+
+    val id = sdilRef.asLong % canned.size
+    canned(id.toInt) match {
+      case (file, Left(e))     => throw new IllegalStateException(s"unable to parse $file", e)
+      case (file, Right(json)) =>
+        logger.info(s"Serving $file")
+        Ok(Json.toJson(json))
+    }
+
   }
 
 }
