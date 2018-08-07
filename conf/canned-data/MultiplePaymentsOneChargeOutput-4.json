@@ -94,54 +94,6 @@
             ]
         },
         {
-            "chargeType": "SDIL Return Charge",
-            "mainType": "SDIL Return Charge",
-            "periodKey": "18C1",
-            "periodKeyDescription": "January 2018 - March 2018",
-            "taxPeriodFrom": "2018-01-01",
-            "taxPeriodTo": "2018-03-31",
-            "businessPartner": "0100064317",
-            "contractAccountCategory": "32",
-            "contractAccount": "000916001323",
-            "contractObjectType": "ZSDL",
-            "contractObject": "00000000000560000906",
-            "sapDocumentNumber": "003200002356",
-            "sapDocumentNumberItem": "0001",
-            "chargeReference": "XY002750002902",
-            "mainTransaction": "4810",
-            "subTransaction": "1540",
-            "originalAmount": 25000.0,
-            "clearedAmount": 25000.0,
-            "items": [
-                {
-                    "subItem": "001",
-                    "dueDate": "2018-04-30",
-                    "amount": 5000.0,
-                    "clearingDate": "2018-07-06",
-                    "clearingReason": "Cleared by Payment",
-                    "paymentReference": "XE005000002997",
-                    "paymentAmount": 15000.0,
-                    "paymentMethod": "PAYMENTS MADE BY CHEQUE",
-                    "paymentLot": "PG003180506",
-                    "paymentLotItem": "000001",
-                    "clearingSAPDocument": "003130003626"
-                },
-                {
-                    "subItem": "000",
-                    "dueDate": "2018-04-30",
-                    "amount": 20000.0,
-                    "clearingDate": "2018-07-06",
-                    "clearingReason": "Cleared by Payment",
-                    "paymentReference": "XHSDIL000100602",
-                    "paymentAmount": 35000.0,
-                    "paymentMethod": "PAYMENTS MADE BY CHEQUE",
-                    "paymentLot": "PG005180506",
-                    "paymentLotItem": "000001",
-                    "clearingSAPDocument": "002920004893"
-                }
-            ]
-        },
-        {
             "chargeType": "SDIL Return Charge Interest",
             "mainType": "SDIL Return Charge Interest",
             "taxPeriodFrom": "2018-01-01",
