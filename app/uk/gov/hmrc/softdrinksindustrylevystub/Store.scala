@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
+
 import org.scalacheck.Gen
 import play.api.libs.json._
 import play.api.mvc._
-import scala.concurrent.{ ExecutionContext, Future }
+
+import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
@@ -30,7 +33,6 @@ import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorre
 import sdil.models.des.FinancialTransactionResponse
 
 import scala.util.{Failure, Success, Try}
-
 import des._
 import cats.implicits._
 
@@ -60,6 +62,7 @@ object Store {
       case '3' => generate(_.activity.isImporter)
       case '4' => generate(_.activity.isContractPacker)
       case '5' => generate(_.activity.isVoluntaryRegistration)
+      case '6' => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.of(2017,8,14))))
       case _ => genSubscription.seeded(sdil)
     }
 
