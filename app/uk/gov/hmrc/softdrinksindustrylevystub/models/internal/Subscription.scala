@@ -27,7 +27,8 @@ case class Subscription(utr: String,
                         productionSites: Seq[Site],
                         warehouseSites: Seq[Site],
                         contact: Contact,
-                        sdilRef: String = "")
+                        sdilRef: String = "",
+                        deregDate: Option[LocalDate] = None)
 
 trait Address {
   def lines: Seq[String]
