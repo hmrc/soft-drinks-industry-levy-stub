@@ -85,6 +85,7 @@ object GetFormat {
           "sdilRegistrationNumber" -> o.sdilRef,
           "taxObligationStartDate" -> o.liabilityDate.toString,
           "taxObligationEndDate" -> o.liabilityDate.plusYears(1).toString,
+          "deregistrationDate" -> o.deregDate.getOrElse("").toString,
           "tradingName" -> o.orgName,
           "voluntaryRegistration" -> o.activity.isVoluntaryRegistration,
           "smallProducer" -> o.activity.isSmallProducer,
