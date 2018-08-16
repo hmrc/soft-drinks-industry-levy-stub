@@ -28,6 +28,7 @@ import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Site
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 import sdil.models.des.FinancialTransactionResponse
@@ -58,7 +59,7 @@ object Store {
     val seeded = sdil.last match {
       case '0' => None
       case '1' => generate(_.activity.isSmallProducer)
-      case '2' => generate(_.activity.isLarge)
+      case '2' => generate(_.activity.isLarge).map(_.copy(productionSites = Seq.empty[Site], warehouseSites = Seq.empty[Site]))
       case '3' => generate(_.activity.isImporter)
       case '4' => generate(_.activity.isContractPacker)
       case '5' => generate(_.activity.isVoluntaryRegistration)
