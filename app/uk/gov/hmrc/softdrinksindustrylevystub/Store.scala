@@ -56,14 +56,16 @@ object Store {
     def generate(pred: Subscription => Boolean) =
       genSubscription.retryUntil(pred).seeded(sdil)
 
-    val seeded = sdil.last match {
-      case '0' => None
-      case '1' => generate(_.activity.isSmallProducer)
-      case '2' => generate(_.activity.isLarge).map(_.copy(productionSites = Seq.empty[Site], warehouseSites = Seq.empty[Site]))
-      case '3' => generate(_.activity.isImporter)
-      case '4' => generate(_.activity.isContractPacker)
-      case '5' => generate(_.activity.isVoluntaryRegistration)
-      case '6' => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.of(2017,8,14))))
+    val seeded = (sdil.charAt(sdil.length-2), sdil.last) match {
+      case (_,'0') => None
+      case ('1','1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
+      case (_,'1') => generate(_.activity.isSmallProducer)
+      case ('2','2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Seq.empty[Site]))
+      case (_,'2') => generate(_.activity.isLarge)
+      case (_,'3') => generate(_.activity.isImporter)
+      case (_,'4') => generate(_.activity.isContractPacker)
+      case (_,'5') => generate(_.activity.isVoluntaryRegistration)
+      case (_,'6') => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.of(2017,8,14))))
       case _ => genSubscription.seeded(sdil)
     }
 
