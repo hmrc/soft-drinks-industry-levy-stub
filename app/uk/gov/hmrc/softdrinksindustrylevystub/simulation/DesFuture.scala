@@ -54,9 +54,9 @@ case class DesFuture[A](inner: Future[A]) extends AnyVal {
   def desify(
     id: String
   )(implicit ec: ExecutionContext): Future[A] = id match {
-    case sevens if sevens.endsWith("7") => inner.slow
-    case eights if eights.endsWith("8") => inner.unreliable
-    case nines  if nines.endsWith("9")  => inner.slow.unreliable
+    case sevens if sevens.endsWith("777") => inner.slow
+    case eights if eights.endsWith("888") => inner.unreliable
+    case nines  if nines.endsWith("999")  => inner.slow.unreliable
     case _                              => inner
   }
 
