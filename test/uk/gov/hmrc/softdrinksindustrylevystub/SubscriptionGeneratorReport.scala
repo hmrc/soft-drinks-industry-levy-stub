@@ -22,8 +22,17 @@ import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import SubscriptionGenerator.genSubscription
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import sys.process._
+import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
 
 object Report extends App {
+
+  def findRegistrationWhere(predicate: Subscription => Boolean): Subscription = {
+    sdilRefEnum.iterator.collectFirst{ sdilRef =>
+      Store.fromSdilRef(sdilRef) match {
+        case Some(r) if predicate(r)=> r
+      }
+    }.get
+  }
 
   implicit def boolToStr(i: Boolean): String = if (i) "yes" else "no"
 

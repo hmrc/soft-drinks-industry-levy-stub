@@ -35,7 +35,8 @@ trait MicroService {
       scalaVersion := "2.11.12",
       libraryDependencies ++= appDependencies,
       retrieveManaged := true,
-      evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+      evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
+      initialCommands in Test := "import uk.gov.hmrc.softdrinksindustrylevystub.Report.findRegistrationWhere"
     )
     .configs(IntegrationTest)
     .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
