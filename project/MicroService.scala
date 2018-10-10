@@ -3,17 +3,21 @@ import sbt.Tests.{Group, SubProcess}
 import sbt._
 import play.routes.compiler.StaticRoutesGenerator
 import play.sbt.PlayImport.PlayKeys
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
-
 
 trait MicroService {
 
   import uk.gov.hmrc._
-  import DefaultBuildSettings._
+  import DefaultBuildSettings.{scalaSettings, defaultSettings, addTestReportOption}
   import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt, SbtAutoBuildPlugin}
   import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
   import uk.gov.hmrc.versioning.SbtGitVersioning
   import play.sbt.routes.RoutesKeys.routesGenerator
+  import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+  import uk.gov.hmrc.SbtAutoBuildPlugin
+  import uk.gov.hmrc.versioning.SbtGitVersioning
+  import uk.gov.hmrc.SbtArtifactory
+  import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
+
 
 
   import TestPhases._
@@ -26,13 +30,14 @@ trait MicroService {
 
 
   lazy val microservice = Project(appName, file("."))
-    .enablePlugins(Seq(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin) ++ plugins: _*)
+    .enablePlugins(Seq(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory) ++ plugins: _*)
     .settings(playSettings: _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
     .settings(defaultSettings(): _*)
     .settings(
       scalaVersion := "2.11.12",
+      majorVersion := 0,
       libraryDependencies ++= appDependencies,
       retrieveManaged := true,
       evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
