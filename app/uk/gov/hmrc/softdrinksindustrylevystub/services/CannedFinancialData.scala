@@ -33,6 +33,7 @@ import com.github.fge.jsonschema.core.report.ProcessingReport
 import com.github.fge.jsonschema.core.exceptions.ProcessingException
 import uk.gov.hmrc.smartstub.Enumerable
 import uk.gov.hmrc.smartstub.Enumerable.ops._
+import java.nio.file.Paths
 
 object CannedFinancialData {
 
@@ -65,15 +66,16 @@ object CannedFinancialData {
     obj    <- Either.catchOnly[JsResultException](json.as[FinancialTransactionResponse])
   } yield ( obj )
 
-  val path = getClass.getResource("/canned-data").getPath
+  val path = Paths.get(getClass.getResource("/canned-data").toURI)
 
-  lazy val canned = (new File(path))
+  lazy val canned = path
+    .toFile
     .listFiles.toList
     .filter(_.getName.endsWith(".json"))
     .sortBy(_.getName)
     .map{ f => (f,read(f)) }
 
-  def bad = (new File(path)).listFiles.toList.flatMap { f =>
+  def bad = path.toFile.listFiles.toList.flatMap { f =>
     read(f) match {
       case Left(e) => List(new IllegalStateException(s"unable to parse $f", e))
       case _ => Nil
