@@ -7,7 +7,7 @@ import play.sbt.PlayImport.PlayKeys
 trait MicroService {
 
   import uk.gov.hmrc._
-  import DefaultBuildSettings.{scalaSettings, defaultSettings, addTestReportOption}
+  import DefaultBuildSettings.{oneForkedJvmPerTest => _, _}
   import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt, SbtAutoBuildPlugin}
   import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
   import uk.gov.hmrc.versioning.SbtGitVersioning
