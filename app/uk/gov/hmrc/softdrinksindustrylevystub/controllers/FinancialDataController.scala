@@ -57,7 +57,5 @@ class FinancialDataController @Inject()()(implicit ec: ExecutionContext) extends
         logger.info(s"Serving ${file.getName}")
         Ok(Json.toJson(json))
     }
-
   }
-
 }
