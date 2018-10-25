@@ -41,11 +41,6 @@ libraryDependencies ++= Seq(
   "uk.gov.hmrc"             %% "stub-data-generator"     % "0.5.3"
 )
 
-
-// Need to find out if the build-pipeline needs retrieveManaged.
-// If not we should disable it
-retrieveManaged := true
-
 resolvers ++= Seq(
   Resolver.bintrayRepo("hmrc", "releases"),
   Resolver.jcenterRepo
@@ -96,6 +91,6 @@ scalacOptions ++= Seq(
 
 initialCommands in Test := "import uk.gov.hmrc.softdrinksindustrylevystub.Report.findRegistrationWhere"
 majorVersion := 0
-
+uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 
