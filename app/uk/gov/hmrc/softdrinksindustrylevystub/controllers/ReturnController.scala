@@ -18,17 +18,18 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.Inject
 import play.api.libs.json.{JsSuccess, JsValue, Json}
-import play.api.mvc.{Action, AnyContent, Request}
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import play.api.mvc.{Action, AnyContent, ControllerComponents, Request}
+import uk.gov.hmrc.play.bootstrap.controller.{BackendController, BaseController}
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 import uk.gov.hmrc.softdrinksindustrylevystub.services.{DesSubmissionService, SdilNumberTransformer}
 
-class ReturnController @Inject()(desSubmissionService: DesSubmissionService) extends BaseController
-  with ExtraActions {
+class ReturnController @Inject()(desSubmissionService: DesSubmissionService,
+                                 cc:ControllerComponents,
+                                 extraActions: ExtraActions) extends BackendController(cc) {
 
-  def createReturn(sdilRef: String): Action[JsValue] = AuthAndEnvAction(parse.json) {
+  def createReturn(sdilRef: String): Action[JsValue] = extraActions.AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
       request.body.validate[Return] match {
         case JsSuccess(_,_) if !sdilRef.matches(ReturnValidation.sdilRefPattern) =>

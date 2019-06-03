@@ -32,13 +32,14 @@ import uk.gov.hmrc.softdrinksindustrylevystub.Store
 import scala.util.{Failure, Success, Try}
 import des._
 import cats.implicits._
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.controller.{BackendController, BaseController}
 
 @Singleton
-class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService)(implicit ec: ExecutionContext) extends BaseController
-  with ExtraActions {
+class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService,
+                                       cc:ControllerComponents,
+                                       extraActions: ExtraActions)(implicit ec: ExecutionContext) extends BackendController(cc) {
 
-  def createSubscription(idType: String, idNumber: String): Action[JsValue] = AuthAndEnvAction(parse.json) {
+  def createSubscription(idType: String, idNumber: String): Action[JsValue] = extraActions.AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
       (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
@@ -56,7 +57,7 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
       }
   }
 
-  def retrieveSubscriptionDetails(idType: String, idNumber: String) = AuthAndEnvAction.async {
+  def retrieveSubscriptionDetails(idType: String, idNumber: String) = extraActions.AuthAndEnvAction.async {
 
     val subscription: Option[Subscription] = {
       idType match {

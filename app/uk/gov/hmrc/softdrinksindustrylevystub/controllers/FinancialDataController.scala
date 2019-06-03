@@ -33,11 +33,12 @@ import scala.util.{Failure, Success, Try}
 import des._
 import cats.implicits._
 import sdil.models.des.FinancialTransaction._
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 @Singleton
-class FinancialDataController @Inject()()(implicit ec: ExecutionContext) extends BaseController
-    with ExtraActions {
+class FinancialDataController @Inject()(cc:ControllerComponents,
+                                        extraActions: ExtraActions)(implicit ec: ExecutionContext)
+  extends BackendController(cc) {
 
   val logger = Logger("FinancialDataController")
   val canned = CannedFinancialData.canned

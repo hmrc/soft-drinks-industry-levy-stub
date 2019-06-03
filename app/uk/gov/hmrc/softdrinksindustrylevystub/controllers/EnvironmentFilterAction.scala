@@ -17,13 +17,24 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.Inject
-import play.api.mvc._
+import play.api.mvc.{ActionFilter, Request, Result}
+import play.api.mvc.Results.Forbidden
 
-class ExtraActions @Inject()(
-                            cc: ControllerComponents,
-                            authorisedFilterAction: AuthorisedFilterAction,
-                            environmentFilterAction: EnvironmentFilterAction
-                            )  {
+import scala.concurrent.{ExecutionContext, Future}
 
-  def AuthAndEnvAction: ActionBuilder[Request, AnyContent] = authorisedFilterAction andThen environmentFilterAction
+class EnvironmentFilterAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionFilter[Request] {
+
+  def filter[A](request: Request[A]): Future[Option[Result]] = {
+    Future.successful(
+      request.headers.get("Environment").fold[Option[Result]](
+        Some(Forbidden(""))
+      ) {
+        a =>
+          if (a.matches("^(ist0|clone|live)$"))
+            None
+          else
+            Some(Forbidden(""))
+      }
+    )
+  }
 }

@@ -18,17 +18,19 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Action
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import play.api.mvc.{Action, ControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.{BackendController, BaseController}
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.RosmService
 
 import scala.concurrent.Future
 
 @Singleton
-class RosmController @Inject()(rosmService: RosmService) extends BaseController with ExtraActions {
+class RosmController @Inject()(rosmService: RosmService,
+                               cc:ControllerComponents,
+                               extraActions: ExtraActions) extends BackendController(cc) {
 
-  def register(utr: String): Action[JsValue] = AuthAndEnvAction.async(parse.json) { implicit request =>
+  def register(utr: String): Action[JsValue] = extraActions.AuthAndEnvAction.async(parse.json) { implicit request =>
     withJsonBody[RosmRegisterRequest](rosmRequest =>
       if (rosmRequest.regime.matches("ZSDL"))
         rosmService.handleRegisterRequest(rosmRequest, utr) match {
