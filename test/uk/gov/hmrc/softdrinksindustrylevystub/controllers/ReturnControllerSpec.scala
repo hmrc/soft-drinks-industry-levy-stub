@@ -22,17 +22,24 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
+import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.CreateFormat.subscriptionReads
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{Return, ReturnFailureResponse, ReturnSuccessResponse, returnSuccessResponseFormat}
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
+import play.api.test.Helpers.stubControllerComponents
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
 
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
-  val mockReturnController = new ReturnController(mockDesSubmissionService)
+  val cc = stubControllerComponents()
+  val authorisedFilterAction = new AuthorisedFilterAction(cc)
+  val environmentAction= new EnvironmentFilterAction()
+  val extraActions = new ExtraActions(cc, authorisedFilterAction, environmentAction)
+  val mockReturnController = new ReturnController(mockDesSubmissionService, cc, extraActions)
   val utr = "9024987803"
   val sdilRef = "XVSDIL000987654"
   val invalidSdilRef = "XVSDIL000987654WTF"

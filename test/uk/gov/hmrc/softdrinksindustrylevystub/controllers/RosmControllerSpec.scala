@@ -23,15 +23,21 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
+import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.RosmService
 import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
 
   val mockRosmService: RosmService = mock[RosmService]
-  val mockRosmController = new RosmController(mockRosmService)
+  val cc = stubControllerComponents()
+  val authorisedFilterAction = new AuthorisedFilterAction(cc)
+  val environmentAction= new EnvironmentFilterAction()
+  val extraActions = new ExtraActions(cc, authorisedFilterAction, environmentAction)
+  val mockRosmController = new RosmController(mockRosmService, cc, extraActions)
   val authHeader: (String, String) = "Authorization" -> "auth"
   val envHeader: (String, String) = "Environment" -> "clone"
   val badEnvHeader: (String, String) = "Environment" -> "test"

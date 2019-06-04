@@ -25,17 +25,23 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
+import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.softdrinksindustrylevystub.models.CreateSubscriptionResponse
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
-  val mockSubscriptionController = new SubscriptionController(mockDesSubmissionService)
+  val cc = stubControllerComponents()
+  val authorisedFilterAction = new AuthorisedFilterAction(cc)
+  val environmentAction= new EnvironmentFilterAction()
+  val extraActions = new ExtraActions(cc, authorisedFilterAction, environmentAction)
+  val mockSubscriptionController = new SubscriptionController(mockDesSubmissionService, cc, extraActions)
   implicit val hc: HeaderCarrier = new HeaderCarrier
   val utr = "1111111111"
   val sdilNumber = "XMSDIL000830000"

@@ -17,13 +17,25 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.Inject
+import play.api.http.HeaderNames
 import play.api.mvc._
+import play.api.mvc.Results.Unauthorized
 
-class ExtraActions @Inject()(
-                            cc: ControllerComponents,
-                            authorisedFilterAction: AuthorisedFilterAction,
-                            environmentFilterAction: EnvironmentFilterAction
-                            )  {
+import scala.concurrent.{ExecutionContext, Future}
 
-  def AuthAndEnvAction: ActionBuilder[Request, AnyContent] = authorisedFilterAction andThen environmentFilterAction
+class AuthorisedFilterAction @Inject()(val cc: ControllerComponents)
+  extends ActionBuilder[Request, AnyContent] with ActionFilter[Request] {
+
+  override protected val executionContext: ExecutionContext = cc.executionContext
+  override def parser: BodyParser[AnyContent] = cc.parsers.defaultBodyParser
+
+  def filter[A](request: Request[A]): Future[Option[Result]] = {
+    Future.successful(
+      request.headers.get(HeaderNames.AUTHORIZATION).fold[Option[Result]](
+        Some(Unauthorized(""))
+      ) {
+        _ => None
+      }
+    )
+  }
 }
