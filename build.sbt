@@ -22,8 +22,7 @@ libraryDependencies ++= Seq(
   "org.mockito"             %  "mockito-core"            % "2.19.1",
   "org.pegdown"             %  "pegdown"                 % "1.6.0",
   "org.scalatest"           %% "scalatest"               % "3.0.5",
-  "org.scalatestplus.play"  %% "scalatestplus-play"      % "2.0.1",
-  "uk.gov.hmrc"             %% "hmrctest"                % "3.8.0-play-26"
+  "org.scalatestplus.play"  %% "scalatestplus-play"      % "2.0.1"
 ).map(_ % "test")
 
 // ================================================================================
