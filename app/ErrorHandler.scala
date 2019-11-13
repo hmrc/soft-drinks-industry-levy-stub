@@ -27,28 +27,30 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.{FailureMessage, FailureRes
 import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject() (implicit val config: Configuration, val env: Environment, val messagesApi: MessagesApi)
-  extends HttpErrorHandler with I18nSupport {
+class ErrorHandler @Inject()(implicit val config: Configuration, val env: Environment, val messagesApi: MessagesApi)
+    extends HttpErrorHandler with I18nSupport {
 
-  override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
-    Future.successful(Status(statusCode)(Json.toJson(FailureResponse(
-      List(FailureMessage(
-        statusCode.toString,
-        message
-      )
-    )))))
-  }
+  override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
+    Future.successful(
+      Status(statusCode)(
+        Json.toJson(
+          FailureResponse(
+            List(FailureMessage(
+              statusCode.toString,
+              message
+            ))))))
 
-  override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
+  override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] =
     exception match {
       case _ =>
         Logger.error("Server error", exception)
-        Future.successful(InternalServerError(Json.toJson(FailureResponse(
-          List(FailureMessage(
-            "500",
-            "DES is currently experiencing problems that require live service intervention."
-          )
-          )))))
+        Future.successful(
+          InternalServerError(
+            Json.toJson(
+              FailureResponse(
+                List(FailureMessage(
+                  "500",
+                  "DES is currently experiencing problems that require live service intervention."
+                ))))))
     }
-  }
 }

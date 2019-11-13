@@ -22,15 +22,16 @@ object HeadersGenerator {
 
   implicit val sdilToLong = SdilNumberTransformer.sdilRefEnum
 
-  def genCorrelationIdHeader: Gen[String] = {
-    Gen.listOfN(
-      36,
-      Gen.frequency(
-        (3,Gen.alphaUpperChar),
-        (3,Gen.alphaLowerChar),
-        (3,Gen.numChar),
-        (1, Gen.const("-"))
+  def genCorrelationIdHeader: Gen[String] =
+    Gen
+      .listOfN(
+        36,
+        Gen.frequency(
+          (3, Gen.alphaUpperChar),
+          (3, Gen.alphaLowerChar),
+          (3, Gen.numChar),
+          (1, Gen.const("-"))
+        )
       )
-    ).map(_.mkString)                                            // correlationId
-  }
+      .map(_.mkString) // correlationId
 }

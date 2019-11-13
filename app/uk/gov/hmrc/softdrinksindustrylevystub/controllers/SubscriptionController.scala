@@ -35,17 +35,21 @@ import cats.implicits._
 import uk.gov.hmrc.play.bootstrap.controller.{BackendController, BaseController}
 
 @Singleton
-class SubscriptionController @Inject()(desSubmissionService: DesSubmissionService,
-                                       cc:ControllerComponents,
-                                       extraActions: ExtraActions)(implicit ec: ExecutionContext) extends BackendController(cc) {
+class SubscriptionController @Inject()(
+  desSubmissionService: DesSubmissionService,
+  cc: ControllerComponents,
+  extraActions: ExtraActions)(implicit ec: ExecutionContext)
+    extends BackendController(cc) {
 
-  def createSubscription(idType: String, idNumber: String): Action[JsValue] = extraActions.AuthAndEnvAction(parse.json) {
-    implicit request: Request[JsValue] =>
+  def createSubscription(idType: String, idNumber: String): Action[JsValue] =
+    extraActions.AuthAndEnvAction(parse.json) { implicit request: Request[JsValue] =>
       (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
-          Ok(Json.toJson(
-            desSubmissionService.createSubscriptionResponse(idNumber, request.body.as[Subscription](CreateFormat.subscriptionReads))
-          )).withHeaders(
+          Ok(
+            Json.toJson(
+              desSubmissionService
+                .createSubscriptionResponse(idNumber, request.body.as[Subscription](CreateFormat.subscriptionReads))
+            )).withHeaders(
             ("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get)
           )
         case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
@@ -55,24 +59,26 @@ class SubscriptionController @Inject()(desSubmissionService: DesSubmissionServic
         case (_, failures) =>
           BadRequest(Json.toJson(FailureResponse(failures)))
       }
-  }
+    }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String) = extraActions.AuthAndEnvAction.async {
 
     val subscription: Option[Subscription] = {
       idType match {
-        case "sdil"  => idNumber.some
-        case "utr" => Store.utrToSdil(idNumber).lastOption
+        case "sdil" => idNumber.some
+        case "utr"  => Store.utrToSdil(idNumber).lastOption
         case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
       }
     } >>= Store.fromSdilRef
 
-    Future.successful(
-      subscription match {
-        case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
-        case _ => NotFound(Json.obj("reason" -> "unknown subscription"))
-      }
-    ).desify(idNumber)
+    Future
+      .successful(
+        subscription match {
+          case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
+          case _          => NotFound(Json.obj("reason" -> "unknown subscription"))
+        }
+      )
+      .desify(idNumber)
   }
 
   def reset: Action[AnyContent] = Action {

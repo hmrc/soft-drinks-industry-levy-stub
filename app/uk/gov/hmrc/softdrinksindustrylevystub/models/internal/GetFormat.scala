@@ -23,35 +23,37 @@ import play.api.libs.json._
 
 object GetFormat {
   implicit val contactWrites: Writes[Contact] = new Writes[Contact] {
-    override def writes(o: Contact): JsObject = {
+    override def writes(o: Contact): JsObject =
       Json.obj(
-        "name" -> o.name,
+        "name"              -> o.name,
         "positionInCompany" -> o.positionInCompany,
-        "telephone" -> o.phoneNumber,
-        "email" -> o.email
+        "telephone"         -> o.phoneNumber,
+        "email"             -> o.email
       )
-    }
   }
 
   implicit val addressWrites: Writes[Address] = new Writes[Address] {
 
     def writes(address: Address): JsValue = {
 
-      val jsLines = address.lines.zipWithIndex.map { case (v, i) =>
-        s"line${i + 1}" -> JsString(v)
+      val jsLines = address.lines.zipWithIndex.map {
+        case (v, i) =>
+          s"line${i + 1}" -> JsString(v)
       }
 
       JsObject(
         {
           address match {
-            case UkAddress(_, postCode) => List(
-              "notUKAddress" -> JsBoolean(false),
-              "postCode" -> JsString(postCode)
-            )
-            case ForeignAddress(_, country) => List(
-              "notUKAddress" -> JsBoolean(true),
-              "country" -> JsString(country)
-            )
+            case UkAddress(_, postCode) =>
+              List(
+                "notUKAddress" -> JsBoolean(false),
+                "postCode"     -> JsString(postCode)
+              )
+            case ForeignAddress(_, country) =>
+              List(
+                "notUKAddress" -> JsBoolean(true),
+                "country"      -> JsString(country)
+              )
           }
         } ++ jsLines
       )
@@ -62,48 +64,46 @@ object GetFormat {
 
     override def writes(o: Subscription): JsValue = {
 
-      def siteList(sites: Seq[Site], isWarehouse: Boolean): Seq[JsObject] = {
-        sites map {
-          site =>
-            Json.obj(
-              "tradingName" -> site.tradingName,
-              "siteReference" -> site.ref,
-              "siteAddress" -> site.address,
-              "siteContact" -> Json.obj(
-                "telephone" -> o.contact.phoneNumber,
-                "email" -> o.contact.email
-              ),
-              "closureDate" -> site.closureDate,
-              "siteType" -> (if (isWarehouse) "1" else "2"))
+      def siteList(sites: Seq[Site], isWarehouse: Boolean): Seq[JsObject] =
+        sites map { site =>
+          Json.obj(
+            "tradingName"   -> site.tradingName,
+            "siteReference" -> site.ref,
+            "siteAddress"   -> site.address,
+            "siteContact" -> Json.obj(
+              "telephone" -> o.contact.phoneNumber,
+              "email"     -> o.contact.email
+            ),
+            "closureDate" -> site.closureDate,
+            "siteType"    -> (if (isWarehouse) "1" else "2")
+          )
 
         }
-      }
 
       Json.obj(
         "utr" -> o.utr,
         "subscriptionDetails" -> Json.obj(
-          "sdilRegistrationNumber" -> o.sdilRef,
-          "taxObligationStartDate" -> o.liabilityDate.toString,
-          "taxObligationEndDate" -> o.liabilityDate.plusYears(1).toString,
-          "deregistrationDate" -> o.deregDate.getOrElse("").toString,
-          "tradingName" -> o.orgName,
-          "voluntaryRegistration" -> o.activity.isVoluntaryRegistration,
-          "smallProducer" -> o.activity.isSmallProducer,
-          "largeProducer" -> o.activity.isLarge,
-          "contractPacker" -> o.activity.isContractPacker,
-          "importer" -> o.activity.isImporter,
-          "primaryContactName" -> o.contact.name,
+          "sdilRegistrationNumber"   -> o.sdilRef,
+          "taxObligationStartDate"   -> o.liabilityDate.toString,
+          "taxObligationEndDate"     -> o.liabilityDate.plusYears(1).toString,
+          "deregistrationDate"       -> o.deregDate.getOrElse("").toString,
+          "tradingName"              -> o.orgName,
+          "voluntaryRegistration"    -> o.activity.isVoluntaryRegistration,
+          "smallProducer"            -> o.activity.isSmallProducer,
+          "largeProducer"            -> o.activity.isLarge,
+          "contractPacker"           -> o.activity.isContractPacker,
+          "importer"                 -> o.activity.isImporter,
+          "primaryContactName"       -> o.contact.name,
           "primaryPositionInCompany" -> o.contact.positionInCompany,
-          "primaryTelephone" -> o.contact.phoneNumber,
-          "primaryEmail" -> o.contact.email
+          "primaryTelephone"         -> o.contact.phoneNumber,
+          "primaryEmail"             -> o.contact.email
         ),
         "businessAddress" -> o.address,
         "businessContact" -> Json.obj(
           "telephone" -> o.contact.phoneNumber,
-          "email" -> o.contact.email
+          "email"     -> o.contact.email
         ),
         "sites" -> (siteList(o.warehouseSites, true) ++ siteList(o.productionSites, false))
-
       )
     }
 

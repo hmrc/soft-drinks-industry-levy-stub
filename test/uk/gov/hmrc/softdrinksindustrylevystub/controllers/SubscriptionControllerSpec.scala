@@ -39,7 +39,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
   val cc = stubControllerComponents()
   val authorisedFilterAction = new AuthorisedFilterAction(cc)
-  val environmentAction= new EnvironmentFilterAction()
+  val environmentAction = new EnvironmentFilterAction()
   val extraActions = new ExtraActions(cc, authorisedFilterAction, environmentAction)
   val mockSubscriptionController = new SubscriptionController(mockDesSubmissionService, cc, extraActions)
   implicit val hc: HeaderCarrier = new HeaderCarrier
@@ -49,7 +49,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   val sdilIdType = "sdil"
   val now: OffsetDateTime = LocalDateTime.now.atOffset(ZoneOffset.UTC)
   val authHeader: (String, String) = "Authorization" -> "auth"
-  val envHeader: (String, String) = "Environment" -> "clone"
+  val envHeader: (String, String) = "Environment"    -> "clone"
   val badEnvHeader: (String, String) = "Environment" -> "test"
 
   override def beforeEach() {
@@ -59,11 +59,13 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   "SubscriptionController" should {
 
     "return Status: 404 Body: reason: unknown subscription message for a unsuccessful retrieve request" in {
-      when(mockDesSubmissionService
-        .retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(None)
+      when(
+        mockDesSubmissionService
+          .retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(None)
       val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(sdilIdType, sdilNumber)(FakeRequest("GET", "/soft-drinks/subscription/")
-        .withHeaders(envHeader, authHeader))
+        .retrieveSubscriptionDetails(sdilIdType, sdilNumber)(
+          FakeRequest("GET", "/soft-drinks/subscription/")
+            .withHeaders(envHeader, authHeader))
 
       status(response) mustBe NOT_FOUND
     }
@@ -78,8 +80,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         InternalActivity(
           Map(
             ActivityType.ProducedOwnBrand -> ((2L, 2L)),
-            ActivityType.Imported -> ((2L, 2L)),
-            ActivityType.CopackerAll -> ((0L, 0L))
+            ActivityType.Imported         -> ((2L, 2L)),
+            ActivityType.CopackerAll      -> ((0L, 0L))
           ),
           isLarge = false
         ),
@@ -89,13 +91,15 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
           Site(ForeignAddress(List("asdasdasd", "asfdsdasd"), "DE"), Some("a"), Some("a"), None)
         ),
         List(),
-        Contact(Some("a"), Some("a"), "+44 1234567890", "a.b@c.com"))
+        Contact(Some("a"), Some("a"), "+44 1234567890", "a.b@c.com")
+      )
 
       when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(r))
 
       val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(sdilIdType, sdilNumber)(FakeRequest("GET", "/soft-drinks/subscription/")
-        .withHeaders(envHeader, authHeader))
+        .retrieveSubscriptionDetails(sdilIdType, sdilNumber)(
+          FakeRequest("GET", "/soft-drinks/subscription/")
+            .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
       //verify(mockDesSubmissionService, times(1)).retrieveSubscriptionDetails(any(), any())
@@ -103,33 +107,39 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     }
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest" in {
-      when(mockDesSubmissionService
-        .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
+      when(
+        mockDesSubmissionService
+          .createSubscriptionResponse(any(), any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
 
       val response = mockSubscriptionController
-        .createSubscription(utrIdType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
-          .withBody(validCreateSubscriptionRequestInput)
-          .withHeaders(envHeader, authHeader))
+        .createSubscription(utrIdType, utr)(
+          FakeRequest("POST", "/soft-drinks/subscription")
+            .withBody(validCreateSubscriptionRequestInput)
+            .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(), any())
-      Json.fromJson[CreateSubscriptionResponse](contentAsJson(response))
+      Json
+        .fromJson[CreateSubscriptionResponse](contentAsJson(response))
         .getOrElse(CreateSubscriptionResponse(now, "foo")) mustBe CreateSubscriptionResponse(now, "bar")
     }
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest " +
       "without all optional data" in {
-      when(mockDesSubmissionService
-        .createSubscriptionResponse(any(),any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
+      when(
+        mockDesSubmissionService
+          .createSubscriptionResponse(any(), any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
 
       val response = mockSubscriptionController
-        .createSubscription(utrIdType, utr)(FakeRequest("POST", "/soft-drinks/subscription")
-          .withBody(validCreateSubscriptionRequestInputWithoutOptionals)
-          .withHeaders(envHeader, authHeader))
+        .createSubscription(utrIdType, utr)(
+          FakeRequest("POST", "/soft-drinks/subscription")
+            .withBody(validCreateSubscriptionRequestInputWithoutOptionals)
+            .withHeaders(envHeader, authHeader))
 
       status(response) mustBe OK
-      verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(),any())
-      Json.fromJson[CreateSubscriptionResponse](contentAsJson(response))
+      verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(), any())
+      Json
+        .fromJson[CreateSubscriptionResponse](contentAsJson(response))
         .getOrElse(CreateSubscriptionResponse(now, "foo")) mustBe CreateSubscriptionResponse(now, "bar")
     }
 
@@ -141,7 +151,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
             .withHeaders(envHeader, authHeader))
 
       status(response) mustBe BAD_REQUEST
-      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(),any())
+      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(), any())
     }
 
     "return Status: 401 for submission without auth header" in {
@@ -152,7 +162,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
             .withHeaders(envHeader))
 
       status(response) mustBe UNAUTHORIZED
-      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(),any())
+      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(), any())
     }
 
     "return Status: 403 for submission without environment header" in {
@@ -163,7 +173,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
             .withHeaders(authHeader))
 
       status(response) mustBe FORBIDDEN
-      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(),any())
+      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(), any())
     }
 
     "return Status: 403 for submission with bad environment header" in {
@@ -174,7 +184,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
             .withHeaders(authHeader, badEnvHeader))
 
       status(response) mustBe FORBIDDEN
-      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(),any())
+      verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(), any())
     }
 
   }

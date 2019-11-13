@@ -40,8 +40,8 @@ object Store {
 
   implicit val enum = SdilNumberTransformer.sdilRefEnum
 
-  def mutable[K,V](f: K => V) =
-    collection.concurrent.TrieMap.empty[K,V].withDefault(f)
+  def mutable[K, V](f: K => V) =
+    collection.concurrent.TrieMap.empty[K, V].withDefault(f)
 
   import SubscriptionGenerator.genSubscription
 
@@ -51,34 +51,34 @@ object Store {
   }
 
   val _store = mutable { sdil: String =>
-
     def generate(pred: Subscription => Boolean) =
       genSubscription.retryUntil(pred).seeded(sdil)
 
     val seeded = (sdil.init.last, sdil.last) match {
-      case (_,'0') => None
-      case ('1','1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
-      case (_,'1') => generate(_.activity.isSmallProducer)
-      case ('2','2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
-      case (_,'2') => generate(_.activity.isLarge)
-      case (_,'3') => generate(_.activity.isImporter)
-      case (_,'4') => generate(_.activity.isContractPacker)
-      case (_,'5') => generate(_.activity.isVoluntaryRegistration)
-      case (_,'6') => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.of(2018,11,14))))
-      case _ => genSubscription.seeded(sdil)
+      case (_, '0')   => None
+      case ('1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
+      case (_, '1')   => generate(_.activity.isSmallProducer)
+      case ('2', '2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
+      case (_, '2')   => generate(_.activity.isLarge)
+      case (_, '3')   => generate(_.activity.isImporter)
+      case (_, '4')   => generate(_.activity.isContractPacker)
+      case (_, '5')   => generate(_.activity.isVoluntaryRegistration)
+      case (_, '6')   => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.of(2018, 11, 14))))
+      case _          => genSubscription.seeded(sdil)
     }
 
     seeded.map {
       _.copy(
         utr = sdilToUtr(sdil).getOrElse(""),
         sdilRef = sdil
-      ) }
+      )
+    }
   }
 
   def fromSdilRef(in: String) = _store(in)
   def fromUtr(in: String) = _store(utrToSdil(in).head)
   def add(in: Subscription): Unit = {
-    utrToSdil(in.utr) = {in.sdilRef :: utrToSdil(in.utr)}.distinct
+    utrToSdil(in.utr) = { in.sdilRef :: utrToSdil(in.utr) }.distinct
     _store(in.sdilRef) = Some(in)
   }
 
@@ -86,21 +86,26 @@ object Store {
     SdilNumberTransformer.utrToSdil(utr).toList
   }
 
-  def sdilToUtr(sdil: String): Option[String] = utrToSdil.toSeq
-    .collectFirst{case (utr,allSdils) if allSdils.contains(sdil) => utr.some}
-    .getOrElse(SdilNumberTransformer.sdilToUtr(sdil))
+  def sdilToUtr(sdil: String): Option[String] =
+    utrToSdil.toSeq
+      .collectFirst { case (utr, allSdils) if allSdils.contains(sdil) => utr.some }
+      .getOrElse(SdilNumberTransformer.sdilToUtr(sdil))
 
   def unusedSdilRefs: Iterable[String] = {
-    val overriddenUtrs = utrToSdil.toList.flatMap { _._2};
-    {0 to 99999}
-      .map{x => SdilNumberTransformer.sdilRefEnum{x * 10}}
+    val overriddenUtrs = utrToSdil.toList.flatMap { _._2 };
+    { 0 to 99999 }
+      .map { x =>
+        SdilNumberTransformer.sdilRefEnum { x * 10 }
+      }
       .filterNot { overriddenUtrs.contains }
   }
 
-  def financialHistory(sdilRef: String): FinancialTransactionResponse = {
+  def financialHistory(sdilRef: String): FinancialTransactionResponse =
     // if one of them fails I'd rather the whole thing fail
     // so I know there is a parse error
-    CannedFinancialData.canned.map{case (_,v) => v.toTry}.sequence
-      .map (x => Gen.oneOf(x).seeded(sdilRef).get).get
-  }
+    CannedFinancialData.canned
+      .map { case (_, v) => v.toTry }
+      .sequence
+      .map(x => Gen.oneOf(x).seeded(sdilRef).get)
+      .get
 }

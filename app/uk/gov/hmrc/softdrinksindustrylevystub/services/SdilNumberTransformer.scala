@@ -28,8 +28,7 @@ object SdilNumberTransformer {
 
   val tolerantUtr = pattern"9999999999".imap(_.reverse)(_.reverse)
 
-  val sdilRefEnum: Enumerable[String] = pattern"999999000".imap {
-    i =>
+  val sdilRefEnum: Enumerable[String] = pattern"999999000".imap { i =>
     val sum = ModulusCheck("SDIL" ++ i.reverse)
     s"X${sum}SDIL${i.reverse}"
   } { b =>
@@ -42,15 +41,13 @@ object SdilNumberTransformer {
   val utrToSdil = convertEnum(tolerantUtr, sdilRefEnum) _
   val sdilToUtr = convertEnum(sdilRefEnum, tolerantUtr) _
 
-  def showTable(num: Int): Unit = {
+  def showTable(num: Int): Unit =
     for {
-      i <- 1 to num
-      utr <- tolerantUtr.get(i)
+      i       <- 1 to num
+      utr     <- tolerantUtr.get(i)
       sdilRef <- sdilRefEnum.get(i)
     } yield {
       println(s"| $utr | $sdilRef |")
     }
-
-  }
 
 }

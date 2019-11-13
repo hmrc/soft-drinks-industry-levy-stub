@@ -20,10 +20,10 @@ import javax.inject.Inject
 import play.api.mvc._
 
 class ExtraActions @Inject()(
-                            cc: ControllerComponents,
-                            authorisedFilterAction: AuthorisedFilterAction,
-                            environmentFilterAction: EnvironmentFilterAction
-                            )  {
+  cc: ControllerComponents,
+  authorisedFilterAction: AuthorisedFilterAction,
+  environmentFilterAction: EnvironmentFilterAction
+) {
 
   def AuthAndEnvAction: ActionBuilder[Request, AnyContent] = authorisedFilterAction andThen environmentFilterAction
 }

@@ -25,19 +25,18 @@ case class DesFuture[A](inner: Future[A]) extends AnyVal {
   def slow(
     minDuration: Duration,
     maxDuration: Duration
-  )(implicit ec: ExecutionContext): Future[A] = {
+  )(implicit ec: ExecutionContext): Future[A] =
     inner.map { x =>
       Thread.sleep(minDuration.toUnit(MILLISECONDS).toLong)
       x
     }
-  }
 
   def slow(implicit ec: ExecutionContext): Future[A] =
     slow(15 seconds, 45 seconds)
 
   def unreliable(
     failureChance: Float
-  )(implicit ec: ExecutionContext): Future[A] = {
+  )(implicit ec: ExecutionContext): Future[A] =
     inner.flatMap { x =>
       if (random.nextFloat < failureChance) {
         val excuse = DesFuture.excuses(random.nextInt(DesFuture.excuses.size))
@@ -46,7 +45,6 @@ case class DesFuture[A](inner: Future[A]) extends AnyVal {
         Future.successful(x)
       }
     }
-  }
 
   def unreliable(implicit ec: ExecutionContext): Future[A] =
     unreliable(0.66f)
@@ -56,8 +54,8 @@ case class DesFuture[A](inner: Future[A]) extends AnyVal {
   )(implicit ec: ExecutionContext): Future[A] = id match {
     case sevens if sevens.endsWith("777") => inner.slow
     case eights if eights.endsWith("888") => inner.unreliable
-    case nines  if nines.endsWith("999")  => inner.slow.unreliable
-    case _                              => inner
+    case nines if nines.endsWith("999")   => inner.slow.unreliable
+    case _                                => inner
   }
 
 }
@@ -67,7 +65,6 @@ object DesFuture {
 
   // val's just don't get much lazier than this
   lazy val excuses =
-    Source.fromURL("http://pages.cs.wisc.edu/~ballard/bofh/excuses")
-      .getLines.toList
+    Source.fromURL("http://pages.cs.wisc.edu/~ballard/bofh/excuses").getLines.toList
 
 }

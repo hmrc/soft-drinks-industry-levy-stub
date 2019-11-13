@@ -24,18 +24,19 @@ import play.api.mvc.Results.Unauthorized
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisedFilterAction @Inject()(val cc: ControllerComponents)
-  extends ActionBuilder[Request, AnyContent] with ActionFilter[Request] {
+    extends ActionBuilder[Request, AnyContent] with ActionFilter[Request] {
 
   override protected val executionContext: ExecutionContext = cc.executionContext
   override def parser: BodyParser[AnyContent] = cc.parsers.defaultBodyParser
 
-  def filter[A](request: Request[A]): Future[Option[Result]] = {
+  def filter[A](request: Request[A]): Future[Option[Result]] =
     Future.successful(
-      request.headers.get(HeaderNames.AUTHORIZATION).fold[Option[Result]](
-        Some(Unauthorized(""))
-      ) {
-        _ => None
-      }
+      request.headers
+        .get(HeaderNames.AUTHORIZATION)
+        .fold[Option[Result]](
+          Some(Unauthorized(""))
+        ) { _ =>
+          None
+        }
     )
-  }
 }

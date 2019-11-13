@@ -1,3 +1,4 @@
+
 // ================================================================================
 // Plugins
 // ================================================================================
@@ -24,6 +25,14 @@ libraryDependencies ++= Seq(
   "org.scalatest"           %% "scalatest"               % "3.0.5",
   "org.scalatestplus.play"  %% "scalatestplus-play"      % "2.0.1"
 ).map(_ % "test")
+
+// ================================================================================
+// Scala Fmt
+// ================================================================================
+
+import com.lucidchart.sbt.scalafmt.ScalafmtCorePlugin.autoImport._
+scalafmtOnCompile in Compile := true
+scalafmtOnCompile in Test := true
 
 // ================================================================================
 // Dependencies

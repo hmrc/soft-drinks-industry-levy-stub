@@ -22,19 +22,20 @@ import play.api.mvc.Results.Forbidden
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnvironmentFilterAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionFilter[Request] {
+class EnvironmentFilterAction @Inject()()(implicit val executionContext: ExecutionContext)
+    extends ActionFilter[Request] {
 
-  def filter[A](request: Request[A]): Future[Option[Result]] = {
+  def filter[A](request: Request[A]): Future[Option[Result]] =
     Future.successful(
-      request.headers.get("Environment").fold[Option[Result]](
-        Some(Forbidden(""))
-      ) {
-        a =>
+      request.headers
+        .get("Environment")
+        .fold[Option[Result]](
+          Some(Forbidden(""))
+        ) { a =>
           if (a.matches("^(ist0|clone|live)$"))
             None
           else
             Some(Forbidden(""))
-      }
+        }
     )
-  }
 }

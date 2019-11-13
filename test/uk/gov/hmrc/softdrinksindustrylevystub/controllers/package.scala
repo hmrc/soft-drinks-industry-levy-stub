@@ -402,11 +402,27 @@ package object controllers {
   val validResponseOrganisation = OrganisationResponse("Big Wig", isAGroup = false, RosmOrganisationType.Partnership)
 
   val rosmRegisterIndividualResponse = RosmRegisterResponse(
-    "safeID", None, isEditable = false, isAnAgent = false, isAnIndividual = true, Some(validResponseIndividual), None, validRosmResponseAddress, validRosmResponseContactDetails
+    "safeID",
+    None,
+    isEditable = false,
+    isAnAgent = false,
+    isAnIndividual = true,
+    Some(validResponseIndividual),
+    None,
+    validRosmResponseAddress,
+    validRosmResponseContactDetails
   )
 
   val rosmRegisterOrganisationResponse = RosmRegisterResponse(
-    "safeID", None, isEditable = false, isAnAgent = false, isAnIndividual = true, None, Some(validResponseOrganisation), validRosmResponseAddress, validRosmResponseContactDetails
+    "safeID",
+    None,
+    isEditable = false,
+    isAnAgent = false,
+    isAnIndividual = true,
+    None,
+    Some(validResponseOrganisation),
+    validRosmResponseAddress,
+    validRosmResponseContactDetails
   )
 
   val validReturnPayload: JsValue = Json.parse(
