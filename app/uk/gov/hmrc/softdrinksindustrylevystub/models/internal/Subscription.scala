@@ -18,17 +18,18 @@ package uk.gov.hmrc.softdrinksindustrylevystub.models.internal
 
 import java.time.LocalDate
 
-case class Subscription(utr: String,
-                        orgName: String,
-                        orgType: Option[String],
-                        address: Address,
-                        activity: Activity,
-                        liabilityDate: LocalDate,
-                        productionSites: Seq[Site],
-                        warehouseSites: Seq[Site],
-                        contact: Contact,
-                        sdilRef: String = "",
-                        deregDate: Option[LocalDate] = None)
+case class Subscription(
+  utr: String,
+  orgName: String,
+  orgType: Option[String],
+  address: Address,
+  activity: Activity,
+  liabilityDate: LocalDate,
+  productionSites: Seq[Site],
+  warehouseSites: Seq[Site],
+  contact: Contact,
+  sdilRef: String = "",
+  deregDate: Option[LocalDate] = None)
 
 trait Address {
   def lines: Seq[String]

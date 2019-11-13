@@ -17,35 +17,35 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.models
 
 case class RosmRegisterResponse(
-                                 safeId: String,
-                                 agentReferenceNumber: Option[String],
-                                 isEditable: Boolean,
-                                 isAnAgent: Boolean,
-                                 isAnIndividual: Boolean,
-                                 individual: Option[Individual] = None,
-                                 organisation: Option[OrganisationResponse] = None,
-                                 address: RosmResponseAddress,
-                                 contactDetails: RosmResponseContactDetails
-                               )
+  safeId: String,
+  agentReferenceNumber: Option[String],
+  isEditable: Boolean,
+  isAnAgent: Boolean,
+  isAnIndividual: Boolean,
+  individual: Option[Individual] = None,
+  organisation: Option[OrganisationResponse] = None,
+  address: RosmResponseAddress,
+  contactDetails: RosmResponseContactDetails
+)
 
 case class OrganisationResponse(
-                                 organisationName: String,
-                                 isAGroup: Boolean,
-                                 organisationType: RosmOrganisationType.Value
-                               )
+  organisationName: String,
+  isAGroup: Boolean,
+  organisationType: RosmOrganisationType.Value
+)
 
 case class RosmResponseAddress(
-                                addressLine1: String,
-                                addressLine2: Option[String],
-                                addressLine3: Option[String],
-                                addressLine4: Option[String],
-                                countryCode: String,
-                                postalCode: String
-                              )
+  addressLine1: String,
+  addressLine2: Option[String],
+  addressLine3: Option[String],
+  addressLine4: Option[String],
+  countryCode: String,
+  postalCode: String
+)
 
 case class RosmResponseContactDetails(
-                                       primaryPhoneNumber: Option[String],
-                                       secondaryPhoneNumber: Option[String],
-                                       faxNumber: Option[String],
-                                       emailAddress: Option[String]
-                                     )
+  primaryPhoneNumber: Option[String],
+  secondaryPhoneNumber: Option[String],
+  faxNumber: Option[String],
+  emailAddress: Option[String]
+)

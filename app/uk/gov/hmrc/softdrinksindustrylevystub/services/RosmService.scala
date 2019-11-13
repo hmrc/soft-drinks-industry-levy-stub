@@ -25,8 +25,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models._
 @Singleton
 class RosmService {
 
-  def handleRegisterRequest(data: RosmRegisterRequest, utr: String): Option[RosmRegisterResponse] = {
+  def handleRegisterRequest(data: RosmRegisterRequest, utr: String): Option[RosmRegisterResponse] =
     RosmGenerator.genRosmRegisterResponse(data, utr).seeded(utr).get
-  }
 
 }

@@ -40,20 +40,20 @@ case class InternalActivity(activity: Map[ActivityType.Value, LitreBands], isLar
 
   val add: (Litres, Litres) = activity
     .filter(x => List(ProducedOwnBrand, CopackerAll, Imported).contains(x._1))
-    .values.foldLeft((0L, 0L)) {
-    case ((aL, aH), (pL, pH)) => (aL + pL, aH + pH)
-  }
-
-  def sumOfLiableLitreRates: LitreBands = {
-    activity.get(CopackerSmall).fold(add) {
-      subtract => (add._1 - subtract._1, add._2 - subtract._2)
+    .values
+    .foldLeft((0L, 0L)) {
+      case ((aL, aH), (pL, pH)) => (aL + pL, aH + pH)
     }
-  }
 
-  def isProducer: Boolean = activity.get(ProducedOwnBrand).exists(_ != empty) || activity.get(Copackee).exists(_ != empty) || isLarge
+  def sumOfLiableLitreRates: LitreBands =
+    activity.get(CopackerSmall).fold(add) { subtract =>
+      (add._1 - subtract._1, add._2 - subtract._2)
+    }
+
+  def isProducer: Boolean =
+    activity.get(ProducedOwnBrand).exists(_ != empty) || activity.get(Copackee).exists(_ != empty) || isLarge
 
   def isContractPacker: Boolean = activity.get(CopackerAll).exists(_ != empty)
 
   def isImporter: Boolean = activity.get(Imported).exists(_ != empty)
 }
-

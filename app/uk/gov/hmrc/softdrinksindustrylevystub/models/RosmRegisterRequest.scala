@@ -19,24 +19,24 @@ package uk.gov.hmrc.softdrinksindustrylevystub.models
 import java.time.LocalDate
 
 case class RosmRegisterRequest(
-                                regime: String,
-                                requiresNameMatch: Boolean,
-                                isAnAgent: Boolean,
-                                individual: Option[Individual] = None,
-                                organisation: Option[OrganisationRequest] = None
-                              )
+  regime: String,
+  requiresNameMatch: Boolean,
+  isAnAgent: Boolean,
+  individual: Option[Individual] = None,
+  organisation: Option[OrganisationRequest] = None
+)
 
 case class Individual(
-                       firstName: String,
-                       middleName: Option[String],
-                       lastName: String,
-                       dateOfBirth: Option[LocalDate]
-                     )
+  firstName: String,
+  middleName: Option[String],
+  lastName: String,
+  dateOfBirth: Option[LocalDate]
+)
 
 case class OrganisationRequest(
-                                organisationName: String,
-                                organisationType: RosmOrganisationType.Value
-                              )
+  organisationName: String,
+  organisationType: RosmOrganisationType.Value
+)
 
 object RosmOrganisationType extends Enumeration {
   val Partnership, LLP = Value

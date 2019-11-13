@@ -19,15 +19,14 @@ package uk.gov.hmrc.softdrinksindustrylevystub.models
 import play.api.Logger
 
 case class Return(
-                   periodKey: String,
-                   formBundleType: String,
-                   netLevyDueTotal: BigDecimal,
-                   packaging: Option[Packaging],
-                   importing: Option[Importing],
-                   exporting: Option[ExpoWasted],
-                   wastage: Option[ExpoWasted]
-                 ) {
-
+  periodKey: String,
+  formBundleType: String,
+  netLevyDueTotal: BigDecimal,
+  packaging: Option[Packaging],
+  importing: Option[Importing],
+  exporting: Option[ExpoWasted],
+  wastage: Option[ExpoWasted]
+) {
 
   def isValid: Boolean = {
     import ReturnValidation._
@@ -45,49 +44,44 @@ case class Return(
 }
 
 case class ExpoWasted(
-                    values: Option[Volume],
-                    monetaryValues: Option[MonetaryValues]
-                    ) {
-  def isValid: Boolean = {
+  values: Option[Volume],
+  monetaryValues: Option[MonetaryValues]
+) {
+  def isValid: Boolean =
     Seq(
       values.forall(_.isValid),
       monetaryValues.forall(_.isValid)
-    ).reduce( _ & _ )
-  }
+    ).reduce(_ & _)
 }
 
 case class Importing(
-                    volumeSmall: Option[Volume],
-                    volumeLarge: Option[Volume],
-                    monetaryValues: Option[MonetaryValues]
-                    ) {
-  def isValid: Boolean = {
+  volumeSmall: Option[Volume],
+  volumeLarge: Option[Volume],
+  monetaryValues: Option[MonetaryValues]
+) {
+  def isValid: Boolean =
     Seq(
       volumeSmall.forall(_.isValid),
       volumeLarge.forall(_.isValid),
       monetaryValues.forall(_.isValid)
-    ).reduce( _ & _ )
-  }
+    ).reduce(_ & _)
 }
 
 case class Packaging(
-                    volumeSmall: Option[List[Item]],
-                    volumeLarge: Option[Volume],
-                    monetaryValues: Option[MonetaryValues]
-                    ) {
-  def isValid: Boolean = {
-    Seq(
-      volumeSmall.forall(_.forall(_.isValid)),
-      volumeLarge.forall(_.isValid),
-      monetaryValues.forall(_.isValid)).reduce( _ & _ )
-  }
+  volumeSmall: Option[List[Item]],
+  volumeLarge: Option[Volume],
+  monetaryValues: Option[MonetaryValues]
+) {
+  def isValid: Boolean =
+    Seq(volumeSmall.forall(_.forall(_.isValid)), volumeLarge.forall(_.isValid), monetaryValues.forall(_.isValid))
+      .reduce(_ & _)
 }
 
 case class Item(
-                producerRef: Option[String],
-                lowVolume: Option[String],
-                highVolume: Option[String]
-                ) {
+  producerRef: Option[String],
+  lowVolume: Option[String],
+  highVolume: Option[String]
+) {
 
   def isValid: Boolean = {
     import ReturnValidation._
@@ -95,32 +89,32 @@ case class Item(
       validateString("producerRef", producerRef, sdilRefPattern),
       validateString("lowVolume", lowVolume, volumeStringPattern),
       validateString("highVolume", highVolume, volumeStringPattern)
-    ).reduce( _ & _ )
+    ).reduce(_ & _)
   }
 
 }
 
 case class Volume(
-                 lowVolume: Option[String],
-                 highVolume: Option[String]
-                 ) {
+  lowVolume: Option[String],
+  highVolume: Option[String]
+) {
 
   def isValid: Boolean = {
     import ReturnValidation._
     Seq(
       validateString("lowVolume", lowVolume, volumeStringPattern),
       validateString("highVolume", highVolume, volumeStringPattern)
-    ).reduce( _ & _ )
+    ).reduce(_ & _)
 
   }
 
 }
 
 case class MonetaryValues(
-                      lowVolume: Option[BigDecimal],
-                      highVolume: Option[BigDecimal],
-                      levySubtotal: Option[BigDecimal]
-                    ) {
+  lowVolume: Option[BigDecimal],
+  highVolume: Option[BigDecimal],
+  levySubtotal: Option[BigDecimal]
+) {
 
   def isValid: Boolean = {
     import ReturnValidation._
@@ -128,18 +122,18 @@ case class MonetaryValues(
       validateMonetary("lowVolume", lowVolume),
       validateMonetary("highVolume", highVolume),
       validateMonetary("levySubtotal", levySubtotal)
-    ).reduce( _ & _ )
+    ).reduce(_ & _)
   }
 }
 
 case class ReturnSuccessResponse(
-                            formBundleNumber: String
-                          )
+  formBundleNumber: String
+)
 
 case class ReturnFailureResponse(
-                          code: String,
-                          reason: String
-                          )
+  code: String,
+  reason: String
+)
 
 case object ReturnFailureResponse {
 
@@ -198,22 +192,20 @@ object ReturnValidation {
     }
   }
 
-  def validateMonetary(label: String, value: Option[BigDecimal]): Boolean = {
+  def validateMonetary(label: String, value: Option[BigDecimal]): Boolean =
     value match {
       case Some(a) if a >= -monetaryHighLow && a <= monetaryHighLow => true
       case _ =>
         Logger.error(s"Invalid Return: $label $value is either > $monetaryHighLow or < -$monetaryHighLow")
         false
     }
-  }
 
-  def validateMonetary(label: String, value: BigDecimal): Boolean = {
+  def validateMonetary(label: String, value: BigDecimal): Boolean =
     value match {
       case a if a >= -monetaryHighLow && a <= monetaryHighLow => true
       case _ =>
         Logger.error(s"Invalid Return: $label $value is either > $monetaryHighLow or < -$monetaryHighLow")
         false
     }
-  }
 
 }

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub
 
-import java.io.{ BufferedWriter, FileWriter }
+import java.io.{BufferedWriter, FileWriter}
 import scala.collection.parallel.ParSeq
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import SubscriptionGenerator.genSubscription
@@ -26,13 +26,12 @@ import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdi
 
 object Report extends App {
 
-  def findRegistrationWhere(predicate: Subscription => Boolean): Subscription = {
-    sdilRefEnum.iterator.collectFirst{ sdilRef =>
+  def findRegistrationWhere(predicate: Subscription => Boolean): Subscription =
+    sdilRefEnum.iterator.collectFirst { sdilRef =>
       Store.fromSdilRef(sdilRef) match {
-        case Some(r) if predicate(r)=> r
+        case Some(r) if predicate(r) => r
       }
     }.get
-  }
 
   implicit def boolToStr(i: Boolean): String = if (i) "yes" else "no"
 
@@ -50,23 +49,25 @@ object Report extends App {
       (utr, record)
     }
 
-    records.map { case (utr, optSub) => 
-      "\"" ++ utr ++ "\"" :: {
-        optSub match {
-          case Some(sub) => List[String](
-            sub.sdilRef,
-            sub.orgName,
-            postcode(sub.address),
-            sub.activity.isLarge,
-            sub.activity.isImporter,
-            sub.activity.isProducer,
-            sub.activity.isSmallProducer,
-            sub.activity.isContractPacker,
-            sub.activity.isVoluntaryRegistration
-          )
-          case _ => List.empty[String]
+    records.map {
+      case (utr, optSub) =>
+        "\"" ++ utr ++ "\"" :: {
+          optSub match {
+            case Some(sub) =>
+              List[String](
+                sub.sdilRef,
+                sub.orgName,
+                postcode(sub.address),
+                sub.activity.isLarge,
+                sub.activity.isImporter,
+                sub.activity.isProducer,
+                sub.activity.isSmallProducer,
+                sub.activity.isContractPacker,
+                sub.activity.isVoluntaryRegistration
+              )
+            case _ => List.empty[String]
+          }
         }
-      }
     }
   }
 
@@ -74,7 +75,7 @@ object Report extends App {
   val bw = new BufferedWriter(new FileWriter(outFile))
   bw.write("UTR, SDIL Ref, Name, Postcode, Large, Importer, Producer, Small Producer, Contract Packer, Voluntary \n")
 
-  for(x <- apply(100000).toList){
+  for (x <- apply(100000).toList) {
     bw.write(x.mkString(","))
     bw.write("\n")
   }

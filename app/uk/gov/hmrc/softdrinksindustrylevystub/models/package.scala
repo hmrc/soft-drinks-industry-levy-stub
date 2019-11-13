@@ -45,8 +45,10 @@ package object models {
   implicit val siteFormat: OFormat[Site] = Json.format[Site]
   implicit val registrationFormat: OFormat[Registration] = Json.format[Registration]
   implicit val entityActionFormat: OFormat[EntityAction] = Json.format[EntityAction]
-  implicit val createSubscriptionRequestFormat: OFormat[CreateSubscriptionRequest] = Json.format[CreateSubscriptionRequest]
-  implicit val createSubscriptionResponseFormat: OFormat[CreateSubscriptionResponse] = Json.format[CreateSubscriptionResponse]
+  implicit val createSubscriptionRequestFormat: OFormat[CreateSubscriptionRequest] =
+    Json.format[CreateSubscriptionRequest]
+  implicit val createSubscriptionResponseFormat: OFormat[CreateSubscriptionResponse] =
+    Json.format[CreateSubscriptionResponse]
   implicit val failureFormat: OFormat[FailureMessage] = Json.format[FailureMessage]
   implicit val failureResponseFormat: OFormat[FailureResponse] = Json.format[FailureResponse]
 
@@ -69,7 +71,7 @@ package object models {
 
     def length: Int = s match {
       case Some(data) => data.length
-      case _ => 0
+      case _          => 0
     }
   }
 

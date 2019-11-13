@@ -31,21 +31,20 @@ class DesSubmissionService {
   def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
     import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.tolerantUtr
     val sdilRef = Store.unusedSdilRefs.head
-    Store.add{data.copy(sdilRef = sdilRef)} 
+    Store.add { data.copy(sdilRef = sdilRef) }
     SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber)(tolerantUtr).get
   }
 
-  def retrieveSubscriptionDetails(idType: String, idNumber: String): Option[Subscription] = {
+  def retrieveSubscriptionDetails(idType: String, idNumber: String): Option[Subscription] =
     for {
       utr <- idType match {
-        case "utr" => Some(idNumber)
-        case "sdil" => SdilNumberTransformer.sdilToUtr(idNumber)
-      }
+              case "utr"  => Some(idNumber)
+              case "sdil" => SdilNumberTransformer.sdilToUtr(idNumber)
+            }
       subscription <- Store.fromUtr(utr)
     } yield {
       subscription.copy(utr = utr)
     }
-  }
 
   def createReturnResponse(payload: Return, sdilRef: String): ReturnSuccessResponse = {
     import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
@@ -54,18 +53,14 @@ class DesSubmissionService {
     ReturnGenerator.genCreateReturnResponse.seeded(sdilRef).get
   }
 
-  def checkForExistingReturn(sdilRefAndPeriodKey: String): Boolean = {
+  def checkForExistingReturn(sdilRefAndPeriodKey: String): Boolean =
     returnStore.get(sdilRefAndPeriodKey).nonEmpty
-  }
 
   // TODO smart stub should override `clear()` to only clear the state changes
-  def resetSubscriptions(): Unit = {
+  def resetSubscriptions(): Unit =
     SubscriptionGenerator.store.state.clear()
-  }
 
-  def resetReturns(): Unit = {
+  def resetReturns(): Unit =
     returnStore.clear()
-  }
 
 }
-

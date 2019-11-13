@@ -25,25 +25,28 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 import uk.gov.hmrc.softdrinksindustrylevystub.services.{DesSubmissionService, SdilNumberTransformer}
 
-class ReturnController @Inject()(desSubmissionService: DesSubmissionService,
-                                 cc:ControllerComponents,
-                                 extraActions: ExtraActions) extends BackendController(cc) {
+class ReturnController @Inject()(
+  desSubmissionService: DesSubmissionService,
+  cc: ControllerComponents,
+  extraActions: ExtraActions)
+    extends BackendController(cc) {
 
   def createReturn(sdilRef: String): Action[JsValue] = extraActions.AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
       request.body.validate[Return] match {
-        case JsSuccess(_,_) if !sdilRef.matches(ReturnValidation.sdilRefPattern) =>
+        case JsSuccess(_, _) if !sdilRef.matches(ReturnValidation.sdilRefPattern) =>
           BadRequest(Json.toJson(ReturnFailureResponse.invalidSdilRef))
-        case JsSuccess(a,_) if desSubmissionService.retrieveSubscriptionDetails("sdil",sdilRef).isEmpty =>
+        case JsSuccess(a, _) if desSubmissionService.retrieveSubscriptionDetails("sdil", sdilRef).isEmpty =>
           Forbidden(Json.toJson(ReturnFailureResponse.noBpKey))
-        case JsSuccess(a,_) if !a.periodKey.matches(ReturnValidation.periodKeyPattern) =>
+        case JsSuccess(a, _) if !a.periodKey.matches(ReturnValidation.periodKeyPattern) =>
           BadRequest(Json.toJson(ReturnFailureResponse.invalidPeriodKey))
-        case JsSuccess(a,_) if desSubmissionService.checkForExistingReturn(sdilRef + a.periodKey) =>
+        case JsSuccess(a, _) if desSubmissionService.checkForExistingReturn(sdilRef + a.periodKey) =>
           Conflict(Json.toJson(ReturnFailureResponse.obligationFilled))
-        case JsSuccess(a,_) if a.isValid =>
-          Ok(Json.toJson(
-            desSubmissionService.createReturnResponse(a, sdilRef)
-          )).withHeaders(
+        case JsSuccess(a, _) if a.isValid =>
+          Ok(
+            Json.toJson(
+              desSubmissionService.createReturnResponse(a, sdilRef)
+            )).withHeaders(
             ("CorrelationId", genCorrelationIdHeader.seeded(sdilRef)(SdilNumberTransformer.sdilRefEnum).get)
           )
         case _ =>
@@ -51,9 +54,11 @@ class ReturnController @Inject()(desSubmissionService: DesSubmissionService,
       }
   }
 
-  implicit val sdilToLong: Enumerable[String] = pattern"ZZ9999999994".imap{
-    i => i.take(2) ++ "SDIL" ++ i.substring(2,7) ++ "C" ++ i.takeRight(1)
-  }{ b => b.take(2) ++ b.takeRight(9) }
+  implicit val sdilToLong: Enumerable[String] = pattern"ZZ9999999994".imap { i =>
+    i.take(2) ++ "SDIL" ++ i.substring(2, 7) ++ "C" ++ i.takeRight(1)
+  } { b =>
+    b.take(2) ++ b.takeRight(9)
+  }
 
   def resetReturns: Action[AnyContent] = Action {
     desSubmissionService.resetReturns()
@@ -61,5 +66,3 @@ class ReturnController @Inject()(desSubmissionService: DesSubmissionService,
   }
 
 }
-
-

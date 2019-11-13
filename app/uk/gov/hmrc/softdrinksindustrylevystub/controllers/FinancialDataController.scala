@@ -36,9 +36,9 @@ import sdil.models.des.FinancialTransaction._
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 @Singleton
-class FinancialDataController @Inject()(cc:ControllerComponents,
-                                        extraActions: ExtraActions)(implicit ec: ExecutionContext)
-  extends BackendController(cc) {
+class FinancialDataController @Inject()(cc: ControllerComponents, extraActions: ExtraActions)(
+  implicit ec: ExecutionContext)
+    extends BackendController(cc) {
 
   val logger = Logger("FinancialDataController")
   val canned = CannedFinancialData.canned
@@ -55,7 +55,7 @@ class FinancialDataController @Inject()(cc:ControllerComponents,
 
     val id = sdilRef.asLong % canned.size
     canned(id.toInt) match {
-      case (file, Left(e))     => throw new IllegalStateException(s"unable to parse $file", e)
+      case (file, Left(e)) => throw new IllegalStateException(s"unable to parse $file", e)
       case (file, Right(json)) =>
         logger.info(s"Serving ${file.getName}")
         Ok(Json.toJson(json))

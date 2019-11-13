@@ -53,32 +53,34 @@ object CannedFinancialData {
       validator.validate(schema, json)
     }
 
-    def apply(model: JsValue): Either[Throwable, JsValue] = for {
-      report <- Either.catchOnly[ProcessingException]{report(model)}
-      _ <- if (!report.isSuccess) report.iterator.asScala.toList.map{_.asException}.head.asLeft else ().asRight
-    } yield (model)
+    def apply(model: JsValue): Either[Throwable, JsValue] =
+      for {
+        report <- Either.catchOnly[ProcessingException] { report(model) }
+        _      <- if (!report.isSuccess) report.iterator.asScala.toList.map { _.asException }.head.asLeft else ().asRight
+      } yield (model)
   }
 
-  def read(file: File): Either[Throwable, FinancialTransactionResponse] = for {
-    stream <- Either.catchNonFatal(new FileInputStream(file))
-    json   <- Either.catchOnly[JsonParseException](Json.parse(stream))
-    _      <- SchemaValidator("/des-financial-data.schema.json")(json)
-    obj    <- Either.catchOnly[JsResultException](json.as[FinancialTransactionResponse])
-  } yield ( obj )
+  def read(file: File): Either[Throwable, FinancialTransactionResponse] =
+    for {
+      stream <- Either.catchNonFatal(new FileInputStream(file))
+      json   <- Either.catchOnly[JsonParseException](Json.parse(stream))
+      _      <- SchemaValidator("/des-financial-data.schema.json")(json)
+      obj    <- Either.catchOnly[JsResultException](json.as[FinancialTransactionResponse])
+    } yield (obj)
 
   val path = Paths.get(getClass.getResource("/canned-data").toURI)
 
-  lazy val canned = path
-    .toFile
-    .listFiles.toList
+  lazy val canned = path.toFile.listFiles.toList
     .filter(_.getName.endsWith(".json"))
     .sortBy(_.getName)
-    .map{ f => (f,read(f)) }
+    .map { f =>
+      (f, read(f))
+    }
 
   def bad = path.toFile.listFiles.toList.flatMap { f =>
     read(f) match {
       case Left(e) => List(new IllegalStateException(s"unable to parse $f", e))
-      case _ => Nil
+      case _       => Nil
     }
   }
 }

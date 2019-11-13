@@ -22,8 +22,8 @@ import org.scalatest.prop._
 class CannedFinancialDataSpec extends FlatSpec with Matchers {
 
   "CannedFinancialData" should "load all the files" in {
-    CannedFinancialData.canned.collect{
-      case (_,Left(e)) => e
+    CannedFinancialData.canned.collect {
+      case (_, Left(e)) => e
     } shouldBe (Nil)
   }
 }

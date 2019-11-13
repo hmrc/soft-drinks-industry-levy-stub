@@ -29,7 +29,7 @@ class StoreSpec extends FlatSpec with Matchers with PropertyChecks {
 
   "The Store" should "return records against a UTR or SDIL ref" in {
     forAll(sdilRefEnum) { sdil =>
-      sdilToUtr(sdil).map { utr => 
+      sdilToUtr(sdil).map { utr =>
         whenever("12345".toList.contains(utr.last)) {
           Store.fromUtr(utr) shouldBe defined
           Store.fromUtr(utr) shouldBe Store.fromSdilRef(sdil)
@@ -39,7 +39,7 @@ class StoreSpec extends FlatSpec with Matchers with PropertyChecks {
   }
 
   it should "allow overriding of records" in {
-    implicit val g = Arbitrary{SubscriptionGenerator.genSubscription}
+    implicit val g = Arbitrary { SubscriptionGenerator.genSubscription }
     forAll { subscription: Subscription =>
       Store.add(subscription)
       Store.fromUtr(subscription.utr) shouldBe Some(subscription)
