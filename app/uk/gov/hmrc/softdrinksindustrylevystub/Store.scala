@@ -45,7 +45,7 @@ object Store {
 
   import SubscriptionGenerator.genSubscription
 
-  def clear = {
+  def clear() = {
     _store.clear
     utrToSdil.clear
   }

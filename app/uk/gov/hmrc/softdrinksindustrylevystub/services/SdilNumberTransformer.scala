@@ -41,7 +41,7 @@ object SdilNumberTransformer {
   val utrToSdil = convertEnum(tolerantUtr, sdilRefEnum) _
   val sdilToUtr = convertEnum(sdilRefEnum, tolerantUtr) _
 
-  def showTable(num: Int): Unit =
+  def showTable(num: Int): Unit = {
     for {
       i       <- 1 to num
       utr     <- tolerantUtr.get(i)
@@ -49,5 +49,7 @@ object SdilNumberTransformer {
     } yield {
       println(s"| $utr | $sdilRef |")
     }
+    ()
+  }
 
 }
