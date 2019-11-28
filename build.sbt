@@ -58,6 +58,8 @@ resolvers ++= Seq(
 // ================================================================================
 
 scalacOptions ++= Seq(
+  "-language:postfixOps",
+  "-language:implicitConversions",
 //  "-Xfatal-warnings",                  // Fail the compilation if there are any warnings.  
   "-deprecation",                      // Emit warning and location for usages of deprecated APIs.
   "-encoding", "utf-8",                // Specify character encoding used by source files.
