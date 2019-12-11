@@ -61,25 +61,27 @@ class SubscriptionController @Inject()(
       }
     }
 
-  def retrieveSubscriptionDetails(idType: String, idNumber: String) = extraActions.AuthAndEnvAction.async {
+  def retrieveSubscriptionDetails(idType: String, idNumber: String): Action[AnyContent] =
+    extraActions.AuthAndEnvAction.async {
 
-    val subscription: Option[Subscription] = {
-      idType match {
-        case "sdil" => idNumber.some
-        case "utr"  => Store.utrToSdil(idNumber).lastOption
-        case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
-      }
-    } >>= Store.fromSdilRef
-
-    Future
-      .successful(
-        subscription match {
-          case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
-          case _          => NotFound(Json.obj("reason" -> "unknown subscription"))
+      val subscription: Option[Subscription] = {
+        idType match {
+          case "sdil" => idNumber.some
+          case "utr"  => Store.utrToSdil(idNumber).lastOption
+          case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
         }
-      )
-      .desify(idNumber)
-  }
+      } >>= Store.fromSdilRef
+
+      Future
+        .successful(
+          subscription match {
+            case Some(data) if (idNumber == "0000010901") => TooManyRequests(Json.obj("reason" -> "too many requests"))
+            case Some(data)                               => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
+            case _                                        => NotFound(Json.obj("reason" -> "unknown subscription"))
+          }
+        )
+        .desify(idNumber)
+    }
 
   def reset: Action[AnyContent] = Action {
     desSubmissionService.resetSubscriptions()
