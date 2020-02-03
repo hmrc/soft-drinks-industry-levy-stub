@@ -18,12 +18,12 @@ package uk.gov.hmrc.softdrinksindustrylevystub
 
 import org.scalacheck._
 import org.scalatest._
-import org.scalatest.prop._
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 
-class StoreSpec extends FlatSpec with Matchers with PropertyChecks {
+class StoreSpec extends FlatSpec with Matchers with ScalaCheckPropertyChecks {
 
   implicit def noShrink[T]: Shrink[T] = Shrink.shrinkAny
 
