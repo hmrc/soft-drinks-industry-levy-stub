@@ -18,3 +18,5 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.23")
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 
 addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.16")
+
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.5.0")

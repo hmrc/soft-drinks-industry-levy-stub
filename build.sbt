@@ -19,10 +19,10 @@ PlayKeys.playDefaultPort := 8702
 // Testing
 // ================================================================================
 libraryDependencies ++= Seq(
-  "org.mockito"             %  "mockito-core"            % "3.1.0",
+  "org.mockito"             %  "mockito-core"            % "3.2.4",
   "org.pegdown"             %  "pegdown"                 % "1.6.0",
   "org.scalatest"           %% "scalatest"               % "3.0.8",
-  "org.scalatestplus.play"  %% "scalatestplus-play"      % "3.1.2"
+  "org.scalatestplus.play"  %% "scalatestplus-play"      % "3.1.3"
 ).map(_ % "test")
 
 // ================================================================================
@@ -41,7 +41,7 @@ scalaVersion := "2.11.12"
 libraryDependencies ++= Seq(
   ws,
   "com.github.fge"          %  "json-schema-validator"   % "2.2.6",
-  "org.scalacheck"          %% "scalacheck"              % "1.14.2",
+  "org.scalacheck"          %% "scalacheck"              % "1.14.3",
   "uk.gov.hmrc"             %% "domain"                  % "5.6.0-play-26",
   "uk.gov.hmrc"             %% "bootstrap-play-26"       % "1.3.0",
   "uk.gov.hmrc"             %% "play-ui"                 % "8.7.0-play-26",
