@@ -42,9 +42,9 @@ libraryDependencies ++= Seq(
   ws,
   "com.github.fge"          %  "json-schema-validator"   % "2.2.6",
   "org.scalacheck"          %% "scalacheck"              % "1.14.3",
-  "uk.gov.hmrc"             %% "domain"                  % "5.6.0-play-26",
-  "uk.gov.hmrc"             %% "bootstrap-play-26"       % "1.3.0",
-  "uk.gov.hmrc"             %% "play-ui"                 % "8.7.0-play-26",
+  "uk.gov.hmrc"             %% "domain"                  % "5.8.0-play-26",
+  "uk.gov.hmrc"             %% "bootstrap-play-26"       % "1.7.0",
+  "uk.gov.hmrc"             %% "play-ui"                 % "8.9.0-play-26",
   "uk.gov.hmrc"             %% "stub-data-generator"     % "0.5.3"
 )
 
