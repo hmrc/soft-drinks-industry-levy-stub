@@ -59,6 +59,7 @@ object Store {
       case ('1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
       case (_, '1')   => generate(_.activity.isSmallProducer)
       case ('2', '2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
+      case ('3', '2') => generate(_.activity.isLargeNoImports).map(_.copy(warehouseSites = Nil))
       case (_, '2')   => generate(_.activity.isLarge)
       case (_, '3')   => generate(_.activity.isImporter)
       case (_, '4')   => generate(_.activity.isContractPacker)
