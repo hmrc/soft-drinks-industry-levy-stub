@@ -102,4 +102,4 @@ initialCommands in Test := "import uk.gov.hmrc.softdrinksindustrylevystub.Report
 majorVersion := 0
 uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
-
+disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
