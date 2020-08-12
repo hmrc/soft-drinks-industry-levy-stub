@@ -32,7 +32,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.Store
 import scala.util.{Failure, Success, Try}
 import des._
 import cats.implicits._
-import uk.gov.hmrc.play.bootstrap.controller.{BackendController, BaseController}
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton
 class SubscriptionController @Inject()(

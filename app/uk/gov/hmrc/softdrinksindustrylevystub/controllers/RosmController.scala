@@ -19,7 +19,7 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.{BackendController, BaseController}
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.RosmService
 
