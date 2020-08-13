@@ -19,7 +19,7 @@ PlayKeys.playDefaultPort := 8702
 // Testing
 // ================================================================================
 libraryDependencies ++= Seq(
-  "org.mockito"             %  "mockito-core"            % "3.2.4",
+  "org.mockito"             %  "mockito-core"            % "3.4.6",
   "org.pegdown"             %  "pegdown"                 % "1.6.0",
   "org.scalatest"           %% "scalatest"               % "3.0.8",
   "org.scalatestplus.play"  %% "scalatestplus-play"      % "3.1.3"
