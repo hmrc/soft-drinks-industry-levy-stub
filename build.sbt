@@ -44,7 +44,7 @@ libraryDependencies ++= Seq(
   "org.scalacheck"          %% "scalacheck"                 % "1.14.3",
   "uk.gov.hmrc"             %% "domain"                     % "5.9.0-play-26",
   "uk.gov.hmrc"             %% "bootstrap-backend-play-26"  % "2.24.0",
-  "uk.gov.hmrc"             %% "play-ui"                    % "8.9.0-play-26",
+  "uk.gov.hmrc"             %% "play-ui"                    % "8.11.0-play-26",
   "uk.gov.hmrc"             %% "stub-data-generator"        % "0.5.3"
 )
 
