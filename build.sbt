@@ -19,7 +19,7 @@ PlayKeys.playDefaultPort := 8702
 // Testing
 // ================================================================================
 libraryDependencies ++= Seq(
-  "org.mockito"             %  "mockito-core"            % "3.2.4",
+  "org.mockito"             %  "mockito-core"            % "3.4.6",
   "org.pegdown"             %  "pegdown"                 % "1.6.0",
   "org.scalatest"           %% "scalatest"               % "3.0.8",
   "org.scalatestplus.play"  %% "scalatestplus-play"      % "3.1.3"
@@ -36,16 +36,16 @@ scalafmtOnCompile in Test := true
 // ================================================================================
 // Dependencies
 // ================================================================================
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.11"
 
 libraryDependencies ++= Seq(
   ws,
-  "com.github.fge"          %  "json-schema-validator"   % "2.2.6",
-  "org.scalacheck"          %% "scalacheck"              % "1.14.3",
-  "uk.gov.hmrc"             %% "domain"                  % "5.8.0-play-26",
-  "uk.gov.hmrc"             %% "bootstrap-play-26"       % "1.7.0",
-  "uk.gov.hmrc"             %% "play-ui"                 % "8.9.0-play-26",
-  "uk.gov.hmrc"             %% "stub-data-generator"     % "0.5.3"
+  "com.github.fge"          %  "json-schema-validator"      % "2.2.6",
+  "org.scalacheck"          %% "scalacheck"                 % "1.14.3",
+  "uk.gov.hmrc"             %% "domain"                     % "5.9.0-play-26",
+  "uk.gov.hmrc"             %% "bootstrap-backend-play-26"  % "2.24.0",
+  "uk.gov.hmrc"             %% "play-ui"                    % "8.11.0-play-26",
+  "uk.gov.hmrc"             %% "stub-data-generator"        % "0.5.3"
 )
 
 resolvers ++= Seq(
