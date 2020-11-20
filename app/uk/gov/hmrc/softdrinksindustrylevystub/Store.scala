@@ -60,12 +60,16 @@ object Store {
       case (_, '1')   => generate(_.activity.isSmallProducer)
       case ('2', '2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
       case ('3', '2') => generate(_.activity.isLargeNoImports).map(_.copy(warehouseSites = Nil))
-      case (_, '2')   => generate(_.activity.isLarge)
+      case (_, '2')   => generate(_.activity.isLargeImportCopacker)
       case ('3', '3') => generate(_.activity.isLargeImportCopacker)
       case (_, '3')   => generate(_.activity.isImporter)
+      case ('6', '4') => generate(_.activity.isLargeImportCopacker)
+      case ('1', '4') => generate(_.activity.isNotProducerCopackerImporter)
       case (_, '4')   => generate(_.activity.isContractPacker)
       case (_, '5')   => generate(_.activity.isVoluntaryRegistration)
       case (_, '6')   => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.of(2018, 11, 14))))
+      case ('7', '8') => generate(_.activity.isLargeImportCopacker)
+      case ('3', '9') => generate(_.activity.isSmallProducerCopackerImporter)
       case _          => genSubscription.seeded(sdil)
     }
 
