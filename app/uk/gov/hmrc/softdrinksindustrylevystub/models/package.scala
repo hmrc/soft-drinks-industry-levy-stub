@@ -17,7 +17,6 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import play.api.libs.json._
-import uk.gov.hmrc.smartstub._
 
 package object models {
 

@@ -75,9 +75,9 @@ class SubscriptionController @Inject()(
       Future
         .successful(
           subscription match {
-            case Some(data) if (idNumber == "0000010901") => TooManyRequests(Json.obj("reason" -> "too many requests"))
-            case Some(data)                               => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
-            case _                                        => NotFound(Json.obj("reason" -> "unknown subscription"))
+            case Some(_) if (idNumber == "0000010901") => TooManyRequests(Json.obj("reason" -> "too many requests"))
+            case Some(data)                            => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
+            case _                                     => NotFound(Json.obj("reason" -> "unknown subscription"))
           }
         )
         .desify(idNumber)

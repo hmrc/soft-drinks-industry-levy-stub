@@ -17,7 +17,6 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}
-
 import org.scalacheck._
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
@@ -25,7 +24,6 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.ActivityType._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse, maxL}
 import cats.implicits._
-import org.scalacheck.support.cats._
 
 object SubscriptionGenerator {
 

@@ -17,7 +17,6 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import org.scalatest._
-import org.scalatest.prop._
 
 class CannedFinancialDataSpec extends FlatSpec with Matchers {
 

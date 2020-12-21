@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.models.internal
 
-import java.time.LocalDate
-
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 object GetFormat {

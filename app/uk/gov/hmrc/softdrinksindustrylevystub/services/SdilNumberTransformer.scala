@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import org.scalacheck._
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.domain.Modulus23Check
 

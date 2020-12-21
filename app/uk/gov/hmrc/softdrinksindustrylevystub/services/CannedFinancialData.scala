@@ -19,9 +19,6 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 import scala.collection.JavaConverters._
 import java.io._
 import play.api.libs.json._
-import play.api.Logger
-import scala.io.Source
-import scala.util.Try
 import cats.implicits._
 import com.fasterxml.jackson.core.JsonParseException
 import sdil.models.des._
@@ -31,8 +28,6 @@ import com.github.fge.jackson.JsonLoader
 import com.github.fge.jsonschema.main.JsonSchemaFactory
 import com.github.fge.jsonschema.core.report.ProcessingReport
 import com.github.fge.jsonschema.core.exceptions.ProcessingException
-import uk.gov.hmrc.smartstub.Enumerable
-import uk.gov.hmrc.smartstub.Enumerable.ops._
 import java.nio.file.Paths
 
 object CannedFinancialData {

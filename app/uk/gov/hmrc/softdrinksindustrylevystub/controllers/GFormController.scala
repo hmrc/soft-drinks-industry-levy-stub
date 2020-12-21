@@ -19,9 +19,8 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsSuccess, JsValue}
 import play.api.mvc.{Action, ControllerComponents, Request}
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.softdrinksindustrylevystub.models.DmsHtmlSubmission
-
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -31,8 +30,8 @@ class GFormController @Inject()(cc: ControllerComponents, extraActions: ExtraAct
   //Stub Gform functionality for local testing due to configuration issues with pdf generator service
   def submitToDms(): Action[JsValue] = Action(parse.json) { implicit request: Request[JsValue] =>
     request.body.validateOpt[DmsHtmlSubmission] match {
-      case JsSuccess(Some(submission: DmsHtmlSubmission), _) => Ok("DMS Submission is valid")
-      case _                                                 => BadRequest("DMS Submission Failed")
+      case JsSuccess(Some(_: DmsHtmlSubmission), _) => Ok("DMS Submission is valid")
+      case _                                        => BadRequest("DMS Submission Failed")
     }
   }
 }
