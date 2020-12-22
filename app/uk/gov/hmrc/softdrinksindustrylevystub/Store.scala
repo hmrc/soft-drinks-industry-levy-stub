@@ -17,23 +17,11 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import java.time.LocalDate
-import javax.inject.{Inject, Singleton}
-
 import org.scalacheck.Gen
-import play.api.libs.json._
-import play.api.mvc._
-
-import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Site
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
-import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 import sdil.models.des.FinancialTransactionResponse
-
-import scala.util.{Failure, Success, Try}
-import des._
 import cats.implicits._
 
 object Store {
@@ -97,7 +85,7 @@ object Store {
     val overriddenUtrs = utrToSdil.toList.flatMap { _._2 };
     { 0 to 99999 }
       .map { x =>
-        SdilNumberTransformer.sdilRefEnum { x * 10 }
+        SdilNumberTransformer.sdilRefEnum { x * 10L }
       }
       .filterNot { overriddenUtrs.contains }
   }

@@ -36,7 +36,7 @@ class ReturnController @Inject()(
       request.body.validate[Return] match {
         case JsSuccess(_, _) if !sdilRef.matches(ReturnValidation.sdilRefPattern) =>
           BadRequest(Json.toJson(ReturnFailureResponse.invalidSdilRef))
-        case JsSuccess(a, _) if desSubmissionService.retrieveSubscriptionDetails("sdil", sdilRef).isEmpty =>
+        case JsSuccess(_, _) if desSubmissionService.retrieveSubscriptionDetails("sdil", sdilRef).isEmpty =>
           Forbidden(Json.toJson(ReturnFailureResponse.noBpKey))
         case JsSuccess(a, _) if !a.periodKey.matches(ReturnValidation.periodKeyPattern) =>
           BadRequest(Json.toJson(ReturnFailureResponse.invalidPeriodKey))

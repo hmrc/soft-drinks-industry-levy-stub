@@ -17,9 +17,7 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import java.io.{BufferedWriter, FileWriter}
-import scala.collection.parallel.ParSeq
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
-import SubscriptionGenerator.genSubscription
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import sys.process._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
@@ -44,7 +42,7 @@ object Report extends App {
     val records = for {
       i <- (1 to qty).par
     } yield {
-      val utr: String = SdilNumberTransformer.tolerantUtr(i)
+      val utr: String = SdilNumberTransformer.tolerantUtr(i.toLong)
       val record = Store.fromUtr(utr)
       (utr, record)
     }

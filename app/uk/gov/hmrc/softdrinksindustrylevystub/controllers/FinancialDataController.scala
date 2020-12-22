@@ -20,24 +20,14 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.Logger
-
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
-import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
-import uk.gov.hmrc.softdrinksindustrylevystub.Store
-
-import scala.util.{Failure, Success, Try}
-import des._
-import cats.implicits._
 import sdil.models.des.FinancialTransaction._
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton
-class FinancialDataController @Inject()(cc: ControllerComponents, extraActions: ExtraActions)(
-  implicit ec: ExecutionContext)
+class FinancialDataController @Inject()(cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends BackendController(cc) {
 
   val logger = Logger("FinancialDataController")
