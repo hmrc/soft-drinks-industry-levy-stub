@@ -42,7 +42,7 @@ object Report extends App {
     val records = for {
       i <- (1 to qty).par
     } yield {
-      val utr: String = SdilNumberTransformer.tolerantUtr(i)
+      val utr: String = SdilNumberTransformer.tolerantUtr(i.toLong)
       val record = Store.fromUtr(utr)
       (utr, record)
     }

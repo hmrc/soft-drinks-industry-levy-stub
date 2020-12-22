@@ -85,7 +85,7 @@ object Store {
     val overriddenUtrs = utrToSdil.toList.flatMap { _._2 };
     { 0 to 99999 }
       .map { x =>
-        SdilNumberTransformer.sdilRefEnum { x * 10 }
+        SdilNumberTransformer.sdilRefEnum { x * 10L }
       }
       .filterNot { overriddenUtrs.contains }
   }
