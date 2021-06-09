@@ -20,15 +20,13 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.Logger
-import scala.concurrent.ExecutionContext
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import sdil.models.des.FinancialTransaction._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton
-class FinancialDataController @Inject()(cc: ControllerComponents)(implicit ec: ExecutionContext)
-    extends BackendController(cc) {
+class FinancialDataController @Inject()(cc: ControllerComponents) extends BackendController(cc) {
 
   val logger = Logger("FinancialDataController")
   val canned = CannedFinancialData.canned
@@ -42,7 +40,8 @@ class FinancialDataController @Inject()(cc: ControllerComponents)(implicit ec: E
     calculateAccruedInterest: Boolean,
     customerPaymentInformation: Boolean
   ): Action[AnyContent] = Action {
-
+    logger.info(
+      s"Query parameters onlyOpenItems=$onlyOpenItems, includeLocks=$includeLocks, calculateAccruedInterest=$calculateAccruedInterest, customerPaymentInformation= $customerPaymentInformation")
     val id = sdilRef.asLong % canned.size
     canned(id.toInt) match {
       case (file, Left(e)) => throw new IllegalStateException(s"unable to parse $file", e)

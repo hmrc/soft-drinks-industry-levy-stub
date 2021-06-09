@@ -37,7 +37,7 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   val cc = stubControllerComponents()
   val authorisedFilterAction = new AuthorisedFilterAction(cc)
   val environmentAction = new EnvironmentFilterAction()
-  val extraActions = new ExtraActions(cc, authorisedFilterAction, environmentAction)
+  val extraActions = new ExtraActions(authorisedFilterAction, environmentAction)
   val mockSubscriptionController = new SubscriptionController(mockDesSubmissionService, cc, extraActions)
   implicit val hc: HeaderCarrier = new HeaderCarrier
   val utr = "1111111111"

@@ -20,7 +20,6 @@ import javax.inject.Inject
 import play.api.mvc._
 
 class ExtraActions @Inject()(
-  cc: ControllerComponents,
   authorisedFilterAction: AuthorisedFilterAction,
   environmentFilterAction: EnvironmentFilterAction
 ) {

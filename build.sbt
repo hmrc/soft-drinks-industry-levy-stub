@@ -4,10 +4,7 @@
 // ================================================================================
 enablePlugins(
   play.sbt.PlayScala,
-  SbtAutoBuildPlugin,
-  SbtGitVersioning,
-  SbtDistributablesPlugin,
-  SbtArtifactory
+  SbtDistributablesPlugin
 )
 
 // ================================================================================
@@ -19,7 +16,7 @@ PlayKeys.playDefaultPort := 8702
 // Testing
 // ================================================================================
 libraryDependencies ++= Seq(
-  "org.mockito"             %  "mockito-core"            % "3.4.6",
+  "org.mockito"             %  "mockito-core"            % "3.11.0",
   "org.pegdown"             %  "pegdown"                 % "1.6.0",
   "org.scalatest"           %% "scalatest"               % "3.0.8",
   "org.scalatestplus.play"  %% "scalatestplus-play"      % "3.1.3"
@@ -30,27 +27,24 @@ libraryDependencies ++= Seq(
 // ================================================================================
 
 import com.lucidchart.sbt.scalafmt.ScalafmtCorePlugin.autoImport._
-scalafmtOnCompile in Compile := true
-scalafmtOnCompile in Test := true
+Compile / scalafmtOnCompile := true
+Test / scalafmtOnCompile := true
 
 // ================================================================================
 // Dependencies
 // ================================================================================
-scalaVersion := "2.12.11"
+scalaVersion := "2.12.13"
 
 libraryDependencies ++= Seq(
   ws,
   "com.github.fge"          %  "json-schema-validator"      % "2.2.6",
-  "org.scalacheck"          %% "scalacheck"                 % "1.14.3",
-  "uk.gov.hmrc"             %% "domain"                     % "5.9.0-play-26",
-  "uk.gov.hmrc"             %% "bootstrap-backend-play-26"  % "2.24.0",
-  "uk.gov.hmrc"             %% "play-ui"                    % "8.11.0-play-26",
-  "uk.gov.hmrc"             %% "stub-data-generator"        % "0.5.3"
-)
-
-resolvers ++= Seq(
-  Resolver.bintrayRepo("hmrc", "releases"),
-  Resolver.jcenterRepo
+  "org.scalacheck"          %% "scalacheck"                 % "1.15.4",
+  "uk.gov.hmrc"             %% "domain"                     % "5.11.0-play-26",
+  "uk.gov.hmrc"             %% "bootstrap-backend-play-26"  % "5.3.0",
+  "uk.gov.hmrc"             %% "play-ui"                    % "9.5.0-play-26",
+  "uk.gov.hmrc"             %% "stub-data-generator"        % "0.5.3",
+  compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.5" cross CrossVersion.full),
+  "com.github.ghik" % "silencer-lib" % "1.7.5" % Provided cross CrossVersion.full
 )
 
 // ================================================================================
@@ -98,8 +92,9 @@ scalacOptions ++= Seq(
 // Misc
 // ================================================================================
 
-initialCommands in Test := "import uk.gov.hmrc.softdrinksindustrylevystub.Report.findRegistrationWhere"
+Test / initialCommands := "import uk.gov.hmrc.softdrinksindustrylevystub.Report.findRegistrationWhere"
 majorVersion := 0
 uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+scalacOptions += "-P:silencer:pathFilters=routes"

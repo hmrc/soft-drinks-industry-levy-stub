@@ -21,11 +21,9 @@ import play.api.libs.json.{JsSuccess, JsValue}
 import play.api.mvc.{Action, ControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.softdrinksindustrylevystub.models.DmsHtmlSubmission
-import scala.concurrent.ExecutionContext
 
 @Singleton
-class GFormController @Inject()(cc: ControllerComponents, extraActions: ExtraActions)(implicit ec: ExecutionContext)
-    extends BackendController(cc) {
+class GFormController @Inject()(cc: ControllerComponents) extends BackendController(cc) {
 
   //Stub Gform functionality for local testing due to configuration issues with pdf generator service
   def submitToDms(): Action[JsValue] = Action(parse.json) { implicit request: Request[JsValue] =>

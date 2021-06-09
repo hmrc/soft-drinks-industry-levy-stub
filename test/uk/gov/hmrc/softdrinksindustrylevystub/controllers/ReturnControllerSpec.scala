@@ -37,7 +37,7 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
   val cc = stubControllerComponents()
   val authorisedFilterAction = new AuthorisedFilterAction(cc)
   val environmentAction = new EnvironmentFilterAction()
-  val extraActions = new ExtraActions(cc, authorisedFilterAction, environmentAction)
+  val extraActions = new ExtraActions(authorisedFilterAction, environmentAction)
   val mockReturnController = new ReturnController(mockDesSubmissionService, cc, extraActions)
   val utr = "9024987803"
   val sdilRef = "XVSDIL000987654"
