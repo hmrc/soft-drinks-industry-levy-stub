@@ -35,7 +35,7 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
   val cc = stubControllerComponents()
   val authorisedFilterAction = new AuthorisedFilterAction(cc)
   val environmentAction = new EnvironmentFilterAction()
-  val extraActions = new ExtraActions(cc, authorisedFilterAction, environmentAction)
+  val extraActions = new ExtraActions(authorisedFilterAction, environmentAction)
   val mockRosmController = new RosmController(mockRosmService, cc, extraActions)
   val authHeader: (String, String) = "Authorization" -> "auth"
   val envHeader: (String, String) = "Environment"    -> "clone"

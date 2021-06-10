@@ -166,6 +166,8 @@ case object ReturnFailureResponse {
 
 object ReturnValidation {
 
+  lazy val logger: Logger = Logger(this.getClass)
+
   val sdilRefPattern = "^X[A-Z]SDIL000[0-9]{6}$"
   val periodKeyPattern = "^[0-9]{2}C[1-4]{1}$"
   val formBundleTypePattern = "^ZSD1$"
@@ -177,7 +179,7 @@ object ReturnValidation {
     value match {
       case r() => true
       case _ =>
-        Logger.error(s"Invalid Return: $label $value doesn't match $regex")
+        logger.error(s"Invalid Return: $label $value doesn't match $regex")
         false
     }
   }
@@ -187,7 +189,7 @@ object ReturnValidation {
     value match {
       case None | Some(r()) => true
       case _ =>
-        Logger.error(s"Invalid Return: $label ${value.getOrElse("<empty>")} doesn't match $regex")
+        logger.error(s"Invalid Return: $label ${value.getOrElse("<empty>")} doesn't match $regex")
         false
     }
   }
@@ -196,7 +198,7 @@ object ReturnValidation {
     value match {
       case Some(a) if a >= -monetaryHighLow && a <= monetaryHighLow => true
       case _ =>
-        Logger.error(s"Invalid Return: $label $value is either > $monetaryHighLow or < -$monetaryHighLow")
+        logger.error(s"Invalid Return: $label $value is either > $monetaryHighLow or < -$monetaryHighLow")
         false
     }
 
@@ -204,7 +206,7 @@ object ReturnValidation {
     value match {
       case a if a >= -monetaryHighLow && a <= monetaryHighLow => true
       case _ =>
-        Logger.error(s"Invalid Return: $label $value is either > $monetaryHighLow or < -$monetaryHighLow")
+        logger.error(s"Invalid Return: $label $value is either > $monetaryHighLow or < -$monetaryHighLow")
         false
     }
 

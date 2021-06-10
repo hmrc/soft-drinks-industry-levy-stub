@@ -23,8 +23,7 @@ import scala.io.Source
 case class DesFuture[A](inner: Future[A]) extends AnyVal {
   import DesFuture._
   def slow(
-    minDuration: Duration,
-    maxDuration: Duration
+    minDuration: Duration
   )(implicit ec: ExecutionContext): Future[A] =
     inner.map { x =>
       Thread.sleep(minDuration.toUnit(MILLISECONDS).toLong)
@@ -32,7 +31,7 @@ case class DesFuture[A](inner: Future[A]) extends AnyVal {
     }
 
   def slow(implicit ec: ExecutionContext): Future[A] =
-    slow(15 seconds, 45 seconds)
+    slow(15 seconds)
 
   def unreliable(
     failureChance: Float

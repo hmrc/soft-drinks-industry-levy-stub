@@ -15,20 +15,19 @@
  */
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.http.HttpErrorHandler
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment, Logging}
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{FailureMessage, FailureResponse}
 
 import scala.concurrent.Future
 
 @Singleton
 class ErrorHandler @Inject()(implicit val config: Configuration, val env: Environment, val messagesApi: MessagesApi)
-    extends HttpErrorHandler with I18nSupport {
+    extends HttpErrorHandler with I18nSupport with Logging {
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
     Future.successful(
@@ -43,7 +42,7 @@ class ErrorHandler @Inject()(implicit val config: Configuration, val env: Enviro
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] =
     exception match {
       case _ =>
-        Logger.error("Server error", exception)
+        logger.error("Server error", exception)
         Future.successful(
           InternalServerError(
             Json.toJson(
