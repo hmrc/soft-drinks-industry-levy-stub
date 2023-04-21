@@ -40,7 +40,6 @@ libraryDependencies ++= Seq(
   "org.scalacheck"          %% "scalacheck"                 % "1.15.4",
   "uk.gov.hmrc"             %% "domain"                     % "6.2.0-play-28",
   "uk.gov.hmrc"             %% "bootstrap-backend-play-28"  % "5.18.0",
-  "uk.gov.hmrc"             %% "play-ui"                    % "9.8.0-play-28",
   "uk.gov.hmrc"             %% "stub-data-generator"        % "0.5.3",
   compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.5" cross CrossVersion.full),
   "com.github.ghik" % "silencer-lib" % "1.7.5" % Provided cross CrossVersion.full
