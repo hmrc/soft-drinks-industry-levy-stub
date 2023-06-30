@@ -18,7 +18,6 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import cats.implicits._
 import org.scalacheck.Gen
-import org.scalacheck.support.cats._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
