@@ -16,9 +16,8 @@ PlayKeys.playDefaultPort := 8702
 // Testing
 // ================================================================================
 libraryDependencies ++= Seq(
-  "org.mockito"             %  "mockito-core"            % "3.11.0",
-  "org.pegdown"             %  "pegdown"                 % "1.6.0",
-  "org.scalatestplus.play"  %% "scalatestplus-play"      % "5.0.0"
+  "org.mockito"             %% "mockito-scala"           % "1.17.14",
+  "org.scalatestplus.play"  %% "scalatestplus-play"      % "5.1.0"
 ).map(_ % "test")
 
 // ================================================================================
@@ -32,7 +31,7 @@ Test / scalafmtOnCompile := true
 // ================================================================================
 // Dependencies
 // ================================================================================
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.9"
 val playVersion = "7.19.0"
 
 libraryDependencies ++= Seq(
@@ -43,7 +42,8 @@ libraryDependencies ++= Seq(
   "uk.gov.hmrc"             %% "bootstrap-backend-play-28"  % playVersion,
   "uk.gov.hmrc"             %% "stub-data-generator"        % "1.1.0",
   "uk.gov.hmrc"             %% "bootstrap-test-play-28"     % playVersion,
-  compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.12" cross CrossVersion.full),
+  "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
+    compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.12" cross CrossVersion.full),
   "com.github.ghik" % "silencer-lib" % "1.7.12" % Provided cross CrossVersion.full
 )
 
