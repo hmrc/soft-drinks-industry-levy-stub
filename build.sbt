@@ -33,15 +33,16 @@ Test / scalafmtOnCompile := true
 // Dependencies
 // ================================================================================
 scalaVersion := "2.13.8"
+val playVersion = "7.19.0"
 
 libraryDependencies ++= Seq(
   ws,
   "com.github.fge"          %  "json-schema-validator"      % "2.2.6",
   "org.scalacheck"          %% "scalacheck"                 % "1.15.4",
   "uk.gov.hmrc"             %% "domain"                     % "8.3.0-play-28",
-  "uk.gov.hmrc"             %% "bootstrap-backend-play-28"  % "7.15.0",
+  "uk.gov.hmrc"             %% "bootstrap-backend-play-28"  % playVersion,
   "uk.gov.hmrc"             %% "stub-data-generator"        % "1.1.0",
-  "uk.gov.hmrc"             %% "bootstrap-test-play-28"     % "7.19.0",
+  "uk.gov.hmrc"             %% "bootstrap-test-play-28"     % playVersion,
   compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.12" cross CrossVersion.full),
   "com.github.ghik" % "silencer-lib" % "1.7.12" % Provided cross CrossVersion.full
 )
