@@ -23,7 +23,6 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.ActivityType._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse, maxL}
-import cats.implicits._
 
 object SubscriptionGenerator {
 

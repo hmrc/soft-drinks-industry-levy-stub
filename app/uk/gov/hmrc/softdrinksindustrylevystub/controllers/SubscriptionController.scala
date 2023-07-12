@@ -85,7 +85,7 @@ class SubscriptionController @Inject()(
 
   def reset: Action[AnyContent] = Action {
     desSubmissionService.resetSubscriptions()
-    Store.clear
+    Store.clear()
     Ok
   }
 

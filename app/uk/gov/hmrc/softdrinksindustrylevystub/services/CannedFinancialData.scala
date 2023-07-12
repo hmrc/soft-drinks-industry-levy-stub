@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import java.io._
 import play.api.libs.json._
 import cats.implicits._
@@ -36,7 +36,7 @@ object CannedFinancialData {
 
     private val schema: JsonNode = {
       val stream = getClass.getResourceAsStream(path)
-      val schemaText = scala.io.Source.fromInputStream(stream).getLines.mkString
+      val schemaText = scala.io.Source.fromInputStream(stream).getLines().mkString
       stream.close()
       JsonLoader.fromString(schemaText)
     }
