@@ -104,8 +104,8 @@ object CreateFormat {
           address = (regJson \ "businessContact" \ "addressDetails").as[Address],
           activity = activity,
           liabilityDate = (regJson \ "taxStartDate").as[LocalDate],
-          productionSites = sites(production),
-          warehouseSites = sites(warehouses),
+          productionSites = sites(production.toSeq),
+          warehouseSites = sites(warehouses.toSeq),
           contact = (regJson \ "primaryPersonContact").as[Contact]
         ))
 

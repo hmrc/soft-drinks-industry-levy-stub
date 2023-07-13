@@ -64,6 +64,6 @@ object DesFuture {
 
   // val's just don't get much lazier than this
   lazy val excuses =
-    Source.fromURL("http://pages.cs.wisc.edu/~ballard/bofh/excuses").getLines.toList
+    Source.fromURL("http://pages.cs.wisc.edu/~ballard/bofh/excuses").getLines().toList
 
 }

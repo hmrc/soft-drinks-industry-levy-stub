@@ -26,7 +26,7 @@ import cats.implicits._
 
 object Store {
 
-  implicit val enum = SdilNumberTransformer.sdilRefEnum
+  implicit val `enum`: Enumerable[String] = SdilNumberTransformer.sdilRefEnum
 
   def mutable[K, V](f: K => V) =
     collection.concurrent.TrieMap.empty[K, V].withDefault(f)
@@ -34,8 +34,8 @@ object Store {
   import SubscriptionGenerator.genSubscription
 
   def clear() = {
-    _store.clear
-    utrToSdil.clear
+    _store.clear()
+    utrToSdil.clear()
   }
 
   val _store = mutable { sdil: String =>

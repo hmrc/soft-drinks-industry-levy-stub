@@ -18,9 +18,8 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import java.time.{LocalDate, LocalDateTime, OffsetDateTime, ZoneOffset}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
@@ -49,9 +48,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   val envHeader: (String, String) = "Environment"    -> "clone"
   val badEnvHeader: (String, String) = "Environment" -> "test"
 
-  override def beforeEach() {
+  override def beforeEach(): Unit =
     reset(mockDesSubmissionService)
-  }
 
   "SubscriptionController" should {
 

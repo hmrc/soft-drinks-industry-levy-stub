@@ -21,6 +21,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import sys.process._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
+import scala.collection.parallel.CollectionConverters._
 
 object Report extends App {
 

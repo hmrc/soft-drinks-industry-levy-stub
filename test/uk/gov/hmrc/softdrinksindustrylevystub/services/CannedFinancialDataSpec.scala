@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers._
 
-class CannedFinancialDataSpec extends FlatSpec with Matchers {
+class CannedFinancialDataSpec extends AnyFlatSpec {
 
   "CannedFinancialData" should "load all the files" in {
     CannedFinancialData.canned.collect {
       case (_, Left(e)) => e
-    } shouldBe (Nil)
+    } shouldBe Nil
   }
 }

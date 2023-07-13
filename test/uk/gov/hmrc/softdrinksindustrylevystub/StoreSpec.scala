@@ -17,14 +17,14 @@
 package uk.gov.hmrc.softdrinksindustrylevystub
 
 import org.scalacheck._
-import org.scalatest._
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks._
+import org.scalatest.flatspec.AnyFlatSpec
 
-class StoreSpec extends FlatSpec with Matchers with ScalaCheckPropertyChecks {
-
+class StoreSpec extends AnyFlatSpec {
   implicit def noShrink[T]: Shrink[T] = Shrink.shrinkAny
 
   "The Store" should "return records against a UTR or SDIL ref" in {
