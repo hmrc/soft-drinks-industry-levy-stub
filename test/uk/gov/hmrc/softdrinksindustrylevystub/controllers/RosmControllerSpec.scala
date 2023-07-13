@@ -17,7 +17,6 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec

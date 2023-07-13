@@ -48,9 +48,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
   val envHeader: (String, String) = "Environment"    -> "clone"
   val badEnvHeader: (String, String) = "Environment" -> "test"
 
-  override def beforeEach() {
+  override def beforeEach(): Unit =
     reset(mockDesSubmissionService)
-  }
 
   "SubscriptionController" should {
 

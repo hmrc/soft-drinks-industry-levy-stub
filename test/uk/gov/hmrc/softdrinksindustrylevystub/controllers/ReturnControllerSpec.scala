@@ -47,9 +47,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
   val sdilIdType = "sdil"
   val subscription: Subscription = Json.fromJson[Subscription](validCreateSubscriptionRequestInput).get
 
-  override def beforeEach() {
+  override def beforeEach(): Unit =
     reset(mockDesSubmissionService)
-  }
 
   "ReturnController" should {
 
