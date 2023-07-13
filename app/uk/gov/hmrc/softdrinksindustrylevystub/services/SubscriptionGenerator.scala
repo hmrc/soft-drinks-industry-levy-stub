@@ -36,7 +36,7 @@ object SubscriptionGenerator {
       orgType       <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
       address       <- addressGen
       activity      <- internalActivityGen
-      liabilityDate <- Gen.date(LocalDate.of(2018, 4, 15), LocalDate.of(2018, 7, 3))
+      liabilityDate <- Gen.date(LocalDate.now.minusYears(1), LocalDate.now().minusMonths(6))
       productionSites <- if (activity.isLarge || activity.isContractPacker)
                           Gen
                             .choose(1, 10)
