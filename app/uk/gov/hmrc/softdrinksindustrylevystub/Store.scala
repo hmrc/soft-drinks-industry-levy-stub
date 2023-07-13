@@ -53,7 +53,7 @@ object Store {
       case (_, '3')   => generate(_.activity.isImporter)
       case (_, '4')   => generate(_.activity.isContractPacker)
       case (_, '5')   => generate(_.activity.isVoluntaryRegistration)
-      case (_, '6')   => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.of(2018, 11, 14))))
+      case (_, '6')   => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.now().minusMonths(3))))
       case _          => genSubscription.seeded(sdil)
     }
 
