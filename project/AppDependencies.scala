@@ -20,7 +20,7 @@ object AppDependencies {
     "org.scalacheck"       %% "scalacheck"             % "1.17.0",
     "uk.gov.hmrc"          %% "bootstrap-test-play-28" % playVersion,
     "com.vladsch.flexmark" %  "flexmark-all"           % "0.64.8"
-  ).map(_ % "test, it")
+  ).map(_ % "test")
 
   def apply(): Seq[ModuleID] = compile ++ test
 }
