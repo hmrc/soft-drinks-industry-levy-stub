@@ -8,3 +8,4 @@ addSbtPlugin("uk.gov.hmrc"        %  "sbt-distributables"     % "2.2.0")
 addSbtPlugin("com.typesafe.play"  %  "sbt-plugin"             % "2.8.19")
 addSbtPlugin("org.scalastyle"     %% "scalastyle-sbt-plugin"  % "1.0.0")
 addSbtPlugin("com.lucidchart"     %  "sbt-scalafmt"           % "1.16")
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
