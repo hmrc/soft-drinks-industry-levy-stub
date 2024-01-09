@@ -67,4 +67,3 @@ libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionSch
 uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
-//scalacOptions += "-P:silencer:pathFilters=routes"
