@@ -63,7 +63,8 @@ scalacOptions ++= Seq(
 
 Test / initialCommands := "import uk.gov.hmrc.softdrinksindustrylevystub.Report.findRegistrationWhere"
 majorVersion := 0
+libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
-scalacOptions += "-P:silencer:pathFilters=routes"
+//scalacOptions += "-P:silencer:pathFilters=routes"
