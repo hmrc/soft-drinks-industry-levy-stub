@@ -10,9 +10,7 @@ object AppDependencies {
     "uk.gov.hmrc"            %% "domain"                     % "8.3.0-play-28",
     "uk.gov.hmrc"            %% "bootstrap-backend-play-28"  % playVersion,
     "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
-    "uk.gov.hmrc"            %% "stub-data-generator"        % "1.1.0",
-    compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.12" cross CrossVersion.full),
-    "com.github.ghik"        %  "silencer-lib"               % "1.7.12" % Provided cross CrossVersion.full
+    "uk.gov.hmrc"            %% "stub-data-generator"        % "1.1.0"
   )
 
   val test: Seq[ModuleID] = Seq(
