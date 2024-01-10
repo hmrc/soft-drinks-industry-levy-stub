@@ -11,19 +11,6 @@ enablePlugins(
 // Play configuration
 // ================================================================================
 PlayKeys.playDefaultPort := 8702
-val playVersion = "7.19.0"
-
-// ================================================================================
-// Testing
-// ================================================================================
-libraryDependencies ++= Seq(
-  "org.mockito"             %% "mockito-scala"           % "1.17.14",
-  "org.scalatestplus"       %% "scalacheck-1-15"         % "3.2.11.0",
-  "org.scalatest"           %% "scalatest"               % "3.2.16",
-  "org.scalacheck"          %% "scalacheck"                 % "1.17.0",
-  "uk.gov.hmrc"             %% "bootstrap-test-play-28"     % playVersion,
-  "com.vladsch.flexmark" % "flexmark-all" % "0.64.8"
-).map(_ % "test") 
 
 // ================================================================================
 // Scala Fmt
@@ -36,18 +23,8 @@ Test / scalafmtOnCompile := true
 // ================================================================================
 // Dependencies
 // ================================================================================
-scalaVersion := "2.13.9"
-
-libraryDependencies ++= Seq(
-  ws,
-  "com.github.fge"          %  "json-schema-validator"      % "2.2.6",
-  "uk.gov.hmrc"             %% "domain"                     % "8.3.0-play-28",
-  "uk.gov.hmrc"             %% "bootstrap-backend-play-28"  % playVersion,
-  "org.scala-lang.modules"  %% "scala-parallel-collections"  % "1.0.4",
-  "uk.gov.hmrc"             %% "stub-data-generator"        % "1.1.0",
-    compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.12" cross CrossVersion.full),
-  "com.github.ghik" % "silencer-lib" % "1.7.12" % Provided cross CrossVersion.full
-)
+scalaVersion := "2.13.12"
+libraryDependencies ++= AppDependencies()
 
 // ================================================================================
 // Compiler flags
@@ -86,7 +63,7 @@ scalacOptions ++= Seq(
 
 Test / initialCommands := "import uk.gov.hmrc.softdrinksindustrylevystub.Report.findRegistrationWhere"
 majorVersion := 0
+libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
-scalacOptions += "-P:silencer:pathFilters=routes"
