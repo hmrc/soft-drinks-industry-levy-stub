@@ -35,7 +35,8 @@ object SubscriptionGenerator {
       orgType       <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
       address       <- addressGen
       activity      <- internalActivityGen
-      liabilityDate <- Gen.date(LocalDate.now.minusYears(4), LocalDate.now().minusMonths(6))
+      shortLiabilityDate <- Gen.date(LocalDate.now.minusYears(1), LocalDate.now().minusMonths(6))
+      longLiabilityDate <- Gen.date(LocalDate.now.minusYears(4), LocalDate.now().minusMonths(6))
       productionSites <- if (activity.isLarge || activity.isContractPacker)
                           Gen
                             .choose(1, 10)
@@ -52,6 +53,7 @@ object SubscriptionGenerator {
                            .retryUntil(_.exists(_.closureDate.forall(_.isAfter(LocalDate.now))))
       contact <- contactGen
     } yield {
+      val liabilityDate = if (utr.takeRight(4).toInt > 3000) longLiabilityDate else shortLiabilityDate
       Subscription(utr, orgName, orgType, address, activity, liabilityDate, productionSites, warehouseSites, contact)
     }
 
