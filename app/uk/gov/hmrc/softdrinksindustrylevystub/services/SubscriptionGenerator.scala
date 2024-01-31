@@ -26,17 +26,17 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse
 
 object SubscriptionGenerator {
 
-  lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription.rarely.asMutable[String]
+  lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription().rarely.asMutable[String]
 
-  def genSubscription: Gen[Subscription] =
+  def genSubscription(passedUtr: Option[String] = None): Gen[Subscription] =
     for {
-      utr           <- SdilNumberTransformer.tolerantUtr.gen
-      orgName       <- orgNameGen
-      orgType       <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
-      address       <- addressGen
-      activity      <- internalActivityGen
+      generatedUtr       <- SdilNumberTransformer.tolerantUtr.gen
+      orgName            <- orgNameGen
+      orgType            <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
+      address            <- addressGen
+      activity           <- internalActivityGen
       shortLiabilityDate <- Gen.date(LocalDate.now.minusYears(1), LocalDate.now().minusMonths(6))
-      longLiabilityDate <- Gen.date(LocalDate.now.minusYears(4), LocalDate.now().minusMonths(6))
+      longLiabilityDate  <- Gen.date(LocalDate.now.minusYears(4), LocalDate.now().minusYears(1).minusMonths(6))
       productionSites <- if (activity.isLarge || activity.isContractPacker)
                           Gen
                             .choose(1, 10)
@@ -53,8 +53,9 @@ object SubscriptionGenerator {
                            .retryUntil(_.exists(_.closureDate.forall(_.isAfter(LocalDate.now))))
       contact <- contactGen
     } yield {
+      val utr = passedUtr.getOrElse(generatedUtr)
       val liabilityDate = if (utr.takeRight(4).toInt > 3000) longLiabilityDate else shortLiabilityDate
-      Subscription(utr, orgName, orgType, address, activity, liabilityDate, productionSites, warehouseSites, contact)
+      Subscription(generatedUtr, orgName, orgType, address, activity, liabilityDate, productionSites, warehouseSites, contact)
     }
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] =
