@@ -40,7 +40,7 @@ object Store {
 
   val _store = mutable { sdil: String =>
     def generate(pred: Subscription => Boolean) =
-      genSubscription(sdilToUtr(sdil)).retryUntil(pred).seeded(sdil)
+      genSubscription.retryUntil(pred).seeded(sdil)
 
     val seeded = (sdil.init.last, sdil.last) match {
       case (_, '0')   => None
@@ -54,7 +54,7 @@ object Store {
       case (_, '4')   => generate(_.activity.isContractPacker)
       case (_, '5')   => generate(_.activity.isVoluntaryRegistration)
       case (_, '6')   => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.now().minusMonths(3))))
-      case _          => genSubscription(sdilToUtr(sdil)).seeded(sdil)
+      case _          => genSubscription.seeded(sdil)
     }
 
     seeded.map {
