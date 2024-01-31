@@ -35,7 +35,7 @@ object SubscriptionGenerator {
       orgType       <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
       address       <- addressGen
       activity      <- internalActivityGen
-      liabilityDate <- Gen.date(LocalDate.now.minusYears(1), LocalDate.now().minusMonths(6))
+      liabilityDate <- Gen.date(LocalDate.now.minusYears(4), LocalDate.now().minusMonths(6))
       productionSites <- if (activity.isLarge || activity.isContractPacker)
                           Gen
                             .choose(1, 10)
@@ -105,7 +105,7 @@ object SubscriptionGenerator {
     address     <- addressGen
     ref         <- Gen.posNum[Int]
     tradingName <- orgNameGen
-    closureDate <- Gen.date(2016, 2024)
+    closureDate <- Gen.date(2016, LocalDate.now.getYear + 1)
   } yield Site(address, Some(ref.toString), Some(tradingName.toString), Some(closureDate))
 
   private lazy val addressGen: Gen[Address] = {
