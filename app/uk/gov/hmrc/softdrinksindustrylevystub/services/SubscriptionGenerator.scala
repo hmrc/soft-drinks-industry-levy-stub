@@ -37,54 +37,138 @@ object SubscriptionGenerator {
 
   private def generatorForActivity(activity: Int, activityProdType: Int): Gen[Activity] = {
 //    TODO: FILL IN CORRECT ACTIVITY VALUES HERE
+    val ownBrandGen = activityGen(ProducedOwnBrand)
+    val importedGen = activityGen(Imported)
+    val copackerAllGen = activityGen(CopackerAll)
+    val copackeeGen = activityGen(Copackee)
     val activityRequired = (activity, activityProdType) match {
       case (0, 0) => {
         ("neither importer nor copacker", "none")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (0, 1) => {
         ("neither importer nor copacker", "voluntary and small")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (0, 2) => {
         ("neither importer nor copacker", "small prod")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (0, 3) => {
         ("neither importer nor copacker", "large")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (1, 0) => {
         ("importer", "none")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (1, 1) => {
         ("importer", "voluntary and small")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (1, 2) => {
         ("importer", "small prod")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (1, 3) => {
         ("importer", "large")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (2, 0) => {
         ("copacker", "none")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (2, 1) => {
         ("copacker", "voluntary and small")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (2, 2) => {
         ("copacker", "small prod")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (2, 3) => {
         ("copacker", "large")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (3, 0) => {
         ("importer and copacker", "none")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (3, 1) => {
         ("importer and copacker", "voluntary and small")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (3, 2) => {
         ("importer and copacker", "small prod")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
       case (3, 3) => {
         ("importer and copacker", "large")
+        //        ownBrand
+        //        imported
+        //        copackerAll
+        //        copackee
+        //        isLarge
       }
     }
     internalActivityGen
