@@ -39,9 +39,17 @@ object Store {
   }
 
   val _store = mutable { sdil: String =>
+//    TODO: WORK OUT HOW AND WHERE THIS IS CALLED
     def generate(pred: Subscription => Boolean) =
       genSubscription(sdilToUtr(sdil)).retryUntil(pred).seeded(sdil)
 
+//    TODO: UTR 00A00BCDE , ONLY GENERATE ONCE
+//    A - REGISTRATION 0-9
+//    B - YEARS OF LIABILITY 0-4
+//    C - ACTIVITY 0-3
+//    D - ACTIVITY PROD TYPE 0-3
+//    E - WAREHOUSES/PROD SITES 0 -8
+//    OUTSIDE OF THIS, RETURN NONE SUBSCRIPTION WITHOUT GG
     val seeded = (sdil.init.last, sdil.last) match {
       case (_, '0')   => None
       case ('1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))

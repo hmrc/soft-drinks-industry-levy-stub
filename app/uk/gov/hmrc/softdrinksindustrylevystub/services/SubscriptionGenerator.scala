@@ -55,7 +55,16 @@ object SubscriptionGenerator {
     } yield {
       val utr = passedUtr.getOrElse(generatedUtr)
       val liabilityDate = if (utr.takeRight(4).toInt > 3000) longLiabilityDate else shortLiabilityDate
-      Subscription(generatedUtr, orgName, orgType, address, activity, liabilityDate, productionSites, warehouseSites, contact)
+      Subscription(
+        generatedUtr,
+        orgName,
+        orgType,
+        address,
+        activity,
+        liabilityDate,
+        productionSites,
+        warehouseSites,
+        contact)
     }
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] =
