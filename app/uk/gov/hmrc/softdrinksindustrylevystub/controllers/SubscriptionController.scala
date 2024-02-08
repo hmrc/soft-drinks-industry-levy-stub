@@ -64,14 +64,12 @@ class SubscriptionController @Inject()(
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Action[AnyContent] =
     extraActions.AuthAndEnvAction.async {
 
-      val subscription: Option[Subscription] = {
-        idType match {
-          case "sdil" => idNumber.some
-//          TODO: THIS IS WHY ANYTHING ABOVE 999999 IS SENT TO BUSINESS DETAILS VERIFY
-          case "utr"  => Store.utrToSdil(idNumber).lastOption
-          case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
-        }
-      } >>= Store.fromSdilRef
+      val subscription = (idType match {
+        case "sdil" => idNumber.some
+        //          TODO: THIS IS WHY ANYTHING ABOVE 999999 IS SENT TO BUSINESS DETAILS VERIFY
+        case "utr" => Store.utrToSdil(idNumber).lastOption
+        case weird => throw new IllegalArgumentException(s"Weird id type: $weird")
+      }).flatMap(Store.fromSdilRef)
 
       Future
         .successful(

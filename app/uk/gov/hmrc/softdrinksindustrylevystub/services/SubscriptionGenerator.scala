@@ -28,6 +28,82 @@ object SubscriptionGenerator {
 
   lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription().rarely.asMutable[String]
 
+  private def generatorForYearsOfLiability(yearsOfLiability: Int): Gen[LocalDate] = {
+    //    B - YEARS OF LIABILITY 0-4
+    ???
+  }
+
+  private def generatorForActivity(activity: Int, activityProdType: Int): Gen[Activity] = {
+    //    C - ACTIVITY 0-3
+    //    0 = neither importer nor copacker
+    //	1 = importer
+    //	2 = copacker
+    //	3 = importer and copacker
+    //    D - ACTIVITY PROD TYPE 0-3
+    //    0 = none
+    //    1 = voluntary and small
+    //    2 = small prod
+    //      3 = large
+    ???
+  }
+
+  private def generatorForProdSites(sitesIndex: Int): Gen[List[Site]] = {
+    //    E - WAREHOUSES/PROD SITES 0 -8
+    //    0 = 0 p 0 w
+    //      1 = 1 p 0 w
+    //      2 = 2 p 0 w
+    //      3 = 0 p 1 w
+    //      4 = 1 p 1 w
+    //      5 = 2 p 1 w
+    //      6 = 0 p 2 w
+    //      7 = 1 p 2 w
+    //      8 = 2 p 2 w (edited)
+    ???
+  }
+
+  private def generatorForWarehouses(sitesIndex: Int): Gen[List[Site]] = {
+    //    E - WAREHOUSES/PROD SITES 0 -8
+    //    0 = 0 p 0 w
+    //      1 = 1 p 0 w
+    //      2 = 2 p 0 w
+    //      3 = 0 p 1 w
+    //      4 = 1 p 1 w
+    //      5 = 2 p 1 w
+    //      6 = 0 p 2 w
+    //      7 = 1 p 2 w
+    //      8 = 2 p 2 w (edited)
+    ???
+  }
+
+  def genSubscriptionNEW(utr: Option[String]): Gen[Subscription] = {
+    //    TODO: UTR 00A00BCDE , ONLY GENERATE ONCE
+    //    A - REGISTRATION 0-9
+//    REGISTRATION COVERED ELSEWHERE IN SDIL NUMBER TRANSFORMER
+    val genValues: String = utr.map(_.takeRight(4)).getOrElse("0000")
+    for {
+      generatedUtr <- SdilNumberTransformer.tolerantUtr.gen
+      orgName <- orgNameGen
+      orgType <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
+      address <- addressGen
+      liabilityDate <- generatorForYearsOfLiability(genValues(0).toInt)
+      activity <- generatorForActivity(activity = genValues(1).toInt, activityProdType = genValues(2).toInt)
+      productionSites <- generatorForProdSites(genValues(3).toInt)
+      warehouseSites <- generatorForWarehouses(genValues(3).toInt)
+      contact <- contactGen
+    } yield {
+      Subscription(
+        utr.getOrElse(generatedUtr),
+        orgName,
+        orgType,
+        address,
+        activity,
+        liabilityDate,
+        productionSites,
+        warehouseSites,
+        contact)
+    }
+  }
+
   def genSubscription(passedUtr: Option[String] = None): Gen[Subscription] =
     for {
       generatedUtr       <- SdilNumberTransformer.tolerantUtr.gen

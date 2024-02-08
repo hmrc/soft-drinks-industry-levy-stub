@@ -23,6 +23,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import sdil.models.des.FinancialTransactionResponse
 import cats.implicits._
+import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genSubscriptionNEW
 
 object Store {
 
@@ -39,41 +40,36 @@ object Store {
   }
 
   val _store = mutable { sdil: String =>
-//    TODO: WORK OUT HOW AND WHERE THIS IS CALLED
-    def generate(pred: Subscription => Boolean) =
-      genSubscription(sdilToUtr(sdil)).retryUntil(pred).seeded(sdil)
+//    def generate(pred: Subscription => Boolean) =
+//      genSubscription(sdilToUtr(sdil)).retryUntil(pred).seeded(sdil)
+//
+//    val seeded = (sdil.init.last, sdil.last) match {
+//      case (_, '0')   => None
+//      case ('1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
+//      case (_, '1')   => generate(_.activity.isSmallProducer)
+//      case ('2', '2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
+//      case ('3', '2') => generate(_.activity.isLargeNoImports).map(_.copy(warehouseSites = Nil))
+//      case (_, '2')   => generate(_.activity.isLarge)
+//      case ('3', '3') => generate(_.activity.isLargeImportCopacker)
+//      case (_, '3')   => generate(_.activity.isImporter)
+//      case (_, '4')   => generate(_.activity.isContractPacker)
+//      case (_, '5')   => generate(_.activity.isVoluntaryRegistration)
+//      case (_, '6')   => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.now().minusMonths(3))))
+//      case _          => genSubscription(sdilToUtr(sdil)).seeded(sdil)
+//    }
+//
+//    seeded.map {
+//      _.copy(
+//        utr = sdilToUtr(sdil).getOrElse(""),
+//        sdilRef = sdil
+//      )
+//    }
 
-//    TODO: UTR 00A00BCDE , ONLY GENERATE ONCE
-//    A - REGISTRATION 0-9
-//    B - YEARS OF LIABILITY 0-4
-//    C - ACTIVITY 0-3
-//    D - ACTIVITY PROD TYPE 0-3
-//    E - WAREHOUSES/PROD SITES 0 -8
-//    OUTSIDE OF THIS, RETURN NONE SUBSCRIPTION WITHOUT GG
-    val seeded = (sdil.init.last, sdil.last) match {
-      case (_, '0')   => None
-      case ('1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
-      case (_, '1')   => generate(_.activity.isSmallProducer)
-      case ('2', '2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
-      case ('3', '2') => generate(_.activity.isLargeNoImports).map(_.copy(warehouseSites = Nil))
-      case (_, '2')   => generate(_.activity.isLarge)
-      case ('3', '3') => generate(_.activity.isLargeImportCopacker)
-      case (_, '3')   => generate(_.activity.isImporter)
-      case (_, '4')   => generate(_.activity.isContractPacker)
-      case (_, '5')   => generate(_.activity.isVoluntaryRegistration)
-      case (_, '6')   => generate(_ => true).map(_.copy(deregDate = Some(LocalDate.now().minusMonths(3))))
-      case _          => genSubscription(sdilToUtr(sdil)).seeded(sdil)
-    }
-
-    seeded.map {
-      _.copy(
-        utr = sdilToUtr(sdil).getOrElse(""),
-        sdilRef = sdil
-      )
-    }
+    genSubscriptionNEW(sdil).seeded(sdil)
   }
 
   def fromSdilRef(in: String) = _store(in)
+
   def fromUtr(in: String) = _store(utrToSdil(in).head)
   def add(in: Subscription): Unit = {
     utrToSdil(in.utr) = { in.sdilRef :: utrToSdil(in.utr) }.distinct
