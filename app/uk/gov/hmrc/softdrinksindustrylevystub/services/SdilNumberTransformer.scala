@@ -27,6 +27,7 @@ object SdilNumberTransformer {
 
   val tolerantUtr = pattern"9999999999".imap(_.reverse)(_.reverse)
 
+//  TODO: This is the gatekeeper on the pattern of the utrs and why anything above 999999 goes to business details verify
   val sdilRefEnum: Enumerable[String] = pattern"999999000".imap { i =>
     val sum = ModulusCheck("SDIL" ++ i.reverse)
     s"X${sum}SDIL${i.reverse}"

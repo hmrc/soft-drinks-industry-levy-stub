@@ -67,6 +67,7 @@ class SubscriptionController @Inject()(
       val subscription: Option[Subscription] = {
         idType match {
           case "sdil" => idNumber.some
+//          TODO: THIS IS WHY ANYTHING ABOVE 999999 IS SENT TO BUSINESS DETAILS VERIFY
           case "utr"  => Store.utrToSdil(idNumber).lastOption
           case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
         }
