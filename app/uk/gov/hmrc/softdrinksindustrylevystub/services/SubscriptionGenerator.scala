@@ -44,131 +44,131 @@ object SubscriptionGenerator {
     val activityRequired = (activity, activityProdType) match {
       case (0, 0) => {
         ("neither importer nor copacker", "none")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        //        ownBrand NO
+        //        imported NO
+        //        copackerAll NO
+        //        copackee NO
+        //        isLarge NO
       }
       case (0, 1) => {
-        ("neither importer nor copacker", "voluntary and small")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("neither importer nor copacker", "small prod - copackee")
+        //        ownBrand NO
+        //        imported NO
+        //        copackerAll NO
+        //        copackee YES
+        //        isLarge NO
       }
       case (0, 2) => {
-        ("neither importer nor copacker", "small prod")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("neither importer nor copacker", "small prod - produced own brands")
+        //        ownBrand YES
+        //        imported NO
+        //        copackerAll NO
+        //        copackee NO
+        //        isLarge NO
       }
       case (0, 3) => {
-        ("neither importer nor copacker", "large")
+        ("neither importer nor copacker", "large - produced own brands and copackee")
         //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        //        imported NO
+        //        copackerAll NO
+        //        copackee YES
+        //        isLarge YES
       }
       case (1, 0) => {
         ("importer", "none")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        //        ownBrand NO
+        //        imported YES
+        //        copackerAll NO
+        //        copackee NO
+        //        isLarge NO
       }
       case (1, 1) => {
-        ("importer", "voluntary and small")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("importer", "small prod - copackee")
+        //        ownBrand NO
+        //        imported YES
+        //        copackerAll NO
+        //        copackee YES
+        //        isLarge NO
       }
       case (1, 2) => {
-        ("importer", "small prod")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("importer", "small prod - produced own brands")
+        //        ownBrand YES
+        //        imported YES
+        //        copackerAll NO
+        //        copackee NO
+        //        isLarge NO
       }
       case (1, 3) => {
-        ("importer", "large")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("importer", "large - produced own brands and copackee")
+        //        ownBrand YES
+        //        imported YES
+        //        copackerAll NO
+        //        copackee YES
+        //        isLarge YES
       }
       case (2, 0) => {
         ("copacker", "none")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        //        ownBrand NO
+        //        imported NO
+        //        copackerAll YES
+        //        copackee NO
+        //        isLarge NO
       }
       case (2, 1) => {
-        ("copacker", "voluntary and small")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("copacker", "small prod - copackee")
+        //        ownBrand NO
+        //        imported NO
+        //        copackerAll YES
+        //        copackee YES
+        //        isLarge NO
       }
       case (2, 2) => {
-        ("copacker", "small prod")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("copacker", "small prod - produced own brands")
+        //        ownBrand YES
+        //        imported NO
+        //        copackerAll YES
+        //        copackee NO
+        //        isLarge NO
       }
       case (2, 3) => {
-        ("copacker", "large")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("copacker", "large - produced own brands and copackee")
+        //        ownBrand YES
+        //        imported NO
+        //        copackerAll YES
+        //        copackee YES
+        //        isLarge YES
       }
       case (3, 0) => {
         ("importer and copacker", "none")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        //        ownBrand NO
+        //        imported YES
+        //        copackerAll YES
+        //        copackee NO
+        //        isLarge NO
       }
       case (3, 1) => {
-        ("importer and copacker", "voluntary and small")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("importer and copacker", "small prod - copackee")
+        //        ownBrand NO
+        //        imported YES
+        //        copackerAll YES
+        //        copackee YES
+        //        isLarge NO
       }
       case (3, 2) => {
-        ("importer and copacker", "small prod")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("importer and copacker", "small prod - produced own brands")
+        //        ownBrand YES
+        //        imported YES
+        //        copackerAll YES
+        //        copackee NO
+        //        isLarge NO
       }
       case (3, 3) => {
-        ("importer and copacker", "large")
-        //        ownBrand
-        //        imported
-        //        copackerAll
-        //        copackee
-        //        isLarge
+        ("importer and copacker", "large - produced own brands and copackee")
+        //        ownBrand YES
+        //        imported YES
+        //        copackerAll YES
+        //        copackee YES
+        //        isLarge YES
       }
     }
     internalActivityGen
