@@ -29,50 +29,92 @@ object SubscriptionGenerator {
   lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription().rarely.asMutable[String]
 
   private def generatorForYearsOfLiability(yearsOfLiability: Int): Gen[LocalDate] = {
-    //    B - YEARS OF LIABILITY 0-4
-    ???
+    Gen.date(
+      LocalDate.now.minusYears(yearsOfLiability + 1),
+      LocalDate.now().minusYears(yearsOfLiability).minusMonths(6)
+    )
   }
 
   private def generatorForActivity(activity: Int, activityProdType: Int): Gen[Activity] = {
-    //    C - ACTIVITY 0-3
-    //    0 = neither importer nor copacker
-    //	1 = importer
-    //	2 = copacker
-    //	3 = importer and copacker
-    //    D - ACTIVITY PROD TYPE 0-3
-    //    0 = none
-    //    1 = voluntary and small
-    //    2 = small prod
-    //      3 = large
-    ???
+//    TODO: FILL IN CORRECT ACTIVITY VALUES HERE
+    val activityRequired = (activity, activityProdType) match {
+      case (0, 0) => {
+        ("neither importer nor copacker", "none")
+      }
+      case (0, 1) => {
+        ("neither importer nor copacker", "voluntary and small")
+      }
+      case (0, 2) => {
+        ("neither importer nor copacker", "small prod")
+      }
+      case (0, 3) => {
+        ("neither importer nor copacker", "large")
+      }
+      case (1, 0) => {
+        ("importer", "none")
+      }
+      case (1, 1) => {
+        ("importer", "voluntary and small")
+      }
+      case (1, 2) => {
+        ("importer", "small prod")
+      }
+      case (1, 3) => {
+        ("importer", "large")
+      }
+      case (2, 0) => {
+        ("copacker", "none")
+      }
+      case (2, 1) => {
+        ("copacker", "voluntary and small")
+      }
+      case (2, 2) => {
+        ("copacker", "small prod")
+      }
+      case (2, 3) => {
+        ("copacker", "large")
+      }
+      case (3, 0) => {
+        ("importer and copacker", "none")
+      }
+      case (3, 1) => {
+        ("importer and copacker", "voluntary and small")
+      }
+      case (3, 2) => {
+        ("importer and copacker", "small prod")
+      }
+      case (3, 3) => {
+        ("importer and copacker", "large")
+      }
+    }
+    internalActivityGen
   }
 
-  private def generatorForProdSites(sitesIndex: Int): Gen[List[Site]] = {
-    //    E - WAREHOUSES/PROD SITES 0 -8
-    //    0 = 0 p 0 w
-    //      1 = 1 p 0 w
-    //      2 = 2 p 0 w
-    //      3 = 0 p 1 w
-    //      4 = 1 p 1 w
-    //      5 = 2 p 1 w
-    //      6 = 0 p 2 w
-    //      7 = 1 p 2 w
-    //      8 = 2 p 2 w (edited)
-    ???
+  private lazy val siteGenNEW: Gen[Site] = for {
+    address <- addressGen
+    ref <- Gen.posNum[Int]
+    tradingName <- orgNameGen
+    closureDate <- Gen.date(LocalDate.now, LocalDate.now.plusYears(1))
+  } yield Site(address, Some(ref.toString), Some(tradingName.toString), Some(closureDate))
+
+  private def generatorForProdSites(totalSites: Int, activity: Activity): Gen[List[Site]] = {
+    if ((activity.isLarge || activity.isContractPacker) && totalSites > 0)
+      Gen
+        .const(totalSites)
+        .flatMap(Gen.listOfN(_, siteGen))
+        .retryUntil(_.exists(_.closureDate.forall(_.isAfter(LocalDate.now))))
+    else
+      Gen.const(Nil)
   }
 
-  private def generatorForWarehouses(sitesIndex: Int): Gen[List[Site]] = {
-    //    E - WAREHOUSES/PROD SITES 0 -8
-    //    0 = 0 p 0 w
-    //      1 = 1 p 0 w
-    //      2 = 2 p 0 w
-    //      3 = 0 p 1 w
-    //      4 = 1 p 1 w
-    //      5 = 2 p 1 w
-    //      6 = 0 p 2 w
-    //      7 = 1 p 2 w
-    //      8 = 2 p 2 w (edited)
-    ???
+  private def generatorForWarehouses(totalSites: Int, activity: Activity): Gen[List[Site]] = {
+    if (activity.isVoluntaryRegistration && totalSites > 0)
+      Gen.const(Nil)
+    else
+      Gen
+        .const(totalSites)
+        .flatMap(Gen.listOfN(_, siteGen))
+        .retryUntil(_.exists(_.closureDate.forall(_.isAfter(LocalDate.now))))
   }
 
   def genSubscriptionNEW(utr: Option[String]): Gen[Subscription] = {
@@ -87,8 +129,8 @@ object SubscriptionGenerator {
       address <- addressGen
       liabilityDate <- generatorForYearsOfLiability(genValues(0).toInt)
       activity <- generatorForActivity(activity = genValues(1).toInt, activityProdType = genValues(2).toInt)
-      productionSites <- generatorForProdSites(genValues(3).toInt)
-      warehouseSites <- generatorForWarehouses(genValues(3).toInt)
+      productionSites <- generatorForProdSites((genValues(3).toInt + 1) % 3, activity)
+      warehouseSites <- generatorForWarehouses((genValues(3).toInt + 1) / 3, activity)
       contact <- contactGen
     } yield {
       Subscription(

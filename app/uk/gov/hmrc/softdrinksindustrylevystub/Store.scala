@@ -65,7 +65,7 @@ object Store {
 //      )
 //    }
 
-    genSubscriptionNEW(sdil).seeded(sdil)
+    genSubscriptionNEW(sdilToUtr(sdil)).seeded(sdil)
   }
 
   def fromSdilRef(in: String) = _store(in)
