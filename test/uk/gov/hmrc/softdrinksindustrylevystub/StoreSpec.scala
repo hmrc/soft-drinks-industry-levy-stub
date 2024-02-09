@@ -24,6 +24,8 @@ import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks._
 import org.scalatest.flatspec.AnyFlatSpec
 
+import java.time.LocalDate
+
 class StoreSpec extends AnyFlatSpec {
   implicit def noShrink[T]: Shrink[T] = Shrink.shrinkAny
 
@@ -34,6 +36,176 @@ class StoreSpec extends AnyFlatSpec {
           Store.fromUtr(utr) shouldBe defined
           Store.fromUtr(utr) shouldBe Store.fromSdilRef(sdil)
         }
+      }
+    }
+  }
+
+  it should "return a subscription with importer activity if 4th last digit is 1, 3" in {
+    forAll(sdilRefEnum.filter(ref => "13".toList.contains(ref.reverse(3)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.isImporter) shouldBe Some(true)
+      }
+    }
+  }
+
+  it should "return a subscription with no importer activity if 4th last digit is 0, 2" in {
+    forAll(sdilRefEnum.filter(ref => "02".toList.contains(ref.reverse(3)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.isImporter) shouldBe Some(false)
+      }
+    }
+  }
+
+  it should "return a subscription with copacker activity if 4th last digit is 2, 3" in {
+    forAll(sdilRefEnum.filter(ref => "23".toList.contains(ref.reverse(3)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.isContractPacker) shouldBe Some(true)
+      }
+    }
+  }
+
+  it should "return a subscription with no copacker activity if 4th last digit is 0, 1" in {
+    forAll(sdilRefEnum.filter(ref => "01".toList.contains(ref.reverse(3)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.isContractPacker) shouldBe Some(false)
+      }
+    }
+  }
+
+  it should "return a subscription with producing own brands activity if 3rd last digit is 2, 3, 5, 6" in {
+    forAll(sdilRefEnum.filter(ref => "2356".toList.contains(ref.reverse(2)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.producesOwnBrands) shouldBe Some(true)
+      }
+    }
+  }
+
+  it should "return a subscription with no producing own brands activity if 3rd last digit is 0, 1, 4" in {
+    forAll(sdilRefEnum.filter(ref => "014".toList.contains(ref.reverse(2)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.producesOwnBrands) shouldBe Some(false)
+      }
+    }
+  }
+
+  it should "return a subscription with copackee activity if 3rd last digit is 1, 3, 4, 6" in {
+    forAll(sdilRefEnum.filter(ref => "1346".toList.contains(ref.reverse(2)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.isCopackee) shouldBe Some(true)
+      }
+    }
+  }
+
+  it should "return a subscription with no copackee activity if 3rd last digit is 0, 2, 5" in {
+    forAll(sdilRefEnum.filter(ref => "025".toList.contains(ref.reverse(2)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.isCopackee) shouldBe Some(false)
+      }
+    }
+  }
+
+  it should "return a subscription with is large activity if 3rd last digit is 4, 5, 6" in {
+    forAll(sdilRefEnum.filter(ref => "456".toList.contains(ref.reverse(2)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.isLarge) shouldBe Some(true)
+      }
+    }
+  }
+
+  it should "return a subscription with is not large activity if 3rd last digit is 0, 1, 2, 3" in {
+    forAll(sdilRefEnum.filter(ref => "0123".toList.contains(ref.reverse(2)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.activity.isLarge) shouldBe Some(false)
+      }
+    }
+  }
+
+  it should "return a subscription with number of years of liability equal to the 2nd last digit plus one for (0-4)" in {
+    forAll(sdilRefEnum.filter(ref => "01234".toList.contains(ref.reverse(1)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.liabilityDate.getYear) shouldBe Some(LocalDate.now().getYear - utr.reverse(1).asDigit - 1)
+      }
+    }
+  }
+
+  it should "return a subscription with 0 production sites if last digit is 0, 3, 6" in {
+    forAll(sdilRefEnum.filter(ref => "036".toList.contains(ref.last))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.productionSites.size) shouldBe Some(0)
+      }
+    }
+  }
+
+  it should "return a subscription with 1 production site if last digit is 1, 4, 7" in {
+    forAll(sdilRefEnum.filter(ref => "147".toList.contains(ref.last))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.productionSites.size) shouldBe Some(1)
+      }
+    }
+  }
+
+  it should "return a subscription with 2 production sites if last digit is 2, 5, 8" in {
+    forAll(sdilRefEnum.filter(ref => "258".toList.contains(ref.last))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.productionSites.size) shouldBe Some(2)
+      }
+    }
+  }
+
+  it should "return a subscription with 0 warehouses if last digit is 0, 1, 2" in {
+    forAll(sdilRefEnum.filter(ref => "012".toList.contains(ref.last))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.warehouseSites.size) shouldBe Some(0)
+      }
+    }
+  }
+
+  it should "return a subscription with 1 warehouse if last digit is 3, 4, 5" in {
+    forAll(sdilRefEnum.filter(ref => "345".toList.contains(ref.last))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.warehouseSites.size) shouldBe Some(1)
+      }
+    }
+  }
+
+  it should "return a subscription with 2 warehouses if last digit is 6, 7, 8" in {
+    forAll(sdilRefEnum.filter(ref => "678".toList.contains(ref.last))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.map(_.warehouseSites.size) shouldBe Some(2)
       }
     }
   }

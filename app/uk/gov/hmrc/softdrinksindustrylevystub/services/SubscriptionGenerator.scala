@@ -37,10 +37,10 @@ object SubscriptionGenerator {
       orgName         <- orgNameGen
       orgType         <- Gen.oneOf("1", "2", "3", "4", "5").optFrequency(100)
       address         <- addressGen
-      activity        <- generatorForActivity(activity = genValues(1).asDigit, activityProdType = genValues(2).asDigit)
-      liabilityDate   <- generatorForYearsOfLiability(genValues(0).asDigit)
-      productionSites <- generatorForProdSites((genValues(3).asDigit + 1) % 3, activity)
-      warehouseSites  <- generatorForWarehouses((genValues(3).asDigit + 1) / 3, activity)
+      activity        <- generatorForActivity(activity = genValues(0).asDigit, activityProdType = genValues(1).asDigit)
+      liabilityDate   <- generatorForYearsOfLiability(genValues(2).asDigit)
+      productionSites <- generatorForProdSites(genValues(3).asDigit % 3)
+      warehouseSites  <- generatorForWarehouses(genValues(3).asDigit / 3)
       contact         <- contactGen
     } yield {
       Subscription(
@@ -131,18 +131,12 @@ object SubscriptionGenerator {
     closureDate <- Gen.date(LocalDate.now, LocalDate.now.plusYears(1))
   } yield Site(address, Some(ref.toString), Some(tradingName), Some(closureDate))
 
-  private def generatorForProdSites(totalSites: Int, activity: Activity): Gen[List[Site]] =
-    if ((activity.isLarge || activity.isContractPacker) && totalSites > 0)
-      Gen
-        .const(totalSites)
-        .flatMap(Gen.listOfN(_, siteGen))
-    else
-      Gen.const(Nil)
+  private def generatorForProdSites(totalSites: Int): Gen[List[Site]] =
+    Gen
+      .const(totalSites)
+      .flatMap(Gen.listOfN(_, siteGen))
 
-  private def generatorForWarehouses(totalSites: Int, activity: Activity): Gen[List[Site]] =
-    if (activity.isVoluntaryRegistration && totalSites > 0)
-      Gen.const(Nil)
-    else
+  private def generatorForWarehouses(totalSites: Int): Gen[List[Site]] =
       Gen
         .const(totalSites)
         .flatMap(Gen.listOfN(_, siteGen))

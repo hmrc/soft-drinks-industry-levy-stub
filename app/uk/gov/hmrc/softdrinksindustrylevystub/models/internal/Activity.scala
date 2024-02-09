@@ -23,6 +23,8 @@ object ActivityType extends Enumeration {
 sealed trait Activity {
   def isProducer: Boolean
   def isLarge: Boolean
+  def producesOwnBrands: Boolean
+  def isCopackee: Boolean
   def isContractPacker: Boolean
   def isImporter: Boolean
   def isVoluntaryRegistration: Boolean = isProducer && !isLarge && !isImporter && !isContractPacker
@@ -52,10 +54,13 @@ case class InternalActivity(activity: Map[ActivityType.Value, LitreBands], isLar
       (add._1 - subtract._1, add._2 - subtract._2)
     }
 
-  def isProducer: Boolean =
-    activity.get(ProducedOwnBrand).exists(_ != empty) || activity.get(Copackee).exists(_ != empty) || isLarge
+  def producesOwnBrands: Boolean = activity.get(ProducedOwnBrand).exists(_ != empty)
+
+  def isCopackee: Boolean = activity.get(Copackee).exists(_ != empty)
 
   def isContractPacker: Boolean = activity.get(CopackerAll).exists(_ != empty)
 
   def isImporter: Boolean = activity.get(Imported).exists(_ != empty)
+
+  def isProducer: Boolean = producesOwnBrands || isCopackee || isLarge
 }
