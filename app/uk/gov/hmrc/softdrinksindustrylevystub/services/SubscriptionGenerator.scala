@@ -106,10 +106,10 @@ object SubscriptionGenerator {
     val isLarge = List(4, 5, 6).contains(activityProdType)
 
     for {
-      produced <- activityGen(ProducedOwnBrand).optFrequency(if (producedOwnBrand) 100 else 0)
-      imported <- activityGen(Imported).optFrequency(if (isImporter) 100 else 0)
+      produced  <- activityGen(ProducedOwnBrand).optFrequency(if (producedOwnBrand) 100 else 0)
+      imported  <- activityGen(Imported).optFrequency(if (isImporter) 100 else 0)
       copacking <- activityGen(CopackerAll).optFrequency(if (isCopacker) 100 else 0)
-      copacked <- activityGen(Copackee).optFrequency(if (isCopackee) 100 else 0)
+      copacked  <- activityGen(Copackee).optFrequency(if (isCopackee) 100 else 0)
     } yield {
       InternalActivity(
         Seq(produced, imported, copacking, copacked).flatten.toMap,
@@ -125,8 +125,8 @@ object SubscriptionGenerator {
     )
 
   private lazy val siteGen: Gen[Site] = for {
-    address <- addressGen
-    ref <- Gen.posNum[Int]
+    address     <- addressGen
+    ref         <- Gen.posNum[Int]
     tradingName <- orgNameGen
     closureDate <- Gen.date(LocalDate.now, LocalDate.now.plusYears(1))
   } yield Site(address, Some(ref.toString), Some(tradingName), Some(closureDate))
@@ -148,20 +148,20 @@ object SubscriptionGenerator {
         .flatMap(Gen.listOfN(_, siteGen))
 
   private lazy val contactGen: Gen[Contact] = for {
-    fname <- Gen.forename()
-    lname <- Gen.surname
-    position <- jobTitleGen
+    fname       <- Gen.forename()
+    lname       <- Gen.surname
+    position    <- jobTitleGen
     phoneNumber <- pattern"9999 999999"
-    email <- genEmail
+    email       <- genEmail
   } yield {
     Contact(Some(s"$fname $lname"), Some(position), "0" + phoneNumber, email)
   }
 
   private lazy val genEmail: Gen[String] = for {
-    fname <- Gen.forename()
-    lname <- Gen.surname
+    fname  <- Gen.forename()
+    lname  <- Gen.surname
     domain <- Gen.oneOf("gmail", "outlook", "yahoo", "mailinator", "example")
-    tld <- Gen.oneOf("com", "co.uk")
+    tld    <- Gen.oneOf("com", "co.uk")
   } yield {
     s"$fname.$lname@$domain.$tld"
   }

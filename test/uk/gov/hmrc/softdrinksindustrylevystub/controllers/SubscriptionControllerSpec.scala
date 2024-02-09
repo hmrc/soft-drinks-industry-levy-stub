@@ -53,54 +53,6 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
 
   "SubscriptionController" should {
 
-    "return Status: 404 Body: reason: unknown subscription message for a unsuccessful retrieve request" in {
-      when(
-        mockDesSubmissionService
-          .retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(None)
-      val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(sdilIdType, sdilNumber)(
-          FakeRequest("GET", "/soft-drinks/subscription/")
-            .withHeaders(envHeader, authHeader))
-
-      status(response) mustBe NOT_FOUND
-    }
-
-    // Calls to this controller now go via Store instead
-    "return OK and a Subscription for a successful retrieve request" ignore {
-      val r: Subscription = Subscription(
-        "0000000560",
-        "a",
-        Some("1"),
-        UkAddress(List("Juicey Juices", "Some Street"), "AB012AA"),
-        InternalActivity(
-          Map(
-            ActivityType.ProducedOwnBrand -> ((2L, 2L)),
-            ActivityType.Imported         -> ((2L, 2L)),
-            ActivityType.CopackerAll      -> ((0L, 0L))
-          ),
-          isLarge = false
-        ),
-        LocalDate.of(1920, 2, 29),
-        List(
-          Site(ForeignAddress(List("Juicey Juices", "Juicey Juices"), "FR"), Some("a"), Some("a"), None),
-          Site(ForeignAddress(List("asdasdasd", "asfdsdasd"), "DE"), Some("a"), Some("a"), None)
-        ),
-        List(),
-        Contact(Some("a"), Some("a"), "+44 1234567890", "a.b@c.com")
-      )
-
-      when(mockDesSubmissionService.retrieveSubscriptionDetails(sdilIdType, sdilNumber)).thenReturn(Some(r))
-
-      val response = mockSubscriptionController
-        .retrieveSubscriptionDetails(sdilIdType, sdilNumber)(
-          FakeRequest("GET", "/soft-drinks/subscription/")
-            .withHeaders(envHeader, authHeader))
-
-      status(response) mustBe OK
-      //verify(mockDesSubmissionService, times(1)).retrieveSubscriptionDetails(any(), any())
-      contentAsJson(response).mustBe(successfulRetrieveOutput)
-    }
-
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest" in {
       when(
         mockDesSubmissionService

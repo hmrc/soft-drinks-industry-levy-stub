@@ -39,7 +39,7 @@ class StoreSpec extends AnyFlatSpec {
   }
 
   it should "allow overriding of records" in {
-    implicit val g = Arbitrary { SubscriptionGenerator.genSubscription() }
+    implicit val g = Arbitrary { SubscriptionGenerator.genSubscription(None) }
     forAll { subscription: Subscription =>
       Store.add(subscription)
       Store.fromUtr(subscription.utr) shouldBe Some(subscription)
