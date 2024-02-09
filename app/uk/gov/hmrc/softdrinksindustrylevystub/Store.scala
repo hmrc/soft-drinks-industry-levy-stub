@@ -22,7 +22,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import sdil.models.des.FinancialTransactionResponse
 import cats.implicits._
-import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genSubscriptionNEW
+import uk.gov.hmrc.softdrinksindustrylevystub.services.SubscriptionGenerator.genSubscription
 
 object Store {
 
@@ -36,7 +36,7 @@ object Store {
     utrToSdil.clear()
   }
 
-  val _store = mutable { sdil: String => genSubscriptionNEW(sdilToUtr(sdil)).seeded(sdil) }
+  val _store = mutable { sdil: String => genSubscription(sdilToUtr(sdil)).seeded(sdil) }
 
   def fromSdilRef(in: String) = _store(in)
 
