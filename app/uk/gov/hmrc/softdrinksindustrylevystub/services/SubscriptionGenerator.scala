@@ -28,178 +28,60 @@ object SubscriptionGenerator {
 
   lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription().rarely.asMutable[String]
 
-  private def generatorForYearsOfLiability(yearsOfLiability: Int): Gen[LocalDate] = {
+  private def generatorForYearsOfLiability(yearsOfLiability: Int): Gen[LocalDate] =
     Gen.date(
       LocalDate.now.minusYears(yearsOfLiability + 1),
       LocalDate.now().minusYears(yearsOfLiability).minusMonths(6)
     )
-  }
 
   private def generatorForActivity(activity: Int, activityProdType: Int): Gen[Activity] = {
-//    TODO: FILL IN CORRECT ACTIVITY VALUES HERE
+//    TODO: THIS NEEDS TO BE CLEANER
     val ownBrandGen = activityGen(ProducedOwnBrand)
     val importedGen = activityGen(Imported)
     val copackerAllGen = activityGen(CopackerAll)
     val copackeeGen = activityGen(Copackee)
-    val activityRequired = (activity, activityProdType) match {
-      case (0, 0) => {
-        ("neither importer nor copacker", "none")
-        //        ownBrand NO
-        //        imported NO
-        //        copackerAll NO
-        //        copackee NO
-        //        isLarge NO
-      }
-      case (0, 1) => {
-        ("neither importer nor copacker", "small prod - copackee")
-        //        ownBrand NO
-        //        imported NO
-        //        copackerAll NO
-        //        copackee YES
-        //        isLarge NO
-      }
-      case (0, 2) => {
-        ("neither importer nor copacker", "small prod - produced own brands")
-        //        ownBrand YES
-        //        imported NO
-        //        copackerAll NO
-        //        copackee NO
-        //        isLarge NO
-      }
-      case (0, 3) => {
-        ("neither importer nor copacker", "large - produced own brands and copackee")
-        //        ownBrand
-        //        imported NO
-        //        copackerAll NO
-        //        copackee YES
-        //        isLarge YES
-      }
-      case (1, 0) => {
-        ("importer", "none")
-        //        ownBrand NO
-        //        imported YES
-        //        copackerAll NO
-        //        copackee NO
-        //        isLarge NO
-      }
-      case (1, 1) => {
-        ("importer", "small prod - copackee")
-        //        ownBrand NO
-        //        imported YES
-        //        copackerAll NO
-        //        copackee YES
-        //        isLarge NO
-      }
-      case (1, 2) => {
-        ("importer", "small prod - produced own brands")
-        //        ownBrand YES
-        //        imported YES
-        //        copackerAll NO
-        //        copackee NO
-        //        isLarge NO
-      }
-      case (1, 3) => {
-        ("importer", "large - produced own brands and copackee")
-        //        ownBrand YES
-        //        imported YES
-        //        copackerAll NO
-        //        copackee YES
-        //        isLarge YES
-      }
-      case (2, 0) => {
-        ("copacker", "none")
-        //        ownBrand NO
-        //        imported NO
-        //        copackerAll YES
-        //        copackee NO
-        //        isLarge NO
-      }
-      case (2, 1) => {
-        ("copacker", "small prod - copackee")
-        //        ownBrand NO
-        //        imported NO
-        //        copackerAll YES
-        //        copackee YES
-        //        isLarge NO
-      }
-      case (2, 2) => {
-        ("copacker", "small prod - produced own brands")
-        //        ownBrand YES
-        //        imported NO
-        //        copackerAll YES
-        //        copackee NO
-        //        isLarge NO
-      }
-      case (2, 3) => {
-        ("copacker", "large - produced own brands and copackee")
-        //        ownBrand YES
-        //        imported NO
-        //        copackerAll YES
-        //        copackee YES
-        //        isLarge YES
-      }
-      case (3, 0) => {
-        ("importer and copacker", "none")
-        //        ownBrand NO
-        //        imported YES
-        //        copackerAll YES
-        //        copackee NO
-        //        isLarge NO
-      }
-      case (3, 1) => {
-        ("importer and copacker", "small prod - copackee")
-        //        ownBrand NO
-        //        imported YES
-        //        copackerAll YES
-        //        copackee YES
-        //        isLarge NO
-      }
-      case (3, 2) => {
-        ("importer and copacker", "small prod - produced own brands")
-        //        ownBrand YES
-        //        imported YES
-        //        copackerAll YES
-        //        copackee NO
-        //        isLarge NO
-      }
-      case (3, 3) => {
-        ("importer and copacker", "large - produced own brands and copackee")
-        //        ownBrand YES
-        //        imported YES
-        //        copackerAll YES
-        //        copackee YES
-        //        isLarge YES
-      }
+
+    val isImporter = List(1, 3).contains(activity)
+    val isCopacker = List(2, 3).contains(activity)
+    val producedOwnBrand = List(2, 3, 5, 6).contains(activityProdType)
+    val isCopackee = List(1, 3, 4, 6).contains(activityProdType)
+    val isLarge = List(4, 5, 6).contains(activityProdType)
+
+    for {
+      produced  <- if (producedOwnBrand) ownBrandGen.optFrequency(100) else ownBrandGen.optFrequency(0)
+      imported  <- if (isImporter) importedGen.optFrequency(100) else importedGen.optFrequency(0)
+      copacking <- if (isCopacker) copackerAllGen.optFrequency(100) else copackerAllGen.optFrequency(0)
+      copacked  <- if (isCopackee) copackeeGen.optFrequency(100) else copackeeGen.optFrequency(0)
+    } yield {
+      InternalActivity(
+        Seq(produced, imported, copacking, copacked).flatten.toMap,
+        isLarge
+      )
     }
-    internalActivityGen
   }
 
   private lazy val siteGenNEW: Gen[Site] = for {
-    address <- addressGen
-    ref <- Gen.posNum[Int]
+    address     <- addressGen
+    ref         <- Gen.posNum[Int]
     tradingName <- orgNameGen
     closureDate <- Gen.date(LocalDate.now, LocalDate.now.plusYears(1))
   } yield Site(address, Some(ref.toString), Some(tradingName.toString), Some(closureDate))
 
-  private def generatorForProdSites(totalSites: Int, activity: Activity): Gen[List[Site]] = {
+  private def generatorForProdSites(totalSites: Int, activity: Activity): Gen[List[Site]] =
     if ((activity.isLarge || activity.isContractPacker) && totalSites > 0)
       Gen
         .const(totalSites)
-        .flatMap(Gen.listOfN(_, siteGen))
-        .retryUntil(_.exists(_.closureDate.forall(_.isAfter(LocalDate.now))))
+        .flatMap(Gen.listOfN(_, siteGenNEW))
     else
       Gen.const(Nil)
-  }
 
-  private def generatorForWarehouses(totalSites: Int, activity: Activity): Gen[List[Site]] = {
+  private def generatorForWarehouses(totalSites: Int, activity: Activity): Gen[List[Site]] =
     if (activity.isVoluntaryRegistration && totalSites > 0)
       Gen.const(Nil)
     else
       Gen
         .const(totalSites)
-        .flatMap(Gen.listOfN(_, siteGen))
-        .retryUntil(_.exists(_.closureDate.forall(_.isAfter(LocalDate.now))))
-  }
+        .flatMap(Gen.listOfN(_, siteGenNEW))
 
   def genSubscriptionNEW(utr: Option[String]): Gen[Subscription] = {
     //    TODO: UTR 00A00BCDE , ONLY GENERATE ONCE
@@ -207,15 +89,15 @@ object SubscriptionGenerator {
 //    REGISTRATION COVERED ELSEWHERE IN SDIL NUMBER TRANSFORMER
     val genValues: String = utr.map(_.takeRight(4)).getOrElse("0000")
     for {
-      generatedUtr <- SdilNumberTransformer.tolerantUtr.gen
-      orgName <- orgNameGen
-      orgType <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
-      address <- addressGen
-      liabilityDate <- generatorForYearsOfLiability(genValues(0).toInt)
-      activity <- generatorForActivity(activity = genValues(1).toInt, activityProdType = genValues(2).toInt)
-      productionSites <- generatorForProdSites((genValues(3).toInt + 1) % 3, activity)
-      warehouseSites <- generatorForWarehouses((genValues(3).toInt + 1) / 3, activity)
-      contact <- contactGen
+      generatedUtr    <- SdilNumberTransformer.tolerantUtr.gen
+      orgName         <- orgNameGen
+      orgType         <- Gen.oneOf("1", "2", "3", "4", "5").optFrequency(100)
+      address         <- addressGen
+      liabilityDate   <- generatorForYearsOfLiability(genValues(0).asDigit)
+      activity        <- generatorForActivity(activity = genValues(1).asDigit, activityProdType = genValues(2).asDigit)
+      productionSites <- generatorForProdSites((genValues(3).asDigit + 1) % 3, activity)
+      warehouseSites  <- generatorForWarehouses((genValues(3).asDigit + 1) / 3, activity)
+      contact         <- contactGen
     } yield {
       Subscription(
         utr.getOrElse(generatedUtr),
