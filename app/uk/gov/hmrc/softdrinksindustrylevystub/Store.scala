@@ -37,7 +37,8 @@ object Store {
   }
 
   val _store = mutable { sdil: String =>
-    genSubscription(sdilToUtr(sdil)).seeded(sdil)
+    val generatedSubscription = genSubscription(sdilToUtr(sdil)).seeded(sdil)
+    generatedSubscription.map(_.copy(sdilRef = sdil))
   }
 
   def fromSdilRef(in: String) = _store(in)

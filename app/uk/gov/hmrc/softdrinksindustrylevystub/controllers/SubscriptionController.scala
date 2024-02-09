@@ -66,8 +66,8 @@ class SubscriptionController @Inject()(
 
       val subscription = (idType match {
         case "sdil" => idNumber.some
-        case "utr" => Store.utrToSdil(idNumber).lastOption
-        case weird => throw new IllegalArgumentException(s"Weird id type: $weird")
+        case "utr"  => Store.utrToSdil(idNumber).lastOption
+        case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
       }).flatMap(Store.fromSdilRef)
 
       Future

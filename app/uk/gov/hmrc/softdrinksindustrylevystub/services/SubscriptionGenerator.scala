@@ -40,6 +40,7 @@ object SubscriptionGenerator {
       productionSites <- generatorForProdSites(genValues(3).asDigit % 3)
       warehouseSites  <- generatorForWarehouses(genValues(3).asDigit / 3)
       contact         <- contactGen
+//      TODO: ADD DEREG DATE
     } yield {
       Subscription(
         utr.getOrElse(generatedUtr),
@@ -135,9 +136,9 @@ object SubscriptionGenerator {
       .flatMap(Gen.listOfN(_, siteGen))
 
   private def generatorForWarehouses(totalSites: Int): Gen[List[Site]] =
-      Gen
-        .const(totalSites)
-        .flatMap(Gen.listOfN(_, siteGen))
+    Gen
+      .const(totalSites)
+      .flatMap(Gen.listOfN(_, siteGen))
 
   private lazy val contactGen: Gen[Contact] = for {
     fname       <- Gen.forename()
