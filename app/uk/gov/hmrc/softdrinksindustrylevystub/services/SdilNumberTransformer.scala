@@ -25,10 +25,8 @@ object ModulusCheck extends Modulus23Check {
 
 object SdilNumberTransformer {
 
-  val tolerantUtr = pattern"9999999999".imap(_.reverse)(_.reverse)
-
-//  TODO: This is the gatekeeper on the pattern of the utrs and why anything above 999999 goes to business details verify
-//  TODO: ADD CHECKS ON REGEX IN ACCORDANCE WITHOUT RULES AROUND GENERATING SUBSCRIPTION (000[0-9][0-9][0-4][0-3][0-3][0-8])
+  val tolerantUtr = pattern"9999993648".imap(_.reverse)(_.reverse)
+  
   val sdilRefEnum: Enumerable[String] = pattern"999999000".imap { i =>
     val sum = ModulusCheck("SDIL" ++ i.reverse)
     s"X${sum}SDIL${i.reverse}"
