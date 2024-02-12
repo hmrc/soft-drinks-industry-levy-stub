@@ -166,7 +166,7 @@ object SubscriptionGenerator {
     role   <- Gen.oneOf(roleList)
   } yield s"$grade $sector $role"
 
-  private def generatorForDeregDate(deregDateIndex: Int): Gen[Option[LocalDate]] = {
+  private def generatorForDeregDate(deregDateIndex: Int): Gen[Option[LocalDate]] =
     if (deregDateIndex > 6) {
       val dateGen = Gen.date(
         LocalDate.now.minusYears(10 - deregDateIndex),
@@ -176,7 +176,6 @@ object SubscriptionGenerator {
     } else {
       Gen.const(None)
     }
-  }
 
   private lazy val gradeList = Seq(
     "Senior",

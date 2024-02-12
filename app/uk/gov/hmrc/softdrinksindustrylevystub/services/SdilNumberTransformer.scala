@@ -25,9 +25,7 @@ object ModulusCheck extends Modulus23Check {
 
 object SdilNumberTransformer {
 
-//  TODO: TEST AND FIGURE OUT HOW TO GET THIS TO WORK
-//  val tolerantUtr = pattern"9999993648".imap(_.reverse)(_.reverse)
-  val tolerantUtr = pattern"9999999999".imap(_.reverse)(_.reverse)
+  val tolerantUtr = pattern"8463999999".imap(_.reverse)(_.reverse)
 
   val sdilRefEnum: Enumerable[String] = pattern"999999000".imap { i =>
     val sum = ModulusCheck("SDIL" ++ i.reverse)

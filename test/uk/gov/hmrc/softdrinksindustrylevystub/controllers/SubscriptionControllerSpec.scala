@@ -133,6 +133,5 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
       status(response) mustBe FORBIDDEN
       verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(), any())
     }
-
   }
 }
