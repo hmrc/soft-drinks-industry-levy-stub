@@ -29,18 +29,18 @@ object SubscriptionGenerator {
   lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription(None).rarely.asMutable[String]
 
   def genSubscription(utr: Option[String]): Gen[Subscription] = {
-    val genValues: String = utr.map(_.takeRight(4)).getOrElse("0000")
+    val genValues: String = utr.map(_.takeRight(5)).getOrElse("00000")
     for {
       generatedUtr    <- SdilNumberTransformer.tolerantUtr.gen
       orgName         <- orgNameGen
-      orgType         <- Gen.oneOf("1", "2", "3", "4", "5").optFrequency(100)
+      orgType         <- Gen.some(Gen.oneOf("1", "2", "3", "4", "5"))
       address         <- addressGen
-      activity        <- generatorForActivity(activity = genValues(0).asDigit, activityProdType = genValues(1).asDigit)
-      liabilityDate   <- generatorForYearsOfLiability(genValues(2).asDigit)
-      productionSites <- generatorForProdSites(genValues(3).asDigit % 3)
-      warehouseSites  <- generatorForWarehouses(genValues(3).asDigit / 3)
+      activity        <- generatorForActivity(activity = genValues(1).asDigit, activityProdType = genValues(2).asDigit)
+      liabilityDate   <- generatorForYearsOfLiability(genValues(3).asDigit)
+      productionSites <- generatorForProdSites(genValues(4).asDigit % 3)
+      warehouseSites  <- generatorForWarehouses(genValues(4).asDigit / 3)
       contact         <- contactGen
-//      TODO: ADD DEREG DATE
+      deregDate       <- generatorForDeregDate(genValues(0).asDigit)
     } yield {
       Subscription(
         utr.getOrElse(generatedUtr),
@@ -51,7 +51,8 @@ object SubscriptionGenerator {
         liabilityDate,
         productionSites,
         warehouseSites,
-        contact)
+        contact,
+        deregDate = deregDate)
     }
   }
 
@@ -105,10 +106,10 @@ object SubscriptionGenerator {
     val isLarge = List(4, 5, 6).contains(activityProdType)
 
     for {
-      produced  <- activityGen(ProducedOwnBrand).optFrequency(if (producedOwnBrand) 100 else 0)
-      imported  <- activityGen(Imported).optFrequency(if (isImporter) 100 else 0)
-      copacking <- activityGen(CopackerAll).optFrequency(if (isCopacker) 100 else 0)
-      copacked  <- activityGen(Copackee).optFrequency(if (isCopackee) 100 else 0)
+      produced  <- if (producedOwnBrand) Gen.some(activityGen(ProducedOwnBrand)) else Gen.const(None)
+      imported  <- if (isImporter) Gen.some(activityGen(Imported)) else Gen.const(None)
+      copacking <- if (isCopacker) Gen.some(activityGen(CopackerAll)) else Gen.const(None)
+      copacked  <- if (isCopackee) Gen.some(activityGen(Copackee)) else Gen.const(None)
     } yield {
       InternalActivity(
         Seq(produced, imported, copacking, copacked).flatten.toMap,
@@ -164,6 +165,18 @@ object SubscriptionGenerator {
     sector <- Gen.oneOf(sectorList)
     role   <- Gen.oneOf(roleList)
   } yield s"$grade $sector $role"
+
+  private def generatorForDeregDate(deregDateIndex: Int): Gen[Option[LocalDate]] = {
+    if (deregDateIndex > 6) {
+      val dateGen = Gen.date(
+        LocalDate.now.minusYears(10 - deregDateIndex),
+        LocalDate.now().minusYears(9 - deregDateIndex).minusMonths(6)
+      )
+      Gen.some(dateGen)
+    } else {
+      Gen.const(None)
+    }
+  }
 
   private lazy val gradeList = Seq(
     "Senior",

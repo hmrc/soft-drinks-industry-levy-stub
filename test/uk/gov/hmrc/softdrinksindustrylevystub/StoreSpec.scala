@@ -40,6 +40,38 @@ class StoreSpec extends AnyFlatSpec {
     }
   }
 
+  it should "return a subscription with sdil ref and utr property" in {
+    forAll(sdilRefEnum) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        whenever("12345".toList.contains(utr.last)) {
+          val subscription = Store.fromUtr(utr)
+          subscription shouldBe defined
+          subscription.map(_.utr) shouldBe subscription.map(_.sdilRef).flatMap(sdilToUtr)
+        }
+      }
+    }
+  }
+
+  it should "return a subscription with number of years deregistered equal to ten minus 5nd last digit for (7-9)" in {
+    forAll(sdilRefEnum.retryUntil(ref => "789".toList.contains(ref.reverse(4)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.flatMap(_.deregDate).map(_.getYear) shouldBe Some(LocalDate.now().getYear + utr.reverse(4).asDigit - 10)
+      }
+    }
+  }
+
+  it should "return a subscription with no deregistration date when 5nd last digit is (0-6)" in {
+    forAll(sdilRefEnum.retryUntil(ref => "0123456".toList.contains(ref.reverse(4)))) { sdil =>
+      sdilToUtr(sdil).map { utr =>
+        val subscription = Store.fromUtr(utr)
+        subscription shouldBe defined
+        subscription.flatMap(_.deregDate) shouldBe None
+      }
+    }
+  }
+
   it should "return a subscription with importer activity if 4th last digit is 1, 3" in {
     forAll(sdilRefEnum.retryUntil(ref => "13".toList.contains(ref.reverse(3)))) { sdil =>
       sdilToUtr(sdil).map { utr =>
