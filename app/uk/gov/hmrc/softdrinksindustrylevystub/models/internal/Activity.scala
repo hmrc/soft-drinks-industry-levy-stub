@@ -29,8 +29,6 @@ sealed trait Activity {
   def isImporter: Boolean
   def isVoluntaryRegistration: Boolean = isProducer && !isLarge && !isImporter && !isContractPacker
   def isSmallProducer: Boolean = isProducer && !isLarge
-  def isLargeNoImports: Boolean = isProducer && isLarge && !isImporter
-  def isLargeImportCopacker: Boolean = isProducer && isLarge && isImporter && isContractPacker
 }
 
 case class InternalActivity(activity: Map[ActivityType.Value, LitreBands], isLarge: Boolean) extends Activity {
