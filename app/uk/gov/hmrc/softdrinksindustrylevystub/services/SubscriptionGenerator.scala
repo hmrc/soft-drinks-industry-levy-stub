@@ -121,7 +121,7 @@ object SubscriptionGenerator {
   private def generatorForYearsOfLiability(yearsOfLiability: Int): Gen[LocalDate] =
     Gen.date(
       LocalDate.now.minusYears(yearsOfLiability + 1),
-      LocalDate.now().minusYears(yearsOfLiability).minusMonths(6)
+      LocalDate.now.minusYears(yearsOfLiability).minusMonths(6)
     )
 
   private lazy val siteGen: Gen[Site] = for {
@@ -170,7 +170,7 @@ object SubscriptionGenerator {
     if (deregDateIndex > 6) {
       val dateGen = Gen.date(
         LocalDate.now.minusYears(10 - deregDateIndex),
-        LocalDate.now().minusYears(9 - deregDateIndex).minusMonths(6)
+        LocalDate.now.minusYears(9 - deregDateIndex).minusMonths(6)
       )
       Gen.some(dateGen)
     } else {
