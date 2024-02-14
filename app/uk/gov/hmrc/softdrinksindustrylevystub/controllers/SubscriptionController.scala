@@ -64,13 +64,11 @@ class SubscriptionController @Inject()(
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Action[AnyContent] =
     extraActions.AuthAndEnvAction.async {
 
-      val subscription: Option[Subscription] = {
-        idType match {
-          case "sdil" => idNumber.some
-          case "utr"  => Store.utrToSdil(idNumber).lastOption
-          case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
-        }
-      } >>= Store.fromSdilRef
+      val subscription = (idType match {
+        case "sdil" => idNumber.some
+        case "utr"  => Store.utrToSdil(idNumber).lastOption
+        case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
+      }).flatMap(Store.fromSdilRef)
 
       Future
         .successful(
