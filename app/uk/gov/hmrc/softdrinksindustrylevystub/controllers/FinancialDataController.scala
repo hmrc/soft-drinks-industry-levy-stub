@@ -31,7 +31,7 @@ class FinancialDataController @Inject() (cc: ControllerComponents) extends Backe
   val logger = Logger("FinancialDataController")
   val canned = CannedFinancialData.canned
 
-  implicit val sdilEnum = SdilNumberTransformer.sdilRefEnum
+  implicit val sdilEnum: Enumerable[String] = SdilNumberTransformer.sdilRefEnum
 
   def test(
     sdilRef: String,
