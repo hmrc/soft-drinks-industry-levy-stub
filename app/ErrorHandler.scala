@@ -26,7 +26,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.{FailureMessage, FailureRes
 import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(implicit val config: Configuration, val env: Environment, val messagesApi: MessagesApi)
+class ErrorHandler @Inject() (implicit val config: Configuration, val env: Environment, val messagesApi: MessagesApi)
     extends HttpErrorHandler with I18nSupport with Logging {
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
@@ -34,10 +34,16 @@ class ErrorHandler @Inject()(implicit val config: Configuration, val env: Enviro
       Status(statusCode)(
         Json.toJson(
           FailureResponse(
-            List(FailureMessage(
-              statusCode.toString,
-              message
-            ))))))
+            List(
+              FailureMessage(
+                statusCode.toString,
+                message
+              )
+            )
+          )
+        )
+      )
+    )
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] =
     exception match {
@@ -47,9 +53,15 @@ class ErrorHandler @Inject()(implicit val config: Configuration, val env: Enviro
           InternalServerError(
             Json.toJson(
               FailureResponse(
-                List(FailureMessage(
-                  "500",
-                  "DES is currently experiencing problems that require live service intervention."
-                ))))))
+                List(
+                  FailureMessage(
+                    "500",
+                    "DES is currently experiencing problems that require live service intervention."
+                  )
+                )
+              )
+            )
+          )
+        )
     }
 }

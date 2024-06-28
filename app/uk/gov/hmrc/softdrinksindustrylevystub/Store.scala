@@ -84,12 +84,12 @@ object Store {
       .getOrElse(SdilNumberTransformer.sdilToUtr(sdil))
 
   def unusedSdilRefs: Iterable[String] = {
-    val overriddenUtrs = utrToSdil.toList.flatMap { _._2 };
+    val overriddenUtrs = utrToSdil.toList.flatMap(_._2);
     { 0 to 99999 }
       .map { x =>
-        SdilNumberTransformer.sdilRefEnum { x * 10L }
+        SdilNumberTransformer.sdilRefEnum(x * 10L)
       }
-      .filterNot { overriddenUtrs.contains }
+      .filterNot(overriddenUtrs.contains)
   }
 
   def financialHistory(sdilRef: String): FinancialTransactionResponse =

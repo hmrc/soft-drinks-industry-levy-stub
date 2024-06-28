@@ -20,13 +20,13 @@ import play.api.libs.json._
 
 package object models {
 
-  //ROSM register formatters
+  // ROSM register formatters
   implicit val organisationTypeFormat: Format[RosmOrganisationType.Value] = EnumUtils.enumFormat(RosmOrganisationType)
   implicit val individualFormatter: OFormat[Individual] = Json.format[Individual]
   implicit val organisationReqFormatter: OFormat[OrganisationRequest] = Json.format[OrganisationRequest]
   implicit val rosmRequestFormatter: OFormat[RosmRegisterRequest] = Json.format[RosmRegisterRequest]
 
-  //ROSM register response formatters
+  // ROSM register response formatters
   implicit val rosmResponseAddress: OFormat[RosmResponseAddress] = Json.format[RosmResponseAddress]
   implicit val rosmResponseOrg: OFormat[OrganisationResponse] = Json.format[OrganisationResponse]
   implicit val rosmResponseContactDetails: OFormat[RosmResponseContactDetails] = Json.format[RosmResponseContactDetails]

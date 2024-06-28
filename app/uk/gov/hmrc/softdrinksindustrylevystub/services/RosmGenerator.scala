@@ -32,12 +32,12 @@ object RosmGenerator {
 
   private def genRosmResponseAddress: Gen[RosmResponseAddress] =
     (
-      Gen.oneOf("The house", "50"), //addressLine1
-      Gen.oneOf("The Street", "The Road", "The Lane").almostAlways, //addressLine2
-      addressLine.almostAlways, //addressLine3
-      addressLine.rarely, //addressLine4
-      Gen.const("GB"), //countryCode
-      Gen.postcode //postalCode
+      Gen.oneOf("The house", "50"), // addressLine1
+      Gen.oneOf("The Street", "The Road", "The Lane").almostAlways, // addressLine2
+      addressLine.almostAlways, // addressLine3
+      addressLine.rarely, // addressLine4
+      Gen.const("GB"), // countryCode
+      Gen.postcode // postalCode
     ).mapN(RosmResponseAddress.apply)
 
   private def genEmail =
@@ -58,10 +58,10 @@ object RosmGenerator {
 
   private def genRosmResponseContactDetails: Gen[RosmResponseContactDetails] =
     (
-      Gen.ukPhoneNumber.almostAlways, //primaryPhoneNumber
-      Gen.ukPhoneNumber.sometimes, //secondaryPhoneNumber
-      Gen.ukPhoneNumber.rarely, //faxNumber
-      genEmail.almostAlways //emailAddress
+      Gen.ukPhoneNumber.almostAlways, // primaryPhoneNumber
+      Gen.ukPhoneNumber.sometimes, // secondaryPhoneNumber
+      Gen.ukPhoneNumber.rarely, // faxNumber
+      genEmail.almostAlways // emailAddress
     ).mapN(RosmResponseContactDetails.apply)
 
   private def shouldGenOrg(utr: String): OrganisationResponse = {
@@ -95,16 +95,15 @@ object RosmGenerator {
       organisation   <- Gen.const(shouldGenOrg(utr)).sometimes
       address        <- genRosmResponseAddress
       contactDetails <- genRosmResponseContactDetails
-    } yield {
-      RosmRegisterResponse(
-        safeId,
-        agentReferenceNumber,
-        isEditable,
-        isAnAgent,
-        isAnIndividual,
-        individual,
-        organisation,
-        address,
-        contactDetails)
-    }).usually
+    } yield RosmRegisterResponse(
+      safeId,
+      agentReferenceNumber,
+      isEditable,
+      isAnAgent,
+      isAnIndividual,
+      individual,
+      organisation,
+      address,
+      contactDetails
+    )).usually
 }

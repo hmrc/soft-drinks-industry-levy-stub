@@ -29,20 +29,18 @@ class DesSubmissionService {
   def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
     import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.tolerantUtr
     val sdilRef = Store.unusedSdilRefs.head
-    Store.add { data.copy(sdilRef = sdilRef) }
+    Store.add(data.copy(sdilRef = sdilRef))
     SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber)(tolerantUtr).get
   }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Option[Subscription] =
     for {
       utr <- idType match {
-              case "utr"  => Some(idNumber)
-              case "sdil" => SdilNumberTransformer.sdilToUtr(idNumber)
-            }
+               case "utr"  => Some(idNumber)
+               case "sdil" => SdilNumberTransformer.sdilToUtr(idNumber)
+             }
       subscription <- Store.fromUtr(utr)
-    } yield {
-      subscription.copy(utr = utr)
-    }
+    } yield subscription.copy(utr = utr)
 
   def createReturnResponse(payload: Return, sdilRef: String): ReturnSuccessResponse = {
     import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum

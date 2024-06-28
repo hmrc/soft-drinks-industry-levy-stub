@@ -22,7 +22,7 @@ import play.api.mvc.Results.Forbidden
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnvironmentFilterAction @Inject()()(implicit val executionContext: ExecutionContext)
+class EnvironmentFilterAction @Inject() ()(implicit val executionContext: ExecutionContext)
     extends ActionFilter[Request] {
 
   def filter[A](request: Request[A]): Future[Option[Result]] =

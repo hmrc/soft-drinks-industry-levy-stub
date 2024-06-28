@@ -45,9 +45,7 @@ object SdilNumberTransformer {
       i       <- 1 to num
       utr     <- tolerantUtr.get(i.toLong)
       sdilRef <- sdilRefEnum.get(i.toLong)
-    } yield {
-      println(s"| $utr | $sdilRef |")
-    }
+    } yield println(s"| $utr | $sdilRef |")
     ()
   }
 

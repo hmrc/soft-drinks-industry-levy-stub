@@ -26,21 +26,24 @@ import uk.gov.hmrc.softdrinksindustrylevystub.services.RosmService
 import scala.concurrent.Future
 
 @Singleton
-class RosmController @Inject()(rosmService: RosmService, cc: ControllerComponents, extraActions: ExtraActions)
+class RosmController @Inject() (rosmService: RosmService, cc: ControllerComponents, extraActions: ExtraActions)
     extends BackendController(cc) {
 
   def register(utr: String): Action[JsValue] = extraActions.AuthAndEnvAction.async(parse.json) { implicit request =>
-    withJsonBody[RosmRegisterRequest](
-      rosmRequest =>
-        if (rosmRequest.regime.matches("ZSDL"))
-          rosmService.handleRegisterRequest(rosmRequest, utr) match {
-            case Some(data) => Future successful Ok(Json.toJson(data))
-            case _ =>
-              Future successful NotFound(
-                Json.toJson(FailureMessage("NOT_FOUND", "The remote endpoint has indicated that no data can be found")))
-          } else
-          Future successful BadRequest(
-            Json.toJson(FailureMessage("INVALID_PAYLOAD", "Submission has not passed validation. Invalid Payload."))))
+    withJsonBody[RosmRegisterRequest](rosmRequest =>
+      if (rosmRequest.regime.matches("ZSDL"))
+        rosmService.handleRegisterRequest(rosmRequest, utr) match {
+          case Some(data) => Future successful Ok(Json.toJson(data))
+          case _ =>
+            Future successful NotFound(
+              Json.toJson(FailureMessage("NOT_FOUND", "The remote endpoint has indicated that no data can be found"))
+            )
+        }
+      else
+        Future successful BadRequest(
+          Json.toJson(FailureMessage("INVALID_PAYLOAD", "Submission has not passed validation. Invalid Payload."))
+        )
+    )
   }
 
 }

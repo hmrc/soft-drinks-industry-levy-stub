@@ -43,8 +43,8 @@ case class InternalActivity(activity: Map[ActivityType.Value, LitreBands], isLar
   val add: (Litres, Litres) = activity
     .filter(x => List(ProducedOwnBrand, CopackerAll, Imported).contains(x._1))
     .values
-    .foldLeft((0L, 0L)) {
-      case ((aL, aH), (pL, pH)) => (aL + pL, aH + pH)
+    .foldLeft((0L, 0L)) { case ((aL, aH), (pL, pH)) =>
+      (aL + pL, aH + pH)
     }
 
   def sumOfLiableLitreRates: LitreBands =

@@ -51,7 +51,8 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
       val response = mockRosmController.register(utr)(
         FakeRequest("POST", "/register/organisation/:utr")
           .withBody(validRosmRegisterIndividualInput)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe OK
       contentAsJson(response) mustBe Json.toJson(rosmRegisterIndividualResponse)
@@ -65,7 +66,8 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
       val response = mockRosmController.register(utr)(
         FakeRequest("POST", "/register/organisation/:utr")
           .withBody(validRosmRegisterOrganisationnput)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe OK
       contentAsJson(response) mustBe Json.toJson(rosmRegisterOrganisationResponse)
@@ -79,7 +81,8 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
       val response = mockRosmController.register(utr)(
         FakeRequest("POST", "/register/organisation/:utr")
           .withBody(validRosmRegisterOrganisationnput)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       val errorResponse = Json.parse("""{
         "code": "NOT_FOUND",
@@ -96,7 +99,8 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
       val response = mockRosmController.register(utr)(
         FakeRequest("POST", "/register/organisation/:utr")
           .withBody(Json.parse(invalidRosmRegisterInput))
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe BAD_REQUEST
     }
@@ -107,7 +111,8 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
       val response = mockRosmController.register(utr)(
         FakeRequest("POST", "/register/organisation/:utr")
           .withBody(invalidRosmRegime)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe BAD_REQUEST
       contentAsJson(response) mustBe Json.obj(
