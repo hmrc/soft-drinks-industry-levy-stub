@@ -17,10 +17,11 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import org.scalacheck.Gen
+import uk.gov.hmrc.smartstub.Enumerable
 
 object HeadersGenerator {
 
-  implicit val sdilToLong = SdilNumberTransformer.sdilRefEnum
+  implicit val sdilToLong: Enumerable[String] = SdilNumberTransformer.sdilRefEnum
 
   def genCorrelationIdHeader: Gen[String] =
     Gen

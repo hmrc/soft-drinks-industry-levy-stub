@@ -40,7 +40,7 @@ class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerS
   val envHeader: (String, String) = "Environment"    -> "clone"
   val badEnvHeader: (String, String) = "Environment" -> "test"
 
-  implicit val hc = new HeaderCarrier
+  implicit val hc: HeaderCarrier = new HeaderCarrier
 
   "RosmController" should {
     "return Status: OK Body: RosmRegisterResponse with Individual for successful valid registration request" in {
