@@ -55,12 +55,14 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
     "return 403 forbidden for no business partner record for given SDIL ref number " in {
       when(
         mockDesSubmissionService
-          .retrieveSubscriptionDetails(sdilIdType, sdilRef)).thenReturn(None)
+          .retrieveSubscriptionDetails(sdilIdType, sdilRef)
+      ).thenReturn(None)
 
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(validReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe FORBIDDEN
 
@@ -77,7 +79,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(invalidSdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(validReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe BAD_REQUEST
       Json
@@ -92,7 +95,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(invalidPeriodKeyReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe BAD_REQUEST
       Json
@@ -107,7 +111,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(validReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe CONFLICT
       Json
@@ -126,7 +131,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(validReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe OK
       Json
@@ -142,7 +148,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(invalidReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe BAD_REQUEST
       Json

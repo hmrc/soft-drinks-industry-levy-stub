@@ -22,8 +22,8 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.ReturnSuccessResponse
 
 object ReturnGenerator {
 
-  def genCreateReturnResponse: Gen[ReturnSuccessResponse] = {
+  def genCreateReturnResponse: Gen[ReturnSuccessResponse] =
     pattern"999999999999".gen // formBundleNumber
-  }.map(ReturnSuccessResponse.apply)
+      .map(ReturnSuccessResponse.apply)
 
 }

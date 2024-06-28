@@ -33,9 +33,8 @@ object GetFormat {
 
     def writes(address: Address): JsValue = {
 
-      val jsLines = address.lines.zipWithIndex.map {
-        case (v, i) =>
-          s"line${i + 1}" -> JsString(v)
+      val jsLines = address.lines.zipWithIndex.map { case (v, i) =>
+        s"line${i + 1}" -> JsString(v)
       }
 
       JsObject(

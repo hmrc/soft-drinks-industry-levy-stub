@@ -30,7 +30,8 @@ object CreateFormat {
           (json \ "positionInCompany").asOpt[String],
           (json \ "telephone").as[String],
           (json \ "email").as[String]
-        ))
+        )
+      )
   }
 
   // SDIL create and retrieve subscription formatters
@@ -60,9 +61,8 @@ object CreateFormat {
     def reads(json: JsValue): JsResult[Subscription] = {
 
       val (warehouses, production) = json \ "sites" match {
-        case JsDefined(JsArray(sites)) => {
+        case JsDefined(JsArray(sites)) =>
           sites.partition(site => (site \ "siteType").as[String] == "1")
-        }
         case _ => (Nil, Nil)
       }
 
@@ -107,7 +107,8 @@ object CreateFormat {
           productionSites = sites(production.toSeq),
           warehouseSites = sites(warehouses.toSeq),
           contact = (regJson \ "primaryPersonContact").as[Contact]
-        ))
+        )
+      )
 
     }
   }

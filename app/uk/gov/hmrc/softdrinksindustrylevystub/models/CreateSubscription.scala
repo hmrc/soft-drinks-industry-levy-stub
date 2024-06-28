@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.models
 
-import java.time.{OffsetDateTime, LocalDate => Date}
+import java.time.{LocalDate => Date, OffsetDateTime}
 import play.api.libs.json.Format
 
 case class Address(

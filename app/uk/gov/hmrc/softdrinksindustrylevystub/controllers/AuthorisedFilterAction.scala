@@ -23,7 +23,7 @@ import play.api.mvc.Results.Unauthorized
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthorisedFilterAction @Inject()(val cc: ControllerComponents)
+class AuthorisedFilterAction @Inject() (val cc: ControllerComponents)
     extends ActionBuilder[Request, AnyContent] with ActionFilter[Request] {
 
   override protected val executionContext: ExecutionContext = cc.executionContext

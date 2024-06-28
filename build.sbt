@@ -16,7 +16,6 @@ PlayKeys.playDefaultPort := 8702
 // Scala Fmt
 // ================================================================================
 
-import com.lucidchart.sbt.scalafmt.ScalafmtCorePlugin.autoImport._
 Compile / scalafmtOnCompile := true
 Test / scalafmtOnCompile := true
 
