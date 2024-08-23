@@ -31,29 +31,8 @@ object GetFormat {
 
   implicit val addressWrites: Writes[Address] = new Writes[Address] {
 
-    def writes(address: Address): JsValue = {
-
-      val jsLines = address.lines.zipWithIndex.map { case (v, i) =>
-        s"line${i + 1}" -> JsString(v)
-      }
-
-      JsObject(
-        {
-          address match {
-            case UkAddress(_, postCode) =>
-              List(
-                "notUKAddress" -> JsBoolean(false),
-                "postCode"     -> JsString(postCode)
-              )
-            case ForeignAddress(_, country) =>
-              List(
-                "notUKAddress" -> JsBoolean(true),
-                "country"      -> JsString(country)
-              )
-          }
-        } ++ jsLines
-      )
-    }
+    def writes(address: Address): JsValue =
+      address.asJson
   }
 
   val subscriptionWrites: Writes[Subscription] = new Writes[Subscription] {

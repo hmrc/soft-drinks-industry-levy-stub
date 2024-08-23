@@ -25,13 +25,13 @@ object HeadersGenerator {
 
   def genCorrelationIdHeader: Gen[String] =
     Gen
-      .listOfN(
+      .listOfN[Char](
         36,
         Gen.frequency(
           (3, Gen.alphaUpperChar),
           (3, Gen.alphaLowerChar),
           (3, Gen.numChar),
-          (1, Gen.const("-"))
+          (1, Gen.const[Char]("-".charAt(0)))
         )
       )
       .map(_.mkString) // correlationId
