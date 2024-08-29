@@ -18,7 +18,8 @@ object AppDependencies {
     "org.mockito"            %% "mockito-scala-scalatest"    % "1.17.37",
     "org.scalatestplus"      %% "scalacheck-1-17"            % "3.2.18.0",
     "org.scalatestplus.play" %% "scalatestplus-play"         % "7.0.1",
-    "uk.gov.hmrc"            %% s"bootstrap-test$playVersion" % bootstrapVersion
+    "uk.gov.hmrc"            %% s"bootstrap-test$playVersion" % bootstrapVersion,
+    "uk.gov.hmrc" %% "stub-data-generator" % "1.1.0"
   ).map(_ % "test")
 
   def apply(): Seq[ModuleID] = compile ++ test
