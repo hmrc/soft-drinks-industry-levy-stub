@@ -1,17 +1,18 @@
 #SDIL subscription
-POST        /soft-drinks/subscription/:idType/:idNumber                uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.createSubscription(idType, idNumber)
-GET         /soft-drinks/subscription/details/:idType/:idNumber        uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
+POST        /soft-drinks/subscription/:idType/:idNumber                   uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.createSubscription(idType, idNumber)
+GET         /soft-drinks/subscription/details/sdil/XCSDIL000000336        uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSmallProducerWithoutUtr()
+GET         /soft-drinks/subscription/details/:idType/:idNumber           uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
 
 #SDIL Return
-POST        /soft-drinks/:sdilRef/return                               uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.createReturn(sdilRef)
+POST        /soft-drinks/:sdilRef/return                                  uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.createReturn(sdilRef)
 
 #ROSM registration
-POST        /registration/organisation/utr/:utr                        uk.gov.hmrc.softdrinksindustrylevystub.controllers.RosmController.register(utr)
+POST        /registration/organisation/utr/:utr                           uk.gov.hmrc.softdrinksindustrylevystub.controllers.RosmController.register(utr)
 
 # reset
-GET         /reset-registrations                                       uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.reset
-GET         /reset-returns                                             uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.resetReturns
+GET         /reset-registrations                                          uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.reset
+GET         /reset-returns                                                uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.resetReturns
 
-GET         /enterprise/financial-data/ZSDL/:sdilRef/ZSDL              @uk.gov.hmrc.softdrinksindustrylevystub.controllers.FinancialDataController.test(sdilRef: String, onlyOpenItems: Boolean, includeLocks: Boolean, calculateAccruedInterest: Boolean, customerPaymentInformation: Boolean)
+GET         /enterprise/financial-data/ZSDL/:sdilRef/ZSDL                @uk.gov.hmrc.softdrinksindustrylevystub.controllers.FinancialDataController.test(sdilRef: String, onlyOpenItems: Boolean, includeLocks: Boolean, calculateAccruedInterest: Boolean, customerPaymentInformation: Boolean)
 
-POST        /gform/dms/submit                                          @uk.gov.hmrc.softdrinksindustrylevystub.controllers.GFormController.submitToDms()
+POST        /gform/dms/submit                                            @uk.gov.hmrc.softdrinksindustrylevystub.controllers.GFormController.submitToDms()
