@@ -43,7 +43,9 @@ class FinancialDataController @Inject() (cc: ControllerComponents) extends Backe
     logger.info(
       s"Query parameters onlyOpenItems=$onlyOpenItems, includeLocks=$includeLocks, calculateAccruedInterest=$calculateAccruedInterest, customerPaymentInformation= $customerPaymentInformation"
     )
-    val id = sdilRef.asLong % canned.size
+//    val id = sdilRef.toLong % canned.size
+    val id = math.abs(sdilRef.hashCode % canned.size)
+
     canned(id.toInt) match {
       case (file, Left(e)) => throw new IllegalStateException(s"unable to parse $file", e)
       case (file, Right(json)) =>

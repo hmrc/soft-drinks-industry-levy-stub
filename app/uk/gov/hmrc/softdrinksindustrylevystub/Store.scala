@@ -38,7 +38,7 @@ object Store {
     utrToSdil.clear()
   }
 
-  val _store = mutable { sdil: String =>
+  val _store = mutable { (sdil: String) =>
     def generate(pred: Subscription => Boolean) =
       genSubscription.retryUntil(pred).seeded(sdil)
 
@@ -74,7 +74,7 @@ object Store {
     _store(in.sdilRef) = Some(in)
   }
 
-  val utrToSdil = mutable { utr: String =>
+  val utrToSdil = mutable { (utr: String) =>
     SdilNumberTransformer.utrToSdil(utr).toList
   }
 

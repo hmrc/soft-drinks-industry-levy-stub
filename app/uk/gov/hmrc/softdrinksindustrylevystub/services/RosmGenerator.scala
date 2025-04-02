@@ -16,12 +16,10 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import cats.implicits._
-import org.scalacheck.Gen
-import org.scalacheck.cats.implicits.genInstances
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
-import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.smartstub.*
+import uk.gov.hmrc.softdrinksindustrylevystub.models.*
+import org.scalacheck.Gen
 
 object RosmGenerator {
 
@@ -31,14 +29,14 @@ object RosmGenerator {
   private def addressLine = variableLengthString(0, 35)
 
   private def genRosmResponseAddress: Gen[RosmResponseAddress] =
-    (
-      Gen.oneOf("The house", "50"), // addressLine1
-      Gen.oneOf("The Street", "The Road", "The Lane").almostAlways, // addressLine2
-      addressLine.almostAlways, // addressLine3
-      addressLine.rarely, // addressLine4
-      Gen.const("GB"), // countryCode
-      Gen.postcode // postalCode
-    ).mapN(RosmResponseAddress.apply)
+    for {
+      line1       <- Gen.oneOf("The house", "50")
+      line2       <- Gen.oneOf("The Street", "The Road", "The Lane").almostAlways
+      line3       <- addressLine.almostAlways
+      line4       <- addressLine.rarely
+      countryCode <- Gen.const("GB")
+      postcode    <- Gen.postcode
+    } yield RosmResponseAddress(line1, line2, line3, line4, countryCode, postcode)
 
   private def genEmail =
     for {
@@ -57,12 +55,17 @@ object RosmGenerator {
     } yield s"$a$b$c$d"
 
   private def genRosmResponseContactDetails: Gen[RosmResponseContactDetails] =
-    (
-      Gen.ukPhoneNumber.almostAlways, // primaryPhoneNumber
-      Gen.ukPhoneNumber.sometimes, // secondaryPhoneNumber
-      Gen.ukPhoneNumber.rarely, // faxNumber
-      genEmail.almostAlways // emailAddress
-    ).mapN(RosmResponseContactDetails.apply)
+    for {
+      primaryPhoneNumber   <- Gen.ukPhoneNumber.almostAlways
+      secondaryPhoneNumber <- Gen.ukPhoneNumber.sometimes
+      faxNumber            <- Gen.ukPhoneNumber.rarely
+      emailAddress         <- genEmail.almostAlways
+    } yield RosmResponseContactDetails(
+      primaryPhoneNumber,
+      secondaryPhoneNumber,
+      faxNumber,
+      emailAddress
+    )
 
   private def shouldGenOrg(utr: String): OrganisationResponse = {
     import RosmOrganisationType._
