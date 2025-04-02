@@ -17,7 +17,7 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.models
 
 import java.time.{LocalDate => Date, OffsetDateTime}
-import play.api.libs.json.Format
+import play.api.libs.json.{Format, Json}
 
 case class Address(
   notUKAddress: Boolean,
@@ -274,6 +274,11 @@ case class FailureMessage(
 case class FailureResponse(
   failures: List[FailureMessage]
 )
+
+object JsonFormats {
+  implicit val failureMessageFormat: Format[FailureMessage] = Json.format[FailureMessage]
+  implicit val failureResponseFormat: Format[FailureResponse] = Json.format[FailureResponse]
+}
 
 // n.b. leaving these although they are unused until we see the retrieve spec
 //object ProducerClassification extends Enumeration {

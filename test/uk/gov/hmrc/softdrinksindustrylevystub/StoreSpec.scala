@@ -28,8 +28,8 @@ class StoreSpec extends AnyFlatSpec {
   implicit def noShrink[T]: Shrink[T] = Shrink.shrinkAny
 
   "The Store" should "return records against a UTR or SDIL ref" in {
-    forAll(sdilRefEnum) { sdil =>
-      sdilToUtr(sdil).map { utr =>
+    forAll(SdilNumberTransformer.sdilRefEnum.arbitrary.arbitrary) { sdil =>
+      SdilNumberTransformer.sdilToUtr(sdil).map { utr =>
         whenever("12345".toList.contains(utr.last)) {
           Store.fromUtr(utr) shouldBe defined
           Store.fromUtr(utr) shouldBe Store.fromSdilRef(sdil)
@@ -40,7 +40,7 @@ class StoreSpec extends AnyFlatSpec {
 
   it should "allow overriding of records" in {
     implicit val g = Arbitrary(SubscriptionGenerator.genSubscription)
-    forAll { subscription: Subscription =>
+    forAll { (subscription: Subscription) =>
       Store.add(subscription)
       Store.fromUtr(subscription.utr) shouldBe Some(subscription)
       Store.fromSdilRef(subscription.sdilRef) shouldBe Some(subscription)

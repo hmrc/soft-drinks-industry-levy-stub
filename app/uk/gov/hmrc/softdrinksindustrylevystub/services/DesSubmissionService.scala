@@ -43,6 +43,7 @@ class DesSubmissionService {
     } yield subscription.copy(utr = utr)
 
   def createReturnResponse(payload: Return, sdilRef: String): ReturnSuccessResponse = {
+
     import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
     implicit val sdilRefToLong: Enumerable[String] = sdilRefEnum
     returnStore(sdilRef ++ payload.periodKey) = payload
@@ -50,7 +51,7 @@ class DesSubmissionService {
   }
 
   def checkForExistingReturn(sdilRefAndPeriodKey: String): Boolean =
-    returnStore.get(sdilRefAndPeriodKey).nonEmpty
+    returnStore.contains(sdilRefAndPeriodKey)
 
   // TODO smart stub should override `clear()` to only clear the state changes
   def resetSubscriptions(): Unit =
