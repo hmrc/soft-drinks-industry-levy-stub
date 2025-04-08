@@ -44,6 +44,9 @@ object EnumUtils {
   implicit def enumFormat[E <: Enumeration](`enum`: E): Format[`enum`.Value] =
     Format(enumReads(`enum`), enumWrites(`enum`))
 
-  implicit val idEnum: Enumerable[String] = pattern"9999999999"
+//  implicit val idEnum: Enumerable[String] = pattern"9999999999"
+  val idEnum: Enumerable[String] = pattern"9999999999"
+
+  given ToLong[String] = idEnum
 
 }

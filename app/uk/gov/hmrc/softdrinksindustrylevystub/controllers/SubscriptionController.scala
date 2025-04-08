@@ -22,12 +22,12 @@ import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 import uk.gov.hmrc.softdrinksindustrylevystub.Store
+import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.given_ToLong_String
 
 import scala.util.{Failure, Success, Try}
 import des._
@@ -41,6 +41,10 @@ class SubscriptionController @Inject() (
   extraActions: ExtraActions
 )(implicit ec: ExecutionContext)
     extends BackendController(cc) {
+
+//  given ToLong[String] with {
+//    def asLong(s: String): Long = BigInt(s.getBytes("UTF-8")).abs.toLong
+//  }
 
   def createSubscription(idType: String, idNumber: String): Action[JsValue] =
     extraActions.AuthAndEnvAction(parse.json) { implicit request: Request[JsValue] =>
@@ -84,6 +88,11 @@ class SubscriptionController @Inject() (
         )
         .desify(idNumber)
     }
+
+//    println("UTR to SDIL: " + SdilNumberTransformer.utrToSdil("3000000000"))
+//
+//    println("From UTR Store: " + Store.fromUtr("3000000000"))
+//    println("From SDIL Store: " + Store.fromSdilRef("XCSDIL000000XXX"))
 
   def reset: Action[AnyContent] = Action {
     desSubmissionService.resetSubscriptions()

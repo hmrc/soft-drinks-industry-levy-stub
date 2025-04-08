@@ -16,12 +16,19 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.smartstub.*
 import uk.gov.hmrc.softdrinksindustrylevystub.models.*
 import org.scalacheck.Gen
 
 object RosmGenerator {
+
+  given ToLong[String] with {
+    def asLong(s: String): Long = BigInt(s.getBytes("UTF-8")).abs.toLong
+  }
+
+//  val idEnum: Enumerable[String] = pattern"9999999999"
+//
+//  given ToLong[String] = idEnum
 
   private def variableLengthString(min: Int, max: Int) =
     Gen.choose(min, max).flatMap(len => Gen.listOfN(len, Gen.alphaLowerChar)).map(_.mkString)
@@ -108,5 +115,5 @@ object RosmGenerator {
       organisation,
       address,
       contactDetails
-    )).usually
+    )).map(Some(_))
 }

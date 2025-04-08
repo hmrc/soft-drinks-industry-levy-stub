@@ -19,12 +19,14 @@ package uk.gov.hmrc.softdrinksindustrylevystub.services
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}
 import org.scalacheck._
 import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
+import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.given
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.ActivityType._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse, maxL}
+import SdilNumberTransformer.tolerantUtr
 
 object SubscriptionGenerator {
+  given Enumerable[String] = tolerantUtr
 
   lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription.rarely.asMutable[String]
 

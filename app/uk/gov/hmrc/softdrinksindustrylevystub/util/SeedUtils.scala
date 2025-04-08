@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.softdrinksindustrylevystub.services
+package uk.gov.hmrc.softdrinksindustrylevystub.util
 
-import javax.inject.Singleton
-
-import uk.gov.hmrc.smartstub._
 import uk.gov.hmrc.smartstub.ToLong
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.smartstub.Enumerable
 
-@Singleton
-class RosmService {
-
-  given ToLong[String] with {
+object SeedUtils:
+  given ToLong[String] with
     def asLong(s: String): Long = BigInt(s.getBytes("UTF-8")).abs.toLong
-  }
 
-//  val idEnum: Enumerable[String] = pattern"9999999999"
-//
-//  given ToLong[String] = idEnum
+  def seededHash(s: String): Long = BigInt(s.getBytes("UTF-8")).abs.toLong
 
-  def handleRegisterRequest(data: RosmRegisterRequest, utr: String): Option[RosmRegisterResponse] =
-    RosmGenerator.genRosmRegisterResponse(data, utr).seeded(utr).get
-
-}
+object SmartstubSyntax:
+  extension [A](e: Enumerable[A])
+    def asLongOption(input: A): Option[Long] =
+      try Some(e.asLong(input))
+      catch case _: Throwable => None

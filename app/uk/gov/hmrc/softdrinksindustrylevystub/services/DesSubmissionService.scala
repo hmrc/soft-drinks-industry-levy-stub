@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
-import uk.gov.hmrc.softdrinksindustrylevystub._
+import uk.gov.hmrc.smartstub.*
+import uk.gov.hmrc.softdrinksindustrylevystub.models.*
+import uk.gov.hmrc.softdrinksindustrylevystub.*
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
+import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.toLongFromTolerantUtr
+
 import scala.collection.mutable
 
 class DesSubmissionService {
@@ -27,11 +29,17 @@ class DesSubmissionService {
   private lazy val returnStore: mutable.Map[String, Return] = mutable.Map.empty
 
   def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
-    import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.tolerantUtr
     val sdilRef = Store.unusedSdilRefs.head
     Store.add(data.copy(sdilRef = sdilRef))
-    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber)(tolerantUtr).get
+    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber)(using toLongFromTolerantUtr).get
   }
+
+  val sdilRefPattern: Enumerable[String] =
+    pattern"ZZ9999999994".imap(i => i.take(2) ++ "SDIL" ++ i.substring(2, 7) ++ "C" ++ i.takeRight(1))(b =>
+      b.take(2) ++ b.takeRight(9)
+    )
+
+  given toLongFromSdilRefEnum: ToLong[String] = sdilRefPattern
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Option[Subscription] =
     for {
@@ -43,10 +51,9 @@ class DesSubmissionService {
     } yield subscription.copy(utr = utr)
 
   def createReturnResponse(payload: Return, sdilRef: String): ReturnSuccessResponse = {
-    import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
-    implicit val sdilRefToLong: Enumerable[String] = sdilRefEnum
+
     returnStore(sdilRef ++ payload.periodKey) = payload
-    ReturnGenerator.genCreateReturnResponse.seeded(sdilRef).get
+    ReturnGenerator.genCreateReturnResponse.seeded(sdilRef)(using toLongFromSdilRefEnum).get
   }
 
   def checkForExistingReturn(sdilRefAndPeriodKey: String): Boolean =

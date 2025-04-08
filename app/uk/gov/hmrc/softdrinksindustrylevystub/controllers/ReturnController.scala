@@ -20,8 +20,8 @@ import javax.inject.Inject
 import play.api.libs.json.{JsSuccess, JsValue, Json}
 import play.api.mvc.{Action, AnyContent, ControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.smartstub.*
+import uk.gov.hmrc.softdrinksindustrylevystub.models.*
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 import uk.gov.hmrc.softdrinksindustrylevystub.services.{DesSubmissionService, SdilNumberTransformer}
 
@@ -30,6 +30,9 @@ class ReturnController @Inject() (
   cc: ControllerComponents,
   extraActions: ExtraActions
 ) extends BackendController(cc) {
+
+//  given ToLong[String] with
+//    def asLong(s: String): Long = BigInt(s.getBytes("UTF-8")).abs.toLong
 
   def createReturn(sdilRef: String): Action[JsValue] = extraActions.AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
@@ -48,18 +51,26 @@ class ReturnController @Inject() (
               desSubmissionService.createReturnResponse(a, sdilRef)
             )
           ).withHeaders(
-            ("CorrelationId", genCorrelationIdHeader.seeded(sdilRef)(SdilNumberTransformer.sdilRefEnum).get)
+            ("CorrelationId", genCorrelationIdHeader.seeded(sdilRef).get)
           )
         case _ =>
           BadRequest(Json.toJson(ReturnFailureResponse.invalidPayload))
       }
   }
 
-  implicit val sdilToLong: Enumerable[String] = pattern"ZZ9999999994".imap { i =>
-    i.take(2) ++ "SDIL" ++ i.substring(2, 7) ++ "C" ++ i.takeRight(1)
-  } { b =>
-    b.take(2) ++ b.takeRight(9)
-  }
+  val sdilRefPattern: Enumerable[String] =
+    pattern"ZZ9999999994".imap(i => i.take(2) ++ "SDIL" ++ i.substring(2, 7) ++ "C" ++ i.takeRight(1))(b =>
+      b.take(2) ++ b.takeRight(9)
+    )
+
+  given toLongFromSdilRefEnum: ToLong[String] = sdilRefPattern
+
+//  val sdilRefPattern: Enumerable[String] =
+//    pattern"ZZ9999999994".imap(i => i.take(2) ++ "SDIL" ++ i.substring(2, 7) ++ "C" ++ i.takeRight(1))(b =>
+//      b.take(2) ++ b.takeRight(9)
+//    )
+//
+//  given ToLong[String] = sdilRefPattern
 
   def resetReturns: Action[AnyContent] = Action {
     desSubmissionService.resetReturns()
