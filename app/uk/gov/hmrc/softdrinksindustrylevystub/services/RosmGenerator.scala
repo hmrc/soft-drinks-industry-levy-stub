@@ -87,8 +87,8 @@ object RosmGenerator {
   private def shouldGenAgentRef(isAnAgent: Boolean, utr: String): Option[String] =
     if (isAnAgent) Gen.alphaNumStr.seeded(utr) else None
 
-  def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[Option[RosmRegisterResponse]] =
-    (for {
+  def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[RosmRegisterResponse] =
+    for {
       safeId <- genSafeId
       agentReferenceNumber = shouldGenAgentRef(rosmRequest.isAnAgent, utr)
       isEditable <- Gen.boolean
@@ -108,5 +108,5 @@ object RosmGenerator {
       organisation,
       address,
       contactDetails
-    )).usually
+    )
 }

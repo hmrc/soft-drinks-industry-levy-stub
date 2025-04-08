@@ -31,6 +31,8 @@ class ReturnController @Inject() (
   extraActions: ExtraActions
 ) extends BackendController(cc) {
 
+  println("🔧 ReturnController loaded")
+
   def createReturn(sdilRef: String): Action[JsValue] = extraActions.AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
       request.body.validate[Return] match {
@@ -62,6 +64,7 @@ class ReturnController @Inject() (
   }
 
   def resetReturns: Action[AnyContent] = Action {
+    println("✅ resetReturns called")
     desSubmissionService.resetReturns()
     Ok
   }
