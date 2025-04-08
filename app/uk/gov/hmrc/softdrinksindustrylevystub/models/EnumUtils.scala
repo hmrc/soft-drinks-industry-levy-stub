@@ -19,14 +19,11 @@ package uk.gov.hmrc.softdrinksindustrylevystub.models
 import play.api.libs.json._
 import uk.gov.hmrc.smartstub._
 
-/** Utility class for creating json formatters for enumerations.
-  */
 object EnumUtils {
   def enumReads[E <: Enumeration](`enum`: E): Reads[`enum`.Value] = new Reads[`enum`.Value] {
     def reads(json: JsValue): JsResult[`enum`.Value] = json match {
       case JsString(s) =>
-        try
-          JsSuccess(`enum`.withName(s))
+        try JsSuccess(`enum`.withName(s))
         catch {
           case _: NoSuchElementException =>
             JsError(
@@ -38,7 +35,7 @@ object EnumUtils {
     }
   }
 
-  def enumWrites[E <: Enumeration](`enum`: E): Writes[`enum`.Value] =
+  implicit def enumWrites[E <: Enumeration](`enum`: E): Writes[`enum`.Value] =
     Writes(value => JsString(value.toString))
 
   implicit def enumFormat[E <: Enumeration](`enum`: E): Format[`enum`.Value] =

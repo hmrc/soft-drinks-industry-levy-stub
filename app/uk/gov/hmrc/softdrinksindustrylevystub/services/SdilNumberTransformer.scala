@@ -25,20 +25,31 @@ object ModulusCheck extends Modulus23Check {
 
 object SdilNumberTransformer {
 
-  val tolerantUtr = pattern"9999999999".imap(_.reverse)(_.reverse)
+  val tolerantUtr: Enumerable[String] =
+    pattern"9999999999".imap(_.reverse)(_.reverse)
 
-  val sdilRefEnum: Enumerable[String] = pattern"999999000".imap { i =>
-    val sum = ModulusCheck("SDIL" ++ i.reverse)
-    s"X${sum}SDIL${i.reverse}"
-  } { b =>
-    b.drop(6).reverse
-  }
+  val sdilRefEnum: Enumerable[String] =
+    pattern"999999000".imap { i =>
+      val sum = ModulusCheck("SDIL" ++ i.reverse)
+      s"X${sum}SDIL${i.reverse}"
+    } { b =>
+      b.drop(6).reverse
+    }
 
-  def convertEnum[A, B](enumA: Enumerable[A], enumB: Enumerable[B])(input: A): Option[B] =
+  // Define unambiguous given instances
+  given toLongFromTolerantUtr: ToLong[String] = tolerantUtr
+
+  given toLongFromSdilRefEnum: ToLong[String] = sdilRefEnum
+
+  // Scala 3-compatible convertEnum
+  def convertEnum[A, B](enumA: Enumerable[A], enumB: Enumerable[B])(input: A)(using ToLong[A]): Option[B] =
     enumB.get(enumA.asLong(input))
 
-  val utrToSdil = convertEnum(tolerantUtr, sdilRefEnum) _
-  val sdilToUtr = convertEnum(sdilRefEnum, tolerantUtr) _
+  val utrToSdil: String => Option[String] = input =>
+    convertEnum(tolerantUtr, sdilRefEnum)(input)(using toLongFromTolerantUtr)
+
+  val sdilToUtr: String => Option[String] = input =>
+    convertEnum(sdilRefEnum, tolerantUtr)(input)(using toLongFromSdilRefEnum)
 
   def showTable(num: Int): Unit = {
     for {
@@ -48,5 +59,4 @@ object SdilNumberTransformer {
     } yield ()
     ()
   }
-
 }
