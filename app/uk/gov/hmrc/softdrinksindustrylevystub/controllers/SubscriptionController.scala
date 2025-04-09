@@ -44,21 +44,36 @@ class SubscriptionController @Inject() (
 
   def createSubscription(idType: String, idNumber: String): Action[JsValue] =
     extraActions.AuthAndEnvAction(parse.json) { implicit request: Request[JsValue] =>
-      (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
+      // Capture the validations in vals.
+      val payloadValidation = request.body.validate[CreateSubscriptionRequest]
+      val paramsFailures = Validation.checkParams(idType, idNumber)
+
+      // Print out the results for debugging.
+      println(s"Payload validation result: $payloadValidation")
+      println(s"Validation.checkParams result: $paramsFailures")
+
+      (Try(payloadValidation), paramsFailures) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
+          println("Case 1: Valid payload and no failures.")
           Ok(
             Json.toJson(
-              desSubmissionService
-                .createSubscriptionResponse(idNumber, request.body.as[Subscription](CreateFormat.subscriptionReads))
+              desSubmissionService.createSubscriptionResponse(
+                idNumber,
+                request.body.as[Subscription](CreateFormat.subscriptionReads)
+              )
             )
-          ).withHeaders(
-            ("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get)
-          )
+          ).withHeaders(("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get))
+
         case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
+          println(s"Case 2: Payload is not valid. Failures: ${failures.mkString(",")}")
           BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
+
         case (Success(JsError(_)) | Failure(_), failures) =>
+          println(s"Case 3: JsError or Failure encountered. Failures: ${failures.mkString(",")}")
           BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
+
         case (_, failures) =>
+          println(s"Case 4: Other case encountered. Failures: ${failures.mkString(",")}")
           BadRequest(Json.toJson(FailureResponse(failures)))
       }
     }
