@@ -20,6 +20,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.smartstub.*
 import uk.gov.hmrc.softdrinksindustrylevystub.models.*
 import org.scalacheck.Gen
+import uk.gov.hmrc.softdrinksindustrylevystub.models.RosmOrganisationType.*
 
 object RosmGenerator {
 
@@ -57,32 +58,45 @@ object RosmGenerator {
   private def genRosmResponseContactDetails: Gen[RosmResponseContactDetails] =
     for {
       primaryPhoneNumber   <- Gen.ukPhoneNumber.almostAlways
-      secondaryPhoneNumber <- Gen.ukPhoneNumber.sometimes
+      secondaryPhoneNumber <- Gen.ukPhoneNumber
       faxNumber            <- Gen.ukPhoneNumber.rarely
       emailAddress         <- genEmail.almostAlways
     } yield RosmResponseContactDetails(
       primaryPhoneNumber,
-      secondaryPhoneNumber,
+      Some(secondaryPhoneNumber),
       faxNumber,
       emailAddress
     )
 
-  private def shouldGenOrg(utr: String): OrganisationResponse = {
-    import RosmOrganisationType._
-    OrganisationResponse(
-      Gen.alphaStr.seeded(utr).get, // TODO use company when there's a new release of smartstub
-      Gen.boolean.seeded(utr).get,
-      Gen.oneOf(CorporateBody, LLP, UnincorporatedBody, Unknown).seeded(utr).get
-    )
+  private def deterministicOrg(utr: String): OrganisationResponse = {
+    val hash = utr.hashCode.abs
+    val name = s"Org-${hash.toHexString}"
+    val isGroup = hash % 2 == 0
+    val orgType = (hash % 4) match {
+      case 0 => LLP
+      case 1 => CorporateBody
+      case 2 => UnincorporatedBody
+      case _ => Unknown
+    }
+    OrganisationResponse(name, isGroup, orgType)
   }
 
-  private def genIndividual(utr: String): Gen[Individual] =
-    Individual(
-      Gen.forename().seeded(utr).get,
-      Gen.forename().rarely.seeded(utr).get,
-      Gen.surname.seeded(utr).get,
-      Gen.date.seeded(utr)
-    )
+  private def shouldGenOrg(utr: String): Gen[OrganisationResponse] =
+    Gen.const(deterministicOrg(utr))
+
+  private def genIndividual(isAnIndividual: Boolean, utr: String): Gen[Option[Individual]] =
+    if (isAnIndividual) {
+      Some(
+        Individual(
+          Gen.forename().seeded(utr).get,
+          Gen.forename().rarely.seeded(utr).get,
+          Gen.surname.seeded(utr).get,
+          Gen.date.seeded(utr)
+        )
+      )
+    } else {
+      Gen.const(None)
+    }
 
   private def shouldGenAgentRef(isAnAgent: Boolean, utr: String): Option[String] =
     if (isAnAgent) Gen.alphaNumStr.seeded(utr) else None
@@ -94,8 +108,8 @@ object RosmGenerator {
       isEditable <- Gen.boolean
       isAnAgent = rosmRequest.isAnAgent
       isAnIndividual <- Gen.const(rosmRequest.individual.isDefined)
-      individual     <- genIndividual(utr).sometimes
-      organisation   <- Gen.const(shouldGenOrg(utr)).sometimes
+      individual     <- genIndividual(rosmRequest.individual.isDefined, utr)
+      organisation   <- shouldGenOrg(utr)
       address        <- genRosmResponseAddress
       contactDetails <- genRosmResponseContactDetails
     } yield RosmRegisterResponse(
@@ -105,7 +119,7 @@ object RosmGenerator {
       isAnAgent,
       isAnIndividual,
       individual,
-      organisation,
+      Some(organisation),
       address,
       contactDetails
     )
