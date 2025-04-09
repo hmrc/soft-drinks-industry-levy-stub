@@ -42,8 +42,6 @@ object Store {
     def generate(pred: Subscription => Boolean) =
       genSubscription.retryUntil(pred).seeded(sdil)
 
-    println(s"[store] genSubscription: $generate")
-
     val seeded = (sdil.init.last, sdil.last) match {
       case (_, '0')   => None
       case ('1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
