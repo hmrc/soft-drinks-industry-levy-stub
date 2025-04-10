@@ -68,9 +68,22 @@ object RosmGenerator {
       emailAddress
     )
 
+  import java.util.Random
+
+  def deterministicAlphaStr(utr: String, desiredLength: Int = 24): String = {
+    // Use a stable seed derived from the UTR
+    val seed = utr.hashCode
+    val rnd = new Random(seed)
+    val sb = new StringBuilder
+    val chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    for (_ <- 1 to desiredLength)
+      sb.append(chars.charAt(rnd.nextInt(chars.length)))
+    sb.toString()
+  }
+
   private def deterministicOrg(utr: String): OrganisationResponse = {
     val hash = utr.hashCode.abs
-    val name = s"Org-${hash.toHexString}"
+    val name = deterministicAlphaStr(utr)
     val isGroup = hash % 2 == 0
     val orgType = (hash % 4) match {
       case 0 => LLP
