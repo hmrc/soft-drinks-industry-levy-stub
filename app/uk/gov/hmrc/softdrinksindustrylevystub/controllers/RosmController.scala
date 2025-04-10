@@ -32,9 +32,7 @@ class RosmController @Inject() (rosmService: RosmService, cc: ControllerComponen
   def register(utr: String): Action[JsValue] = extraActions.AuthAndEnvAction.async(parse.json) { implicit request =>
     withJsonBody[RosmRegisterRequest](rosmRequest =>
       if (rosmRequest.regime.matches("ZSDL")) {
-        val maybeData = rosmService.handleRegisterRequest(rosmRequest, utr)
-        println(s"[DEBUG] handleRegisterRequest returned: $maybeData")
-        maybeData match {
+        rosmService.handleRegisterRequest(rosmRequest, utr) match {
           case Some(data) => Future successful Ok(Json.toJson(data))
           case _ =>
             Future successful NotFound(
