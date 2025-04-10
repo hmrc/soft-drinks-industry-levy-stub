@@ -62,7 +62,6 @@ class ReturnController @Inject() (
   }
 
   def resetReturns: Action[AnyContent] = Action {
-    println("✅ resetReturns called")
     desSubmissionService.resetReturns()
     Ok
   }
