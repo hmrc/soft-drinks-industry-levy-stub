@@ -36,7 +36,7 @@ object RosmGenerator {
       line3       <- addressLine.almostAlways
       line4       <- addressLine.rarely
       countryCode <- Gen.const("GB")
-      postcode    <- Gen.postcode
+      postcode    <- Gen.const("DD61 1XX")
     } yield RosmResponseAddress(line1, line2, line3, line4, countryCode, postcode)
 
   private def genEmail =
