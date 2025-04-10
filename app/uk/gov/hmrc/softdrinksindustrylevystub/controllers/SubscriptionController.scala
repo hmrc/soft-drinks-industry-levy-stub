@@ -66,6 +66,7 @@ class SubscriptionController @Inject() (
 
         case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
           println(s"Case 2: Payload is not valid. Failures: ${failures.mkString(",")}")
+          println(s"Parsed payload: $payload")
           BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
 
         case (Success(JsError(_)) | Failure(_), failures) =>
