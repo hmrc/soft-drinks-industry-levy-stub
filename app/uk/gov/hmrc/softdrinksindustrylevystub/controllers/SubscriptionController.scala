@@ -44,26 +44,20 @@ class SubscriptionController @Inject() (
 
   def createSubscription(idType: String, idNumber: String): Action[JsValue] =
     extraActions.AuthAndEnvAction(parse.json) { implicit request: Request[JsValue] =>
-      val payloadValidation = request.body.validate[CreateSubscriptionRequest]
-      val paramsFailures = Validation.checkParams(idType, idNumber)
-
-      (Try(payloadValidation), paramsFailures) match {
+      (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
           Ok(
             Json.toJson(
-              desSubmissionService.createSubscriptionResponse(
-                idNumber,
-                request.body.as[Subscription](CreateFormat.subscriptionReads)
-              )
+              desSubmissionService
+                .createSubscriptionResponse(idNumber, request.body.as[Subscription](CreateFormat.subscriptionReads))
             )
-          ).withHeaders(("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get))
-
+          ).withHeaders(
+            ("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get)
+          )
         case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
           BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
-
         case (Success(JsError(_)) | Failure(_), failures) =>
           BadRequest(Json.toJson(FailureResponse(failures :+ Validation.payloadFailure)))
-
         case (_, failures) =>
           BadRequest(Json.toJson(FailureResponse(failures)))
       }
