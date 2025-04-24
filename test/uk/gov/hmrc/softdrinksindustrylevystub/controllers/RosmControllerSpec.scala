@@ -18,7 +18,6 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
@@ -27,8 +26,10 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.RosmService
 import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
+import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.Mockito.when
 
-class RosmControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
+class RosmControllerSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach {
 
   val mockRosmService: RosmService = mock[RosmService]
   val cc = stubControllerComponents()

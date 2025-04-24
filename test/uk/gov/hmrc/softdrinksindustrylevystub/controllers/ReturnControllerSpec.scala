@@ -16,21 +16,24 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.CreateFormat.subscriptionReads
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{Return, ReturnFailureResponse, ReturnSuccessResponse, returnSuccessResponseFormat}
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import play.api.test.Helpers.stubControllerComponents
 import scala.concurrent.ExecutionContext.Implicits.global
+import org.scalatestplus.mockito.MockitoSugar.mock
+import uk.gov.hmrc.softdrinksindustrylevystub.models.returnFailureResponseFormat
+import uk.gov.hmrc.softdrinksindustrylevystub.models.returnFormat
 
-class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
+class ReturnControllerSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach {
 
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
   val cc = stubControllerComponents()
