@@ -11,7 +11,7 @@ object AppDependencies {
     "uk.gov.hmrc"            %% s"domain$playVersion"            % "10.0.0",
     "uk.gov.hmrc"            %% s"bootstrap-backend$playVersion" % bootstrapVersion,
     "org.scala-lang.modules" %% "scala-parallel-collections"    % "1.2.0",
-    "uk.gov.hmrc" %% "stub-data-generator" % "1.4.1",
+    "uk.gov.hmrc" %% "stub-data-generator" % "1.5.0"
   )
 
   val test: Seq[ModuleID] = Seq(
