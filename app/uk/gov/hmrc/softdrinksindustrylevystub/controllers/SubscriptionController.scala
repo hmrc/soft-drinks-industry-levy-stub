@@ -65,7 +65,6 @@ class SubscriptionController @Inject() (
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Action[AnyContent] =
     extraActions.AuthAndEnvAction.async {
-
       val subscription: Option[Subscription] = {
         idType match {
           case "sdil" => idNumber.some
@@ -86,7 +85,9 @@ class SubscriptionController @Inject() (
     }
 
   def reset: Action[AnyContent] = Action {
+    println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
     desSubmissionService.resetSubscriptions()
+    desSubmissionService.resetReturns()
     Store.clear()
     Ok
   }

@@ -17,12 +17,12 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json._
-import play.api.mvc._
+import play.api.libs.json.*
+import play.api.mvc.*
 import play.api.Logger
-import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.services._
-import sdil.models.des.FinancialTransaction._
+import uk.gov.hmrc.smartstub.*
+import uk.gov.hmrc.softdrinksindustrylevystub.services.*
+import sdil.models.des.FinancialTransaction.*
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton
@@ -31,7 +31,7 @@ class FinancialDataController @Inject() (cc: ControllerComponents) extends Backe
   val logger = Logger("FinancialDataController")
   val canned = CannedFinancialData.canned
 
-  given Enumerable[String] = SdilNumberTransformer.sdilRefEnum
+  implicit val sdilEnum: Enumerable[String] = SdilNumberTransformer.sdilRefEnum
 
   def test(
     sdilRef: String,
@@ -43,8 +43,8 @@ class FinancialDataController @Inject() (cc: ControllerComponents) extends Backe
     logger.info(
       s"Query parameters onlyOpenItems=$onlyOpenItems, includeLocks=$includeLocks, calculateAccruedInterest=$calculateAccruedInterest, customerPaymentInformation= $customerPaymentInformation"
     )
-    val numericSdilRef = sdilRef.replaceAll("[^0-9]", "")
-    val id = numericSdilRef.toLong % canned.size
+
+    val id = summon[Enumerable[String]].asLong(sdilRef) % canned.size
 
     canned(id.toInt) match {
       case (file, Left(e)) => throw new IllegalStateException(s"unable to parse $file", e)

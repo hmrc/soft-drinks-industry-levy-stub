@@ -20,8 +20,8 @@ import javax.inject.Inject
 import play.api.libs.json.{JsSuccess, JsValue, Json}
 import play.api.mvc.{Action, AnyContent, ControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.smartstub.*
+import uk.gov.hmrc.softdrinksindustrylevystub.models.*
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 import uk.gov.hmrc.softdrinksindustrylevystub.services.{DesSubmissionService, SdilNumberTransformer}
 
@@ -32,6 +32,7 @@ class ReturnController @Inject() (
 ) extends BackendController(cc) {
 
   def createReturn(sdilRef: String): Action[JsValue] = extraActions.AuthAndEnvAction(parse.json) {
+    println("Current returnStore keys: " + desSubmissionService.currentReturnKeys)
     implicit request: Request[JsValue] =>
       request.body.validate[Return] match {
         case JsSuccess(_, _) if !sdilRef.matches(ReturnValidation.sdilRefPattern) =>

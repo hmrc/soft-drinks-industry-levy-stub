@@ -16,15 +16,26 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
-import uk.gov.hmrc.softdrinksindustrylevystub._
+import uk.gov.hmrc.smartstub.*
+import uk.gov.hmrc.softdrinksindustrylevystub.models.*
+import uk.gov.hmrc.softdrinksindustrylevystub.*
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
+import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
+import uk.gov.hmrc.smartstub.ToLong
+
+import javax.inject.{Inject, Singleton}
+
 import scala.collection.mutable
 
-class DesSubmissionService {
+@Singleton
+class DesSubmissionService @Inject() () {
 
   private lazy val returnStore: mutable.Map[String, Return] = mutable.Map.empty
+  given ToLong[String] = sdilRefEnum
+
+  extension [A](a: A)(using tl: ToLong[A])
+    def asLong: Long =
+      tl.asLong(a)
 
   def createSubscriptionResponse(idNumber: String, data: Subscription): CreateSubscriptionResponse = {
     import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.tolerantUtr
@@ -43,21 +54,28 @@ class DesSubmissionService {
     } yield subscription.copy(utr = utr)
 
   def createReturnResponse(payload: Return, sdilRef: String): ReturnSuccessResponse = {
-
-    import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.sdilRefEnum
-    implicit val sdilRefToLong: Enumerable[String] = sdilRefEnum
     returnStore(sdilRef ++ payload.periodKey) = payload
-    ReturnGenerator.genCreateReturnResponse.seeded(sdilRef).get
+    val seed: Long = sdilRef.asLong
+
+    ReturnGenerator.genCreateReturnResponse
+      .seeded(sdilRef)
+      .get
   }
 
   def checkForExistingReturn(sdilRefAndPeriodKey: String): Boolean =
     returnStore.contains(sdilRefAndPeriodKey)
 
   // TODO smart stub should override `clear()` to only clear the state changes
-  def resetSubscriptions(): Unit =
-    SubscriptionGenerator.store.state.clear()
+  def resetSubscriptions(): Unit = {
+    println("wwwwwwww")
+    SubscriptionGenerator.store.clear()
+  }
 
-  def resetReturns(): Unit =
+  def resetReturns(): Unit = {
+    println("yyyyyyyyyyyy")
     returnStore.clear()
+  }
+
+  def currentReturnKeys = returnStore.keys.toList
 
 }

@@ -17,16 +17,47 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}
-import org.scalacheck._
-import uk.gov.hmrc.smartstub._
+import org.scalacheck.*
+import uk.gov.hmrc.smartstub.*
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
-import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.ActivityType._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.ActivityType.*
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.*
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse, maxL}
+
+import scala.collection.concurrent.TrieMap
+import scala.collection.mutable
 
 object SubscriptionGenerator {
 
-  lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription.rarely.asMutable[String]
+  /** Compute-once cache: on first lookup, runs f(k) and stores it. */
+  private def seededCache[K, V](f: K => V): mutable.Map[K, V] =
+    new mutable.AbstractMap[K, V] with mutable.Map[K, V] {
+      private val underlying = TrieMap.empty[K, V]
+
+      override def apply(key: K): V =
+        underlying.getOrElseUpdate(key, f(key))
+
+      override def get(key: K): Option[V] =
+        underlying.get(key)
+
+      override def iterator: Iterator[(K, V)] =
+        underlying.iterator
+
+      override def addOne(kv: (K, V)): this.type = {
+        underlying.put(kv._1, kv._2)
+        this
+      }
+
+      override def subtractOne(key: K): this.type = {
+        underlying.remove(key)
+        this
+      }
+    }
+
+  lazy val store: mutable.Map[String, Option[Subscription]] =
+    seededCache { sdilRef =>
+      genSubscription.rarely.seeded(sdilRef).flatten
+    }
 
   def genSubscription: Gen[Subscription] =
     for {
@@ -62,6 +93,9 @@ object SubscriptionGenerator {
       warehouseSites,
       contact
     )
+
+  val maybeSub = SubscriptionGenerator.genSubscription.sample
+  println("CmaybeSubbbbbb " + maybeSub)
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] =
     for {
