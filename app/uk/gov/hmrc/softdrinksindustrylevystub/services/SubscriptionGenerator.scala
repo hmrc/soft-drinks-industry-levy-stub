@@ -17,11 +17,12 @@
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}
-import org.scalacheck._
-import uk.gov.hmrc.smartstub._
+import org.scalacheck.*
+import uk.gov.hmrc.smartstub.*
+import uk.gov.hmrc.softdrinksindustrylevystub.Store.{sdilToUtr, utrToSdil}
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
-import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.ActivityType._
-import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.ActivityType.*
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.*
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse, maxL}
 
 object SubscriptionGenerator {
@@ -34,7 +35,7 @@ object SubscriptionGenerator {
       orgName       <- orgNameGen
       orgType       <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
       address       <- addressGen
-      activity      <- internalActivityGen
+      activity      <- internalActivityGenForRef(utr)
       liabilityDate <- Gen.date(LocalDate.now.minusYears(1), LocalDate.now().minusMonths(6))
       productionSites <- if (activity.isLarge || activity.isContractPacker)
                            Gen
@@ -69,16 +70,145 @@ object SubscriptionGenerator {
       formBundleNumber <- pattern"999999999999".gen
     } yield CreateSubscriptionResponse(processingDate, formBundleNumber)
 
-  private lazy val internalActivityGen: Gen[Activity] = for {
-    produced  <- activityGen(ProducedOwnBrand).sometimes
-    imported  <- activityGen(Imported).sometimes
-    copacking <- activityGen(CopackerAll).sometimes
-    copacked  <- activityGen(Copackee).sometimes
-    isLarge   <- Gen.boolean
-  } yield InternalActivity(
-    Seq(produced, imported, copacking, copacked).flatten.toMap,
-    isLarge
+//  private lazy val internalActivityGen: Gen[Activity] = for {
+//    produced  <- activityGen(ProducedOwnBrand).sometimes
+//    imported  <- activityGen(Imported).sometimes
+//    copacking <- activityGen(CopackerAll).sometimes
+//    copacked  <- activityGen(Copackee).sometimes
+//    isLarge   <- Gen.boolean
+//  } yield InternalActivity(
+//    Seq(produced, imported, copacking, copacked).flatten.toMap,
+//    isLarge
+//  )
+
+//  def internalActivityGenForRef(ref: String): Gen[InternalActivity] = {
+//    ref match {
+//      case "0000001611" =>
+//        Gen.const(
+//          InternalActivity(
+//            Map(
+//              ProducedOwnBrand -> (8592932967685L, 393857365208L),
+//              CopackerAll      -> (6911728073310L, 9693701140898L),
+//              Copackee         -> (7732342042367L, 1761987975555L)
+//            ),
+//            isLarge = false
+//          )
+//        )
+//      case "0000000437" =>
+//        Gen.const(
+//          InternalActivity(
+//            Map(
+//              ProducedOwnBrand -> (2435810187383L, 4849497916977L),
+//              Imported         -> (2145648045812L, 6153117498101L),
+//              CopackerAll      -> (4066616847404L, 2728740244143L)
+//            ),
+//            isLarge = true
+//          )
+//        )
+//      case "0000000069" =>
+//        Gen.const(
+//          InternalActivity(
+//            Map(
+//              Imported -> (6460796745282L, 6336758185953L),
+//              Copackee -> (702818577689L, 5022677436353L)
+//            ),
+//            isLarge = false
+//          )
+//        )
+//      case _ =>
+//        for {
+//          produced  <- activityGen(ProducedOwnBrand).sometimes
+//          imported  <- activityGen(Imported).sometimes
+//          copacking <- activityGen(CopackerAll).sometimes
+//          copacked  <- activityGen(Copackee).sometimes
+//          isLarge   <- Gen.boolean
+//        } yield InternalActivity(
+//          Seq(produced, imported, copacking, copacked).flatten.toMap,
+//          isLarge
+//        )
+//    }
+//  }
+
+  val activity1 = InternalActivity(
+    Map(
+      ProducedOwnBrand -> (8592932967685L, 393857365208L),
+      CopackerAll      -> (6911728073310L, 9693701140898L),
+      Copackee         -> (7732342042367L, 1761987975555L)
+    ),
+    isLarge = false
   )
+  println(s"Loaded activity for 0000001611: $activity1")
+
+  val activity2 = InternalActivity(
+    Map(
+      ProducedOwnBrand -> (2435810187383L, 4849497916977L),
+      Imported         -> (2145648045812L, 6153117498101L),
+      CopackerAll      -> (4066616847404L, 2728740244143L)
+    ),
+    isLarge = true
+  )
+  println(s"Loaded activity for 0000000437: $activity2")
+
+  val activity3 = InternalActivity(
+    Map(
+      Imported -> (6460796745282L, 6336758185953L),
+      Copackee -> (702818577689L, 5022677436353L)
+    ),
+    isLarge = false
+  )
+  println(s"Loaded activity for 0000000069: $activity3")
+
+  val testDataOverrides: Map[String, InternalActivity] = Map(
+    "5168983848" -> activity1,
+    "2701345062" -> activity2,
+    "4035769414" -> activity3
+  )
+
+  def internalActivityGenForRef(ref: String): Gen[InternalActivity] =
+    Gen
+      .delay {
+        println(s"[internalActivityGenForRef] Using test override for UTR: $ref")
+        testDataOverrides.get(ref) match {
+          case Some(activity) =>
+            Gen.const(activity)
+          case None =>
+            println(s"[internalActivityGenForRef] No override found for UTR: $ref, generating random activity")
+            for {
+              produced  <- activityGen(ProducedOwnBrand).sometimes
+              imported  <- activityGen(Imported).sometimes
+              copacking <- activityGen(CopackerAll).sometimes
+              copacked  <- activityGen(Copackee).sometimes
+              isLarge   <- Gen.boolean
+            } yield InternalActivity(
+              Seq(produced, imported, copacking, copacked).flatten.toMap,
+              isLarge
+            )
+        }
+      }
+      .flatMap(identity) // Flatten Gen[Gen[InternalActivity]] to Gen[InternalActivity]
+
+  //  def internalActivityGenForRef(ref: String): Gen[InternalActivity] =
+//    Gen.const(
+//      InternalActivity(
+//        Map(
+//          ProducedOwnBrand -> (2435810187383L, 4849497916977L),
+//          Imported         -> (2145648045812L, 6153117498101L),
+//          CopackerAll      -> (4066616847404L, 2728740244143L)
+//        ),
+//        isLarge = true
+//      )
+//    )
+
+//  private lazy val internalActivityGen: Gen[Activity] = for {
+//    produced  <- activityGen(ProducedOwnBrand).sometimes
+//    imported  <- activityGen(Imported).sometimes
+//    copacking <- activityGen(CopackerAll).sometimes
+//    copacked  <- activityGen(Copackee).sometimes
+//    isLarge   <- Gen.boolean
+//  } yield InternalActivity(
+//    Seq(produced, imported, copacking, copacked).flatten.toMap,
+//    isLarge
+//  )
 
   private def activityGen(at: ActivityType.Value): Gen[(ActivityType.Value, LitreBands)] =
     for {
