@@ -16,23 +16,25 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
-import javax.inject.{Inject, Singleton}
+import cats.implicits._
+import cats.instances.option._
+import cats.syntax.flatMap._
+import cats.syntax.option._
+import des._
 import play.api.libs.json._
 import play.api.mvc._
-
-import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.smartstub._
+import uk.gov.hmrc.softdrinksindustrylevystub.Store
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
 import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
-import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
-import uk.gov.hmrc.softdrinksindustrylevystub.Store
+import uk.gov.hmrc.softdrinksindustrylevystub.services._
 
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
-import des._
-import cats.implicits._
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton
 class SubscriptionController @Inject() (
@@ -66,13 +68,29 @@ class SubscriptionController @Inject() (
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Action[AnyContent] =
     extraActions.AuthAndEnvAction.async {
 
+//      val subscription: Option[Subscription] = {
+//        idType match {
+//          case "sdil" => idNumber.some
+//          case "utr"  => Store.utrToSdil(idNumber).lastOption
+//          case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
+//        }
+//      } >>= Store.fromSdilRef
+
       val subscription: Option[Subscription] = {
-        idType match {
-          case "sdil" => idNumber.some
+        val sdilRefOpt = idType match {
+          case "sdil" => Some(idNumber)
           case "utr"  => Store.utrToSdil(idNumber).lastOption
           case weird  => throw new IllegalArgumentException(s"Weird id type: $weird")
         }
-      } >>= Store.fromSdilRef
+
+        println(s"idType: $idType, idNumber: $idNumber")
+        println(s"Subscription ref: $sdilRefOpt")
+
+        sdilRefOpt.flatMap(Store.fromSdilRef)
+
+      }
+
+      println(s"Final subscription: $subscription")
 
       Future
         .successful(
