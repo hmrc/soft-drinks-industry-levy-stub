@@ -34,7 +34,7 @@ object SubscriptionGenerator {
       orgName       <- orgNameGen
       orgType       <- Gen.oneOf("1", "2", "3", "4", "5").almostAlways
       address       <- addressGen
-      activity      <- internalActivityGen
+      activity      <- internalActivityGenForUTR(utr)
       liabilityDate <- Gen.date(LocalDate.now.minusYears(1), LocalDate.now().minusMonths(6))
       productionSites <- if (activity.isLarge || activity.isContractPacker)
                            Gen
@@ -69,16 +69,54 @@ object SubscriptionGenerator {
       formBundleNumber <- pattern"999999999999".gen
     } yield CreateSubscriptionResponse(processingDate, formBundleNumber)
 
-  private lazy val internalActivityGen: Gen[Activity] = for {
-    produced  <- activityGen(ProducedOwnBrand).sometimes
-    imported  <- activityGen(Imported).sometimes
-    copacking <- activityGen(CopackerAll).sometimes
-    copacked  <- activityGen(Copackee).sometimes
-    isLarge   <- Gen.boolean
-  } yield InternalActivity(
-    Seq(produced, imported, copacking, copacked).flatten.toMap,
-    isLarge
-  )
+  private def createActivity(data: (ActivityType.Value, (Long, Long))*)(isLarge: Boolean): InternalActivity =
+    InternalActivity(data.toMap, isLarge)
+
+  private val internalActivityValue: Map[String, InternalActivity] = {
+    val entries = Seq(
+      "5168983848" -> createActivity( // UTR for 0000001611
+        ProducedOwnBrand -> (8592932967685L, 393857365208L),
+        CopackerAll      -> (6911728073310L, 9693701140898L),
+        Copackee         -> (7732342042367L, 1761987975555L)
+      )(isLarge = false),
+      "2701345062" -> createActivity( // UTR for 0000000437
+        ProducedOwnBrand -> (2435810187383L, 4849497916977L),
+        Imported         -> (2145648045812L, 6153117498101L),
+        CopackerAll      -> (4066616847404L, 2728740244143L)
+      )(isLarge = true),
+      "4035769414" -> createActivity( // UTR for 0000000069
+        Imported -> (6460796745282L, 6336758185953L),
+        Copackee -> (702818577689L, 5022677436353L)
+      )(isLarge = false),
+      "7296987670" -> createActivity( // UTR for 000000116
+        CopackerAll -> (3893666227421L, 6092530156211L),
+        Copackee    -> (1547794270596L, 4764940090984L)
+      )(isLarge = false),
+      "5361150980" -> createActivity( // UTR for 0000000336
+        CopackerAll -> (7454210094255L, 3729851344296L),
+        Copackee    -> (1484349966325L, 7202971074099L)
+      )(isLarge = false)
+    )
+    entries.toMap
+  }
+
+  def internalActivityGenForUTR(ref: String): Gen[InternalActivity] =
+    internalActivityValue.get(ref) match {
+      case Some(activity) =>
+        Gen.const(activity)
+
+      case None =>
+        for {
+          produced  <- activityGen(ProducedOwnBrand).sometimes
+          imported  <- activityGen(Imported).sometimes
+          copacking <- activityGen(CopackerAll).sometimes
+          copacked  <- activityGen(Copackee).sometimes
+          isLarge   <- Gen.boolean
+        } yield InternalActivity(
+          Seq(produced, imported, copacking, copacked).flatten.toMap,
+          isLarge
+        )
+    }
 
   private def activityGen(at: ActivityType.Value): Gen[(ActivityType.Value, LitreBands)] =
     for {
