@@ -17,17 +17,23 @@
 import javax.inject.{Inject, Singleton}
 import play.api.http.HttpErrorHandler
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
 import play.api.{Configuration, Environment, Logging}
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{FailureMessage, FailureResponse}
+import play.api.libs.json.{Format, Json, Writes}
+import uk.gov.hmrc.softdrinksindustrylevystub.models.JsonFormats._
 
 import scala.concurrent.Future
 
 @Singleton
 class ErrorHandler @Inject() (implicit val config: Configuration, val env: Environment, val messagesApi: MessagesApi)
     extends HttpErrorHandler with I18nSupport with Logging {
+
+  object JsonFormats {
+    implicit val failureMessageFormat: Format[FailureMessage] = Json.format[FailureMessage]
+    implicit val failureResponseFormat: Format[FailureResponse] = Json.format[FailureResponse]
+  }
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
     Future.successful(

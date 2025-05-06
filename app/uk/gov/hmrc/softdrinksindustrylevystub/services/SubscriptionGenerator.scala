@@ -82,8 +82,8 @@ object SubscriptionGenerator {
 
   private def activityGen(at: ActivityType.Value): Gen[(ActivityType.Value, LitreBands)] =
     for {
-      l <- Gen.choose(0, maxL)
-      h <- Gen.choose(0, maxL)
+      l <- Gen.choose(0: Long, maxL)
+      h <- Gen.choose(0: Long, maxL)
     } yield at -> (l -> h)
 
   private lazy val contactGen: Gen[Contact] = for {
