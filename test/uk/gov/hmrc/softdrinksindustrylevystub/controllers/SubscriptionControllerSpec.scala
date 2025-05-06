@@ -19,22 +19,19 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 import java.time.{LocalDate, LocalDateTime, OffsetDateTime, ZoneOffset}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
+import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers.*
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.softdrinksindustrylevystub.models.CreateSubscriptionResponse
-import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.*
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
-import uk.gov.hmrc.softdrinksindustrylevystub.models.createSubscriptionResponseFormat
-
 import scala.concurrent.ExecutionContext.Implicits.global
-import org.scalatestplus.mockito.MockitoSugar.mock
-import org.mockito.Mockito.{reset, times, verify, when}
 
-class SubscriptionControllerSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach {
+class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
   val cc = stubControllerComponents()
   val authorisedFilterAction = new AuthorisedFilterAction(cc)

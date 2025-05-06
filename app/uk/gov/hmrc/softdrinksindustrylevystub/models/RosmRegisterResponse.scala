@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.models
 
-import play.api.libs.json.{Format, Json}
-
 case class RosmRegisterResponse(
   safeId: String,
   agentReferenceNumber: Option[String],
@@ -29,10 +27,6 @@ case class RosmRegisterResponse(
   address: RosmResponseAddress,
   contactDetails: RosmResponseContactDetails
 )
-
-object RosmRegisterResponse {
-  implicit val format: Format[RosmRegisterResponse] = Json.format[RosmRegisterResponse]
-}
 
 case class OrganisationResponse(
   organisationName: String,
