@@ -42,21 +42,19 @@ object Store {
     def generate(pred: Subscription => Boolean) =
       genSubscription.retryUntil(pred).seeded(sdil)
 
-    val seeded = (sdil.init.last, sdil.last) match {
-      case (_, '0')   => None
-      case ('1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
-      case (_, '1')   => generate(_.activity.isSmallProducer)
-      case ('2', '2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
-      case ('3', '2') => generate(_.activity.isLargeNoImports).map(_.copy(warehouseSites = Nil))
-      case (_, '2')   => generate(_.activity.isLarge)
-      case ('3', '3') => generate(_.activity.isLargeImportCopacker)
-      case (_, '3')   => generate(_.activity.isImporter)
-      case (_, '4')   => generate(_.activity.isContractPacker)
-      case (_, '5')   => generate(_.activity.isVoluntaryRegistration)
-      case (_, '6') =>
-        generate(_ => true)
+    val seeded = (sdil.init.init.last, sdil.init.last, sdil.last) match {
+      case (_, _, '0')   => None
+      case (_, '1', '1') => generate(_.activity.isSmallProducerContractPacker)
+      case ('1', '1', '6') =>
+        generate(_.activity.isVoluntaryRegistration)
+      case (_, '3', '6') =>
+        generate(_.activity.isVoluntaryRegistration)
+      case (_, _, '6') =>
+        generate(_.activity.isSmallContractPacker)
           .map(_.copy(deregDate = Some(LocalDate.now().minusMonths(3)), liabilityDate = LocalDate.now().minusMonths(3)))
-      case _ => genSubscription.seeded(sdil)
+      case (_, _, '7') => generate(_.activity.isLargeImportCopacker)
+      case (_, _, '9') => generate(_.activity.isSmallProducer)
+      case _           => genSubscription.seeded(sdil)
     }
 
     seeded.map {
