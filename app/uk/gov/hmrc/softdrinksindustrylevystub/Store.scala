@@ -42,34 +42,22 @@ object Store {
     def generate(pred: Subscription => Boolean) =
       genSubscription.retryUntil(pred).seeded(sdil)
 
-    val seeded = (sdil.init.init.last, sdil.init.last, sdil.last) match {
-      case (_, _, '0')   => None
-      case (_, '1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
-      case (_, '2', '1') => generate(_.activity.isSmallNoImports).map(_.copy(warehouseSites = Nil))
-      case (_, '3', '1') => generate(_.activity.isSmallImportsNoCopacker).map(_.copy(productionSites = Nil))
-      case (_, _, '1')   => generate(_.activity.isSmallProducer)
-      case (_, '2', '2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
-      case (_, '3', '2') => generate(_.activity.isLargeNoImports).map(_.copy(warehouseSites = Nil))
-      case (_, _, '2')   => generate(_.activity.isLarge)
-      case (_, '3', '3') => generate(_.activity.isLargeImportCopacker)
-      case (_, _, '3')   => generate(_.activity.isImporter)
-      case (_, _, '4')   => generate(_.activity.isContractPacker)
-      case (_, _, '5')   => generate(_.activity.isVoluntaryRegistration)
-      case (_, _, '6') =>
+    val seeded = (sdil.init.last, sdil.last) match {
+      case (_, '0')   => None
+      case ('1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
+      case ('2', '1') => generate(_.activity.isSmallNoImports).map(_.copy(warehouseSites = Nil))
+      case ('3', '1') => generate(_.activity.isSmallImportsNoCopacker).map(_.copy(productionSites = Nil))
+      case (_, '1')   => generate(_.activity.isSmallProducer)
+      case ('2', '2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
+      case ('3', '2') => generate(_.activity.isLargeNoImports).map(_.copy(warehouseSites = Nil))
+      case (_, '2')   => generate(_.activity.isLarge)
+      case ('3', '3') => generate(_.activity.isLargeImportCopacker)
+      case (_, '3')   => generate(_.activity.isImporter)
+      case (_, '4')   => generate(_.activity.isContractPacker)
+      case (_, '5')   => generate(_.activity.isVoluntaryRegistration)
+      case (_, '6') =>
         generate(_ => true)
           .map(_.copy(deregDate = Some(LocalDate.now().minusMonths(3)), liabilityDate = LocalDate.now().minusMonths(3)))
-//      case _ => genSubscription.seeded(sdil)
-//      case (_, _, '0')   => None
-//      case (_, '1', '1') => generate(_.activity.isSmallProducerContractPacker)
-//      case ('1', '1', '6') =>
-//        generate(_.activity.isVoluntaryRegistration)
-//      case (_, '3', '6') =>
-//        generate(_.activity.isVoluntaryRegistration)
-//      case (_, _, '6') =>
-//        generate(_.activity.isSmallContractPacker)
-//          .map(_.copy(deregDate = Some(LocalDate.now().minusMonths(3)), liabilityDate = LocalDate.now().minusMonths(3)))
-//      case (_, _, '7') => generate(_.activity.isLargeImportCopacker)
-//      case (_, _, '9') => generate(_.activity.isSmallProducer)
       case _ => genSubscription.seeded(sdil)
     }
 
