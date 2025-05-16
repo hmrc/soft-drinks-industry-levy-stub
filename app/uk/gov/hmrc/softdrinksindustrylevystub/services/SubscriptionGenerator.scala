@@ -26,7 +26,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse
 
 object SubscriptionGenerator {
   
-  lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription.rarely.asMutable[String]
+  lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription(None).rarely.asMutable[String]
 
   def genSubscription(utr: Option[String]): Gen[Subscription] = {
     val genValues: String = utr.map(_.takeRight(5)).getOrElse("00000")
