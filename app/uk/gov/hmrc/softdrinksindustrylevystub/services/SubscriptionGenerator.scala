@@ -25,7 +25,7 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse, maxL}
 
 object SubscriptionGenerator {
-  
+
   lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription(None).rarely.asMutable[String]
 
   def genSubscription(utr: Option[String]): Gen[Subscription] = {
@@ -41,19 +41,18 @@ object SubscriptionGenerator {
       warehouseSites  <- generatorForWarehouses(genValues(4).asDigit / 3)
       contact         <- contactGen
       deregDate       <- generatorForDeregDate(genValues(0).asDigit)
-    } yield {
-      Subscription(
-        utr.getOrElse(generatedUtr),
-        orgName,
-        orgType,
-        address,
-        activity,
-        liabilityDate,
-        productionSites,
-        warehouseSites,
-        contact,
-        deregDate = deregDate)
-    }
+    } yield Subscription(
+      utr.getOrElse(generatedUtr),
+      orgName,
+      orgType,
+      address,
+      activity,
+      liabilityDate,
+      productionSites,
+      warehouseSites,
+      contact,
+      deregDate = deregDate
+    )
   }
 
   def genCreateSubscriptionResponse: Gen[CreateSubscriptionResponse] =
@@ -61,7 +60,7 @@ object SubscriptionGenerator {
       processingDate   <- Gen.const(LocalDateTime.now.atOffset(ZoneOffset.UTC))
       formBundleNumber <- pattern"999999999999".gen
     } yield CreateSubscriptionResponse(processingDate, formBundleNumber)
-  
+
   private lazy val orgNameGen: Gen[String] = for {
     a <- Gen.oneOf(
            "Vivid",
@@ -85,19 +84,16 @@ object SubscriptionGenerator {
     c <- Gen.oneOf("Plc", "Ltd", "Group")
   } yield s"$a $b $c"
 
-  private lazy val addressGen: Gen[Address] = {
+  private lazy val addressGen: Gen[Address] =
     Gen.ukAddress.map { lines =>
       UkAddress(lines.init, lines.last)
     }
-  }
 
   private def activityGen(at: ActivityType.Value): Gen[(ActivityType.Value, LitreBands)] =
     for {
-      l <- Gen.choose(0, maxL)
-      h <- Gen.choose(0, maxL)
-    } yield {
-      at -> (l -> h)
-    }
+      l <- Gen.choose(0: Long, maxL)
+      h <- Gen.choose(0: Long, maxL)
+    } yield at -> (l -> h)
 
   private def generatorForActivity(activity: Int, activityProdType: Int): Gen[Activity] = {
     val isImporter = List(1, 3).contains(activity)
@@ -111,12 +107,10 @@ object SubscriptionGenerator {
       imported  <- if (isImporter) Gen.some(activityGen(Imported)) else Gen.const(None)
       copacking <- if (isCopacker) Gen.some(activityGen(CopackerAll)) else Gen.const(None)
       copacked  <- if (isCopackee) Gen.some(activityGen(Copackee)) else Gen.const(None)
-    } yield {
-      InternalActivity(
-        Seq(produced, imported, copacking, copacked).flatten.toMap,
-        isLarge
-      )
-    }
+    } yield InternalActivity(
+      Seq(produced, imported, copacking, copacked).flatten.toMap,
+      isLarge
+    )
   }
 
   private def generatorForYearsOfLiability(yearsOfLiability: Int): Gen[LocalDate] =
@@ -148,18 +142,14 @@ object SubscriptionGenerator {
     position    <- jobTitleGen
     phoneNumber <- pattern"9999 999999"
     email       <- genEmail
-  } yield {
-    Contact(Some(s"$fname $lname"), Some(position), "0" + phoneNumber, email)
-  }
+  } yield Contact(Some(s"$fname $lname"), Some(position), "0" + phoneNumber, email)
 
   private lazy val genEmail: Gen[String] = for {
     fname  <- Gen.forename()
     lname  <- Gen.surname
     domain <- Gen.oneOf("gmail", "outlook", "yahoo", "mailinator", "example")
     tld    <- Gen.oneOf("com", "co.uk")
-  } yield {
-    s"$fname.$lname@$domain.$tld"
-  }
+  } yield s"$fname.$lname@$domain.$tld"
 
   private lazy val jobTitleGen: Gen[String] = for {
     grade  <- Gen.oneOf(gradeList)

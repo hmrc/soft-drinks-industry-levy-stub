@@ -57,7 +57,9 @@ class StoreSpec extends AnyFlatSpec {
       sdilToUtr(sdil).map { utr =>
         val subscription = Store.fromUtr(utr)
         subscription shouldBe defined
-        subscription.flatMap(_.deregDate).map(_.getYear) shouldBe Some(LocalDate.now().getYear + utr.reverse(4).asDigit - 10)
+        subscription.flatMap(_.deregDate).map(_.getYear) shouldBe Some(
+          LocalDate.now().getYear + utr.reverse(4).asDigit - 10
+        )
       }
     }
   }
