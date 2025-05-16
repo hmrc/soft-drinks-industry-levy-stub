@@ -42,12 +42,10 @@ object SdilNumberTransformer {
 
   def showTable(num: Int): Unit = {
     for {
-      i       <- 1 to num
-      utr     <- tolerantUtr.get(i.toLong)
-      sdilRef <- sdilRefEnum.get(i.toLong)
-    } yield {
-      println(s"| $utr | $sdilRef |")
-    }
+      i <- 1 to num
+      _ <- tolerantUtr.get(i.toLong)
+      _ <- sdilRefEnum.get(i.toLong)
+    } yield ()
     ()
   }
 

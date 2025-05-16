@@ -19,19 +19,22 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 import java.time.{LocalDate, LocalDateTime, OffsetDateTime, ZoneOffset}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.softdrinksindustrylevystub.models.CreateSubscriptionResponse
-import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
+import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.*
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.softdrinksindustrylevystub.models.createSubscriptionResponseFormat
 
-class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
+import scala.concurrent.ExecutionContext.Implicits.global
+import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.Mockito.{reset, times, verify, when}
+
+class SubscriptionControllerSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach {
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
   val cc = stubControllerComponents()
   val authorisedFilterAction = new AuthorisedFilterAction(cc)
@@ -56,13 +59,15 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest" in {
       when(
         mockDesSubmissionService
-          .createSubscriptionResponse(any(), any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
+          .createSubscriptionResponse(any(), any())
+      ).thenReturn(CreateSubscriptionResponse(now, "bar"))
 
       val response = mockSubscriptionController
         .createSubscription(utrIdType, utr)(
           FakeRequest("POST", "/soft-drinks/subscription")
             .withBody(validCreateSubscriptionRequestInput)
-            .withHeaders(envHeader, authHeader))
+            .withHeaders(envHeader, authHeader)
+        )
 
       status(response) mustBe OK
       verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(), any())
@@ -73,29 +78,32 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
 
     "return Status: OK Body: CreateSubscriptionResponse for successful valid CreateSubscriptionRequest " +
       "without all optional data" in {
-      when(
-        mockDesSubmissionService
-          .createSubscriptionResponse(any(), any())).thenReturn(CreateSubscriptionResponse(now, "bar"))
+        when(
+          mockDesSubmissionService
+            .createSubscriptionResponse(any(), any())
+        ).thenReturn(CreateSubscriptionResponse(now, "bar"))
 
-      val response = mockSubscriptionController
-        .createSubscription(utrIdType, utr)(
-          FakeRequest("POST", "/soft-drinks/subscription")
-            .withBody(validCreateSubscriptionRequestInputWithoutOptionals)
-            .withHeaders(envHeader, authHeader))
+        val response = mockSubscriptionController
+          .createSubscription(utrIdType, utr)(
+            FakeRequest("POST", "/soft-drinks/subscription")
+              .withBody(validCreateSubscriptionRequestInputWithoutOptionals)
+              .withHeaders(envHeader, authHeader)
+          )
 
-      status(response) mustBe OK
-      verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(), any())
-      Json
-        .fromJson[CreateSubscriptionResponse](contentAsJson(response))
-        .getOrElse(CreateSubscriptionResponse(now, "foo")) mustBe CreateSubscriptionResponse(now, "bar")
-    }
+        status(response) mustBe OK
+        verify(mockDesSubmissionService, times(1)).createSubscriptionResponse(any(), any())
+        Json
+          .fromJson[CreateSubscriptionResponse](contentAsJson(response))
+          .getOrElse(CreateSubscriptionResponse(now, "foo")) mustBe CreateSubscriptionResponse(now, "bar")
+      }
 
     "return Status: 400 Body: nondescript error message for submission for invalid CreateSubscriptionRequest" in {
       val response = mockSubscriptionController
         .createSubscription(utrIdType, utr)(
           FakeRequest("POST", "/soft-drinks/subscription")
             .withBody(invalidCreationInput)
-            .withHeaders(envHeader, authHeader))
+            .withHeaders(envHeader, authHeader)
+        )
 
       status(response) mustBe BAD_REQUEST
       verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(), any())
@@ -106,7 +114,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         .createSubscription(utrIdType, utr)(
           FakeRequest("POST", "/soft-drinks/subscription")
             .withBody(invalidCreationInput)
-            .withHeaders(envHeader))
+            .withHeaders(envHeader)
+        )
 
       status(response) mustBe UNAUTHORIZED
       verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(), any())
@@ -117,7 +126,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         .createSubscription(utrIdType, utr)(
           FakeRequest("POST", "/soft-drinks/subscription")
             .withBody(invalidCreationInput)
-            .withHeaders(authHeader))
+            .withHeaders(authHeader)
+        )
 
       status(response) mustBe FORBIDDEN
       verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(), any())
@@ -128,7 +138,8 @@ class SubscriptionControllerSpec extends PlaySpec with MockitoSugar with GuiceOn
         .createSubscription(utrIdType, utr)(
           FakeRequest("POST", "/soft-drinks/subscription")
             .withBody(invalidCreationInput)
-            .withHeaders(authHeader, badEnvHeader))
+            .withHeaders(authHeader, badEnvHeader)
+        )
 
       status(response) mustBe FORBIDDEN
       verify(mockDesSubmissionService, times(0)).createSubscriptionResponse(any(), any())

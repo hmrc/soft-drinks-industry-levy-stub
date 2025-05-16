@@ -48,25 +48,24 @@ object Report extends App {
       (utr, record)
     }
 
-    records.map {
-      case (utr, optSub) =>
-        "\"" ++ utr ++ "\"" :: {
-          optSub match {
-            case Some(sub) =>
-              List[String](
-                sub.sdilRef,
-                sub.orgName,
-                postcode(sub.address),
-                sub.activity.isLarge,
-                sub.activity.isImporter,
-                sub.activity.isProducer,
-                sub.activity.isSmallProducer,
-                sub.activity.isContractPacker,
-                sub.activity.isVoluntaryRegistration
-              )
-            case _ => List.empty[String]
-          }
+    records.map { case (utr, optSub) =>
+      "\"" ++ utr ++ "\"" :: {
+        optSub match {
+          case Some(sub) =>
+            List[String](
+              sub.sdilRef,
+              sub.orgName,
+              postcode(sub.address),
+              sub.activity.isLarge,
+              sub.activity.isImporter,
+              sub.activity.isProducer,
+              sub.activity.isSmallProducer,
+              sub.activity.isContractPacker,
+              sub.activity.isVoluntaryRegistration
+            )
+          case _ => List.empty[String]
         }
+      }
     }
   }
 

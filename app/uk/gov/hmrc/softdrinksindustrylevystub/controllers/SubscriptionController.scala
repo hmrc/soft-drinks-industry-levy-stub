@@ -35,10 +35,11 @@ import cats.implicits._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton
-class SubscriptionController @Inject()(
+class SubscriptionController @Inject() (
   desSubmissionService: DesSubmissionService,
   cc: ControllerComponents,
-  extraActions: ExtraActions)(implicit ec: ExecutionContext)
+  extraActions: ExtraActions
+)(implicit ec: ExecutionContext)
     extends BackendController(cc) {
 
   def createSubscription(idType: String, idNumber: String): Action[JsValue] =
@@ -49,7 +50,8 @@ class SubscriptionController @Inject()(
             Json.toJson(
               desSubmissionService
                 .createSubscriptionResponse(idNumber, request.body.as[Subscription](CreateFormat.subscriptionReads))
-            )).withHeaders(
+            )
+          ).withHeaders(
             ("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get)
           )
         case (Success(JsSuccess(payload, _)), failures) if !payload.isValid =>
@@ -73,9 +75,9 @@ class SubscriptionController @Inject()(
       Future
         .successful(
           subscription match {
-            case Some(_) if (idNumber == "0000010901") => TooManyRequests(Json.obj("reason" -> "too many requests"))
-            case Some(data)                            => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
-            case _                                     => NotFound(Json.obj("reason" -> "unknown subscription"))
+            case Some(_) if idNumber == "0000010901" => TooManyRequests(Json.obj("reason" -> "too many requests"))
+            case Some(data)                          => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
+            case _                                   => NotFound(Json.obj("reason" -> "unknown subscription"))
           }
         )
         .desify(idNumber)

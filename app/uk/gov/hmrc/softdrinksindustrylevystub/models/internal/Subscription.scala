@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.models.internal
 
+import play.api.libs.json.{JsBoolean, JsObject, JsString}
+
 import java.time.LocalDate
 
 case class Subscription(
@@ -29,18 +31,39 @@ case class Subscription(
   warehouseSites: Seq[Site],
   contact: Contact,
   sdilRef: String = "",
-  deregDate: Option[LocalDate] = None)
+  deregDate: Option[LocalDate] = None
+)
 
 trait Address {
   def lines: Seq[String]
   def country: String
+
+  def jsLines = lines.zipWithIndex.map { case (v, i) =>
+    s"line${i + 1}" -> JsString(v)
+  }
+
+  def asJson: JsObject
 }
 
 case class UkAddress(lines: Seq[String], postCode: String) extends Address {
   val country = "GB"
+
+  override def asJson: JsObject = JsObject(
+    List(
+      "notUKAddress" -> JsBoolean(false),
+      "postCode"     -> JsString(postCode)
+    ) ++ jsLines
+  )
 }
 
-case class ForeignAddress(lines: Seq[String], country: String) extends Address
+case class ForeignAddress(lines: Seq[String], country: String) extends Address {
+  override def asJson: JsObject = JsObject(
+    List(
+      "notUKAddress" -> JsBoolean(true),
+      "country"      -> JsString(country)
+    ) ++ jsLines
+  )
+}
 
 case class Site(address: Address, ref: Option[String], tradingName: Option[String], closureDate: Option[LocalDate])
 

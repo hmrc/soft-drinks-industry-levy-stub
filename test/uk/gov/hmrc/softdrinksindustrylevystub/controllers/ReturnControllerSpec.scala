@@ -16,21 +16,24 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.CreateFormat.subscriptionReads
 import uk.gov.hmrc.softdrinksindustrylevystub.models.internal.Subscription
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{Return, ReturnFailureResponse, ReturnSuccessResponse, returnSuccessResponseFormat}
 import uk.gov.hmrc.softdrinksindustrylevystub.services.DesSubmissionService
 import play.api.test.Helpers.stubControllerComponents
 import scala.concurrent.ExecutionContext.Implicits.global
+import org.scalatestplus.mockito.MockitoSugar.mock
+import uk.gov.hmrc.softdrinksindustrylevystub.models.returnFailureResponseFormat
+import uk.gov.hmrc.softdrinksindustrylevystub.models.returnFormat
 
-class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPerSuite with BeforeAndAfterEach {
+class ReturnControllerSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach {
 
   val mockDesSubmissionService: DesSubmissionService = mock[DesSubmissionService]
   val cc = stubControllerComponents()
@@ -55,12 +58,14 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
     "return 403 forbidden for no business partner record for given SDIL ref number " in {
       when(
         mockDesSubmissionService
-          .retrieveSubscriptionDetails(sdilIdType, sdilRef)).thenReturn(None)
+          .retrieveSubscriptionDetails(sdilIdType, sdilRef)
+      ).thenReturn(None)
 
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(validReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe FORBIDDEN
 
@@ -77,7 +82,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(invalidSdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(validReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe BAD_REQUEST
       Json
@@ -92,7 +98,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(invalidPeriodKeyReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe BAD_REQUEST
       Json
@@ -107,7 +114,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(validReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe CONFLICT
       Json
@@ -126,7 +134,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(validReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe OK
       Json
@@ -142,7 +151,8 @@ class ReturnControllerSpec extends PlaySpec with MockitoSugar with GuiceOneAppPe
       val response = mockReturnController.createReturn(sdilRef)(
         FakeRequest("POST", "/soft-drinks/return/")
           .withBody(invalidReturnPayload)
-          .withHeaders(envHeader, authHeader))
+          .withHeaders(envHeader, authHeader)
+      )
 
       status(response) mustBe BAD_REQUEST
       Json

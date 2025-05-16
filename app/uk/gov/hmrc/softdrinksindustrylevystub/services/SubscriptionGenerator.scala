@@ -25,8 +25,8 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models.internal._
 import uk.gov.hmrc.softdrinksindustrylevystub.models.{CreateSubscriptionResponse, maxL}
 
 object SubscriptionGenerator {
-
-  lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription(None).rarely.asMutable[String]
+  
+  lazy val store: PersistentGen[String, Option[Subscription]] = genSubscription.rarely.asMutable[String]
 
   def genSubscription(utr: Option[String]): Gen[Subscription] = {
     val genValues: String = utr.map(_.takeRight(5)).getOrElse("00000")
@@ -61,28 +61,29 @@ object SubscriptionGenerator {
       processingDate   <- Gen.const(LocalDateTime.now.atOffset(ZoneOffset.UTC))
       formBundleNumber <- pattern"999999999999".gen
     } yield CreateSubscriptionResponse(processingDate, formBundleNumber)
-
+  
   private lazy val orgNameGen: Gen[String] = for {
     a <- Gen.oneOf(
-          "Vivid",
-          "Vegan",
-          "Soft",
-          "Star",
-          "Verdant",
-          "Monster",
-          "Highly Addictive",
-          "Frenzy",
-          "Wild",
-          "Party",
-          "Fire",
-          "Lightning",
-          "Crackling",
-          "Mega",
-          "Super",
-          "Key")
+           "Vivid",
+           "Vegan",
+           "Soft",
+           "Star",
+           "Verdant",
+           "Monster",
+           "Highly Addictive",
+           "Frenzy",
+           "Wild",
+           "Party",
+           "Fire",
+           "Lightning",
+           "Crackling",
+           "Mega",
+           "Super",
+           "Key"
+         )
     b <- Gen.oneOf("Cola", "Juice", "Can", "Drinks", "Products", "Bottle", "Confectionry", "Lemonade")
     c <- Gen.oneOf("Plc", "Ltd", "Group")
-  } yield (s"$a $b $c")
+  } yield s"$a $b $c"
 
   private lazy val addressGen: Gen[Address] = {
     Gen.ukAddress.map { lines =>

@@ -19,7 +19,7 @@ package uk.gov.hmrc.softdrinksindustrylevystub.controllers
 import javax.inject.Inject
 import play.api.mvc._
 
-class ExtraActions @Inject()(
+class ExtraActions @Inject() (
   authorisedFilterAction: AuthorisedFilterAction,
   environmentFilterAction: EnvironmentFilterAction
 ) {

@@ -35,8 +35,8 @@ object Store {
     _store.clear()
     utrToSdil.clear()
   }
-
-  val _store = mutable { sdil: String =>
+  
+  val _store = mutable { (sdil: String) =>
     val generatedSubscription = genSubscription(sdilToUtr(sdil)).seeded(sdil)
     generatedSubscription.map(_.copy(sdilRef = sdil))
   }
@@ -49,7 +49,7 @@ object Store {
     _store(in.sdilRef) = Some(in)
   }
 
-  val utrToSdil = mutable { utr: String =>
+  val utrToSdil = mutable { (utr: String) =>
     SdilNumberTransformer.utrToSdil(utr).toList
   }
 
@@ -59,12 +59,12 @@ object Store {
       .getOrElse(SdilNumberTransformer.sdilToUtr(sdil))
 
   def unusedSdilRefs: Iterable[String] = {
-    val overriddenUtrs = utrToSdil.toList.flatMap { _._2 };
+    val overriddenUtrs = utrToSdil.toList.flatMap(_._2);
     { 0 to 99999 }
       .map { x =>
-        SdilNumberTransformer.sdilRefEnum { x * 10L }
+        SdilNumberTransformer.sdilRefEnum(x * 10L)
       }
-      .filterNot { overriddenUtrs.contains }
+      .filterNot(overriddenUtrs.contains)
   }
 
   def financialHistory(sdilRef: String): FinancialTransactionResponse =

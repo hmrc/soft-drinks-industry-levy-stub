@@ -26,12 +26,12 @@ import sdil.models.des.FinancialTransaction._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton
-class FinancialDataController @Inject()(cc: ControllerComponents) extends BackendController(cc) {
+class FinancialDataController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
 
   val logger = Logger("FinancialDataController")
   val canned = CannedFinancialData.canned
 
-  implicit val sdilEnum = SdilNumberTransformer.sdilRefEnum
+  given Enumerable[String] = SdilNumberTransformer.sdilRefEnum
 
   def test(
     sdilRef: String,
@@ -41,8 +41,11 @@ class FinancialDataController @Inject()(cc: ControllerComponents) extends Backen
     customerPaymentInformation: Boolean
   ): Action[AnyContent] = Action {
     logger.info(
-      s"Query parameters onlyOpenItems=$onlyOpenItems, includeLocks=$includeLocks, calculateAccruedInterest=$calculateAccruedInterest, customerPaymentInformation= $customerPaymentInformation")
-    val id = sdilRef.asLong % canned.size
+      s"Query parameters onlyOpenItems=$onlyOpenItems, includeLocks=$includeLocks, calculateAccruedInterest=$calculateAccruedInterest, customerPaymentInformation= $customerPaymentInformation"
+    )
+    val numericSdilRef = sdilRef.replaceAll("[^0-9]", "")
+    val id = numericSdilRef.toLong % canned.size
+
     canned(id.toInt) match {
       case (file, Left(e)) => throw new IllegalStateException(s"unable to parse $file", e)
       case (file, Right(json)) =>

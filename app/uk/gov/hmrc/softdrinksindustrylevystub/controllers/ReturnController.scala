@@ -25,11 +25,11 @@ import uk.gov.hmrc.softdrinksindustrylevystub.models._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.HeadersGenerator.genCorrelationIdHeader
 import uk.gov.hmrc.softdrinksindustrylevystub.services.{DesSubmissionService, SdilNumberTransformer}
 
-class ReturnController @Inject()(
+class ReturnController @Inject() (
   desSubmissionService: DesSubmissionService,
   cc: ControllerComponents,
-  extraActions: ExtraActions)
-    extends BackendController(cc) {
+  extraActions: ExtraActions
+) extends BackendController(cc) {
 
   def createReturn(sdilRef: String): Action[JsValue] = extraActions.AuthAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
@@ -46,7 +46,8 @@ class ReturnController @Inject()(
           Ok(
             Json.toJson(
               desSubmissionService.createReturnResponse(a, sdilRef)
-            )).withHeaders(
+            )
+          ).withHeaders(
             ("CorrelationId", genCorrelationIdHeader.seeded(sdilRef)(SdilNumberTransformer.sdilRefEnum).get)
           )
         case _ =>
