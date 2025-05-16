@@ -38,13 +38,15 @@ object Store {
     utrToSdil.clear()
   }
 
-  val _store = mutable { sdil: String =>
+  val _store = mutable { (sdil: String) =>
     def generate(pred: Subscription => Boolean) =
       genSubscription.retryUntil(pred).seeded(sdil)
 
     val seeded = (sdil.init.last, sdil.last) match {
       case (_, '0')   => None
       case ('1', '1') => generate(_.activity.isSmallProducer).map(_.copy(warehouseSites = Nil))
+      case ('2', '1') => generate(_.activity.isSmallNoImports).map(_.copy(warehouseSites = Nil))
+      case ('3', '1') => generate(_.activity.isSmallImportsNoCopacker).map(_.copy(productionSites = Nil))
       case (_, '1')   => generate(_.activity.isSmallProducer)
       case ('2', '2') => generate(_.activity.isLarge).map(_.copy(warehouseSites = Nil))
       case ('3', '2') => generate(_.activity.isLargeNoImports).map(_.copy(warehouseSites = Nil))
@@ -74,7 +76,7 @@ object Store {
     _store(in.sdilRef) = Some(in)
   }
 
-  val utrToSdil = mutable { utr: String =>
+  val utrToSdil = mutable { (utr: String) =>
     SdilNumberTransformer.utrToSdil(utr).toList
   }
 

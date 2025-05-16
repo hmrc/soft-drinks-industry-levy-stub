@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub.services
 
-import cats.implicits._
-import org.scalacheck.Gen
-import org.scalacheck.cats.implicits.genInstances
 import uk.gov.hmrc.softdrinksindustrylevystub.models.EnumUtils.idEnum
-import uk.gov.hmrc.smartstub._
-import uk.gov.hmrc.softdrinksindustrylevystub.models._
+import uk.gov.hmrc.smartstub.*
+import uk.gov.hmrc.softdrinksindustrylevystub.models.*
+import org.scalacheck.Gen
+import uk.gov.hmrc.softdrinksindustrylevystub.models.RosmOrganisationType.*
 
 object RosmGenerator {
 
@@ -31,14 +30,14 @@ object RosmGenerator {
   private def addressLine = variableLengthString(0, 35)
 
   private def genRosmResponseAddress: Gen[RosmResponseAddress] =
-    (
-      Gen.oneOf("The house", "50"), // addressLine1
-      Gen.oneOf("The Street", "The Road", "The Lane").almostAlways, // addressLine2
-      addressLine.almostAlways, // addressLine3
-      addressLine.rarely, // addressLine4
-      Gen.const("GB"), // countryCode
-      Gen.postcode // postalCode
-    ).mapN(RosmResponseAddress.apply)
+    for {
+      line1       <- Gen.oneOf("The house", "50")
+      line2       <- Gen.oneOf("The Street", "The Road", "The Lane").almostAlways
+      line3       <- addressLine.almostAlways
+      line4       <- addressLine.rarely
+      countryCode <- Gen.const("GB")
+      postcode    <- Gen.const("DD61 1XX")
+    } yield RosmResponseAddress(line1, line2, line3, line4, countryCode, postcode)
 
   private def genEmail =
     for {
@@ -57,42 +56,73 @@ object RosmGenerator {
     } yield s"$a$b$c$d"
 
   private def genRosmResponseContactDetails: Gen[RosmResponseContactDetails] =
-    (
-      Gen.ukPhoneNumber.almostAlways, // primaryPhoneNumber
-      Gen.ukPhoneNumber.sometimes, // secondaryPhoneNumber
-      Gen.ukPhoneNumber.rarely, // faxNumber
-      genEmail.almostAlways // emailAddress
-    ).mapN(RosmResponseContactDetails.apply)
-
-  private def shouldGenOrg(utr: String): OrganisationResponse = {
-    import RosmOrganisationType._
-    OrganisationResponse(
-      Gen.alphaStr.seeded(utr).get, // TODO use company when there's a new release of smartstub
-      Gen.boolean.seeded(utr).get,
-      Gen.oneOf(CorporateBody, LLP, UnincorporatedBody, Unknown).seeded(utr).get
+    for {
+      primaryPhoneNumber   <- Gen.ukPhoneNumber.almostAlways
+      secondaryPhoneNumber <- Gen.ukPhoneNumber
+      faxNumber            <- Gen.ukPhoneNumber.rarely
+      emailAddress         <- genEmail.almostAlways
+    } yield RosmResponseContactDetails(
+      primaryPhoneNumber,
+      Some(secondaryPhoneNumber),
+      faxNumber,
+      emailAddress
     )
+
+  import java.util.Random
+
+  def deterministicAlphaStr(utr: String, desiredLength: Int = 24): String = {
+    // Use a stable seed derived from the UTR
+    val seed = utr.hashCode
+    val rnd = new Random(seed)
+    val sb = new StringBuilder
+    val chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    for (_ <- 1 to desiredLength)
+      sb.append(chars.charAt(rnd.nextInt(chars.length)))
+    sb.toString()
   }
 
-  private def genIndividual(utr: String): Gen[Individual] =
-    Individual(
-      Gen.forename().seeded(utr).get,
-      Gen.forename().rarely.seeded(utr).get,
-      Gen.surname.seeded(utr).get,
-      Gen.date.seeded(utr)
-    )
+  private def deterministicOrg(utr: String): OrganisationResponse = {
+    val hash = utr.hashCode.abs
+    val name = deterministicAlphaStr(utr)
+    val isGroup = hash % 2 == 0
+    val orgType = (hash % 4) match {
+      case 0 => LLP
+      case 1 => CorporateBody
+      case 2 => UnincorporatedBody
+      case _ => Unknown
+    }
+    OrganisationResponse(name, isGroup, orgType)
+  }
+
+  private def shouldGenOrg(utr: String): Gen[OrganisationResponse] =
+    Gen.const(deterministicOrg(utr))
+
+  private def genIndividual(isAnIndividual: Boolean, utr: String): Gen[Option[Individual]] =
+    if (isAnIndividual) {
+      Some(
+        Individual(
+          Gen.forename().seeded(utr).get,
+          Gen.forename().rarely.seeded(utr).get,
+          Gen.surname.seeded(utr).get,
+          Gen.date.seeded(utr)
+        )
+      )
+    } else {
+      Gen.const(None)
+    }
 
   private def shouldGenAgentRef(isAnAgent: Boolean, utr: String): Option[String] =
     if (isAnAgent) Gen.alphaNumStr.seeded(utr) else None
 
-  def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[Option[RosmRegisterResponse]] =
-    (for {
+  def genRosmRegisterResponse(rosmRequest: RosmRegisterRequest, utr: String): Gen[RosmRegisterResponse] =
+    for {
       safeId <- genSafeId
       agentReferenceNumber = shouldGenAgentRef(rosmRequest.isAnAgent, utr)
       isEditable <- Gen.boolean
       isAnAgent = rosmRequest.isAnAgent
       isAnIndividual <- Gen.const(rosmRequest.individual.isDefined)
-      individual     <- genIndividual(utr).sometimes
-      organisation   <- Gen.const(shouldGenOrg(utr)).sometimes
+      individual     <- genIndividual(rosmRequest.individual.isDefined, utr)
+      organisation   <- shouldGenOrg(utr)
       address        <- genRosmResponseAddress
       contactDetails <- genRosmResponseContactDetails
     } yield RosmRegisterResponse(
@@ -102,8 +132,8 @@ object RosmGenerator {
       isAnAgent,
       isAnIndividual,
       individual,
-      organisation,
+      Some(organisation),
       address,
       contactDetails
-    )).usually
+    )
 }
