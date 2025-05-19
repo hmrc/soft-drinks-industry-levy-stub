@@ -62,6 +62,60 @@ Ensure your service manager config is up to date, and run the following command:
 
 This will start all the required services
 
+## Generating a UTR
+
+From auth login stub, pass in a UTR of the form `XXXXXABCDE`.
+
+### Unregistered UTR - to reach registration journey
+
+Pass in `ABCDE` as `00000`
+
+### A - Deregistration Date
+
+| Value for A | Deregistration Date         |
+|-------------|-----------------------------|
+| 7           | Between 2.5 and 3 years ago |
+| 8           | Between 1.5 and 2 years ago |
+| 9           | Between 0.5 and 1 years ago |
+| 6 or under  | None                        |
+
+### BC - Activity Prod Type & Activity
+
+| Value for B | isImporter | isContractPacker |
+|-------------|------------|------------------|
+| 0           | false      | false            |
+| 1           | true       | false            |
+| 2           | false      | true             |
+| 3           | true       | true             |
+
+| Value for C | producesOwnBrands | isCopackee    | isLarge       |
+|-------------|-------------------|---------------|---------------|
+| 0           | false             | false         | false         |
+| 1           | false             | true          | false         |
+| 2           | true              | false         | false         |
+| 3           | true              | true          | false         |
+| 4           | false             | true          | true          |
+| 5           | true              | false         | true          |
+| 6           | true              | true          | true          |
+
+### D - Years of Liability
+
+Liability date will be generated between `D + 0.5` and `D + 1` years ago  
+
+### E - Production Sites and Warehouse Sites
+
+| Value for E  | Production Sites | Warehouse Sites |
+|--------------|------------------|-----------------|
+| 0            | 0                | 0               |
+| 1            | 1                | 0               |
+| 2            | 2                | 0               |
+| 3            | 0                | 1               |
+| 4            | 1                | 1               |
+| 5            | 2                | 1               |
+| 6            | 0                | 2               |
+| 7            | 1                | 2               |
+| 8            | 2                | 2               |
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
