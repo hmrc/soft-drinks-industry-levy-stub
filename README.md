@@ -64,11 +64,11 @@ This will start all the required services
 
 ## Generating a UTR
 
-From auth login stub, pass in a UTR of the form `XXXXXEDCBA`.
+From auth login stub, pass in a UTR of the form `XXXXXABCDE`.
 
 ### Unregistered UTR - to reach registration journey
 
-Pass in `EDCBA` as `00000`
+Pass in `ABCDE` as `00000`
 
 ### A - Deregistration Date
 
@@ -79,7 +79,7 @@ Pass in `EDCBA` as `00000`
 | 9           | Between 0.5 and 1 years ago |
 | 6 or under  | None                        |
 
-### CB - Activity Prod Type & Activity
+### BC - Activity Prod Type & Activity
 
 | Value for B | isImporter | isContractPacker |
 |-------------|------------|------------------|
