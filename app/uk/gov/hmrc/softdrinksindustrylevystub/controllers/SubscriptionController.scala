@@ -63,6 +63,8 @@ class SubscriptionController @Inject() (
       }
     }
 
+  def retrieveSmallProducerWithoutUtr(): Action[AnyContent] = retrieveSubscriptionDetails("sdil", "XCSDIL000000336")
+
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Action[AnyContent] =
     extraActions.AuthAndEnvAction.async {
 
@@ -78,8 +80,10 @@ class SubscriptionController @Inject() (
         .successful(
           subscription match {
             case Some(_) if idNumber == "0000010901" => TooManyRequests(Json.obj("reason" -> "too many requests"))
-            case Some(data)                          => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
-            case _                                   => NotFound(Json.obj("reason" -> "unknown subscription"))
+            case Some(data) if idType == "sdil" && idNumber == "XCSDIL000000336" =>
+              Ok(Json.toJson(data.copy(utr = ""))(GetFormat.subscriptionWrites))
+            case Some(data) => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
+            case _          => NotFound(Json.obj("reason" -> "unknown subscription"))
           }
         )
         .desify(idNumber)
