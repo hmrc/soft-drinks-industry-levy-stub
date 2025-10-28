@@ -16,9 +16,10 @@
 
 package des
 
-import scala.concurrent._
-import scala.concurrent.duration._
+import scala.concurrent.*
+import scala.concurrent.duration.*
 import scala.io.Source
+import scala.language.postfixOps
 
 case class DesFuture[A](inner: Future[A]) extends AnyVal {
   import DesFuture._
