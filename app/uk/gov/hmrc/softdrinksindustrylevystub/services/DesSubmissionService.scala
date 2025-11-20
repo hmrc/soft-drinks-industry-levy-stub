@@ -30,7 +30,7 @@ class DesSubmissionService {
     import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer.tolerantUtr
     val sdilRef = Store.unusedSdilRefs.head
     Store.add(data.copy(sdilRef = sdilRef))
-    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber)(tolerantUtr).get
+    SubscriptionGenerator.genCreateSubscriptionResponse.seeded(idNumber)(using tolerantUtr).get
   }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Option[Subscription] =

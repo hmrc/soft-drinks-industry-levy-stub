@@ -22,17 +22,17 @@ Test / scalafmtOnCompile := true
 // ================================================================================
 // Dependencies
 // ================================================================================
-scalaVersion := "3.3.6"
+scalaVersion := "3.7.1"
 libraryDependencies ++= AppDependencies()
 
 // ================================================================================
 // Compiler flags
 // ================================================================================
 
-scalacOptions --= Seq(
-  "-deprecation",
-  "-unchecked",
-  "-encoding", "UTF-8"
+scalacOptions ++= Seq(
+  "-feature",
+  "-Wconf:msg=Flag.*repeatedly:s",
+  "-language:implicitConversions"
 )
 
 scalacOptions += s"-Wconf:msg=unused import:s,msg=unused explicit parameter:s,src=.*[\\\\/]routes[\\\\/].*:s"

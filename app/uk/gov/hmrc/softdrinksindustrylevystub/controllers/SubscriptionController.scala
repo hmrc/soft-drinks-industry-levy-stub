@@ -49,7 +49,10 @@ class SubscriptionController @Inject() (
           Ok(
             Json.toJson(
               desSubmissionService
-                .createSubscriptionResponse(idNumber, request.body.as[Subscription](CreateFormat.subscriptionReads))
+                .createSubscriptionResponse(
+                  idNumber,
+                  request.body.as[Subscription](using CreateFormat.subscriptionReads)
+                )
             )
           ).withHeaders(
             ("CorrelationId", genCorrelationIdHeader.seeded(idNumber).get)
@@ -78,7 +81,7 @@ class SubscriptionController @Inject() (
         .successful(
           subscription match {
             case Some(_) if idNumber == "0000010901" => TooManyRequests(Json.obj("reason" -> "too many requests"))
-            case Some(data)                          => Ok(Json.toJson(data)(GetFormat.subscriptionWrites))
+            case Some(data)                          => Ok(Json.toJson(data)(using GetFormat.subscriptionWrites))
             case _                                   => NotFound(Json.obj("reason" -> "unknown subscription"))
           }
         )

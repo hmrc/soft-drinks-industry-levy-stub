@@ -48,7 +48,7 @@ class ReturnController @Inject() (
               desSubmissionService.createReturnResponse(a, sdilRef)
             )
           ).withHeaders(
-            ("CorrelationId", genCorrelationIdHeader.seeded(sdilRef)(SdilNumberTransformer.sdilRefEnum).get)
+            ("CorrelationId", genCorrelationIdHeader.seeded(sdilRef)(using SdilNumberTransformer.sdilRefEnum).get)
           )
         case _ =>
           BadRequest(Json.toJson(ReturnFailureResponse.invalidPayload))
