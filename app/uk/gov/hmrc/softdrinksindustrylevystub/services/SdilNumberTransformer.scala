@@ -37,8 +37,8 @@ object SdilNumberTransformer {
   def convertEnum[A, B](enumA: Enumerable[A], enumB: Enumerable[B])(input: A): Option[B] =
     enumB.get(enumA.asLong(input))
 
-  val utrToSdil = convertEnum(tolerantUtr, sdilRefEnum) _
-  val sdilToUtr = convertEnum(sdilRefEnum, tolerantUtr) _
+  val utrToSdil = convertEnum(tolerantUtr, sdilRefEnum)
+  val sdilToUtr = convertEnum(sdilRefEnum, tolerantUtr)
 
   def showTable(num: Int): Unit = {
     for {
