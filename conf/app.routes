@@ -13,5 +13,3 @@ GET         /reset-registrations                                       uk.gov.hm
 GET         /reset-returns                                             uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.resetReturns
 
 GET         /enterprise/financial-data/ZSDL/:sdilRef/ZSDL              @uk.gov.hmrc.softdrinksindustrylevystub.controllers.FinancialDataController.test(sdilRef: String, onlyOpenItems: Boolean, includeLocks: Boolean, calculateAccruedInterest: Boolean, customerPaymentInformation: Boolean)
-
-POST        /gform/dms/submit                                          @uk.gov.hmrc.softdrinksindustrylevystub.controllers.GFormController.submitToDms()
