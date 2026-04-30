@@ -24,34 +24,38 @@ import com.fasterxml.jackson.core.JsonParseException
 import sdil.models.des._
 import FinancialTransaction._
 import com.fasterxml.jackson.databind.JsonNode
-import com.github.fge.jackson.JsonLoader
-import com.github.fge.jsonschema.main.JsonSchemaFactory
-import com.github.fge.jsonschema.core.report.ProcessingReport
-import com.github.fge.jsonschema.core.exceptions.ProcessingException
+import com.networknt.schema.*
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.networknt.schema.{SchemaRegistry, SpecificationVersion}
 import java.nio.file.Paths
 
 object CannedFinancialData {
 
   case class SchemaValidator(path: String) {
 
-    private val schema: JsonNode = {
+    private val objectMapper: ObjectMapper = new ObjectMapper()
+    private val schemaRegistry: SchemaRegistry =
+      SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_4)
+
+    private val schema: Schema = {
       val stream = getClass.getResourceAsStream(path)
-      val schemaText = scala.io.Source.fromInputStream(stream).getLines().mkString
+      val schemaText = scala.io.Source.fromInputStream(stream).mkString
       stream.close()
-      JsonLoader.fromString(schemaText)
+      val schemaNode = objectMapper.readTree(schemaText)
+      schemaRegistry.getSchema(schemaNode)
     }
 
-    val validator = JsonSchemaFactory.byDefault.getValidator
-
-    def report(model: JsValue): ProcessingReport = {
-      val json = JsonLoader.fromString(Json.prettyPrint(model))
-      validator.validate(schema, json)
+    def report(model: JsValue): java.util.List[Error] = {
+      val json = objectMapper.readTree(Json.prettyPrint(model))
+      schema.validate(json)
     }
 
     def apply(model: JsValue): Either[Throwable, JsValue] =
       for {
-        report <- Either.catchOnly[ProcessingException](report(model))
-        _      <- if (!report.isSuccess) report.iterator.asScala.toList.map(_.asException).head.asLeft else ().asRight
+        report <- Either.catchOnly[RuntimeException](report(model))
+        _ <- if (!report.isEmpty)
+               report.iterator.asScala.toList.map(e => new RuntimeException(e.getMessage)).head.asLeft
+             else ().asRight
       } yield model
   }
 
