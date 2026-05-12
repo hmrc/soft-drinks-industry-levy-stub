@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.softdrinksindustrylevystub
 
+import java.time.LocalDate
 import org.scalacheck._
 import uk.gov.hmrc.softdrinksindustrylevystub.services._
 import uk.gov.hmrc.softdrinksindustrylevystub.services.SdilNumberTransformer._
@@ -45,6 +46,13 @@ class StoreSpec extends AnyFlatSpec {
       Store.fromUtr(subscription.utr) shouldBe Some(subscription)
       Store.fromSdilRef(subscription.sdilRef) shouldBe Some(subscription)
     }
+  }
+
+  it should "provide a stable small producer fixture for performance tests" in {
+    val subscription = Store.fromSdilRef("XASDIL000000431").get
+
+    subscription.activity.isSmallProducer shouldBe true
+    subscription.liabilityDate shouldBe LocalDate.of(2018, 1, 1)
   }
 
 }
