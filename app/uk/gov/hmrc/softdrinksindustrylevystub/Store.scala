@@ -28,6 +28,11 @@ object Store {
 
   implicit val `enum`: Enumerable[String] = SdilNumberTransformer.sdilRefEnum
 
+  private val smallProducerLiabilityDate = LocalDate.of(2018, 1, 1)
+  private val smallProducerRefs = Set(
+    "XASDIL000000431"
+  )
+
   def mutable[K, V](f: K => V) =
     collection.concurrent.TrieMap.empty[K, V].withDefault(f)
 
@@ -61,7 +66,13 @@ object Store {
       case _ => genSubscription.seeded(sdil)
     }
 
-    seeded.map {
+    val subscriptionWithOverrides = if (smallProducerRefs.contains(sdil)) {
+      seeded.map(_.copy(liabilityDate = smallProducerLiabilityDate))
+    } else {
+      seeded
+    }
+
+    subscriptionWithOverrides.map {
       _.copy(
         utr = sdilToUtr(sdil).getOrElse(""),
         sdilRef = sdil
