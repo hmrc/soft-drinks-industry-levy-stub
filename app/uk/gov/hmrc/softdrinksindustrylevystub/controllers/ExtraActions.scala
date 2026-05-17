@@ -21,8 +21,11 @@ import play.api.mvc._
 
 class ExtraActions @Inject() (
   authorisedFilterAction: AuthorisedFilterAction,
-  environmentFilterAction: EnvironmentFilterAction
+  environmentFilterAction: EnvironmentFilterAction,
+  hipFilterAction: HipFilterAction
 ) {
 
-  def AuthAndEnvAction: ActionBuilder[Request, AnyContent] = authorisedFilterAction andThen environmentFilterAction
+  def authAndEnvAction: ActionBuilder[Request, AnyContent] = authorisedFilterAction andThen environmentFilterAction
+
+  def hipAction: ActionBuilder[Request, AnyContent] = hipFilterAction
 }

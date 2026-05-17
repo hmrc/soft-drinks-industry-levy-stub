@@ -35,7 +35,8 @@ class RosmControllerSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAn
   val cc = stubControllerComponents()
   val authorisedFilterAction = new AuthorisedFilterAction(cc)
   val environmentAction = new EnvironmentFilterAction()
-  val extraActions = new ExtraActions(authorisedFilterAction, environmentAction)
+  val hipFilterAction = new HipFilterAction(cc)
+  val extraActions = new ExtraActions(authorisedFilterAction, environmentAction, hipFilterAction)
   val mockRosmController = new RosmController(mockRosmService, cc, extraActions)
   val authHeader: (String, String) = "Authorization" -> "auth"
   val envHeader: (String, String) = "Environment"    -> "clone"

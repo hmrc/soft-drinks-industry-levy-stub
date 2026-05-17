@@ -29,7 +29,7 @@ import scala.concurrent.Future
 class RosmController @Inject() (rosmService: RosmService, cc: ControllerComponents, extraActions: ExtraActions)
     extends BackendController(cc) {
 
-  def register(utr: String): Action[JsValue] = extraActions.AuthAndEnvAction.async(parse.json) { implicit request =>
+  def register(utr: String): Action[JsValue] = extraActions.authAndEnvAction.async(parse.json) { implicit request =>
     withJsonBody[RosmRegisterRequest](rosmRequest =>
       if (rosmRequest.regime.matches("ZSDL")) {
         rosmService.handleRegisterRequest(rosmRequest, utr) match {

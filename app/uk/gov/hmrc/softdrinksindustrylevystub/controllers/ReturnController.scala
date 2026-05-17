@@ -31,7 +31,7 @@ class ReturnController @Inject() (
   extraActions: ExtraActions
 ) extends BackendController(cc) {
 
-  def createReturn(sdilRef: String): Action[JsValue] = extraActions.AuthAndEnvAction(parse.json) {
+  def createReturn(sdilRef: String): Action[JsValue] = extraActions.authAndEnvAction(parse.json) {
     implicit request: Request[JsValue] =>
       request.body.validate[Return] match {
         case JsSuccess(_, _) if !sdilRef.matches(ReturnValidation.sdilRefPattern) =>

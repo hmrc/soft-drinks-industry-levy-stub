@@ -43,7 +43,7 @@ class SubscriptionController @Inject() (
     extends BackendController(cc) {
 
   def createSubscription(idType: String, idNumber: String): Action[JsValue] =
-    extraActions.AuthAndEnvAction(parse.json) { implicit request: Request[JsValue] =>
+    extraActions.authAndEnvAction(parse.json) { implicit request: Request[JsValue] =>
       (Try(request.body.validate[CreateSubscriptionRequest]), Validation.checkParams(idType, idNumber)) match {
         case (Success(JsSuccess(payload, _)), failures) if payload.isValid && failures.isEmpty =>
           Ok(
@@ -67,7 +67,7 @@ class SubscriptionController @Inject() (
     }
 
   def retrieveSubscriptionDetails(idType: String, idNumber: String): Action[AnyContent] =
-    extraActions.AuthAndEnvAction.async {
+    extraActions.authAndEnvAction.async {
 
       val subscription: Option[Subscription] = {
         idType match {
