@@ -227,6 +227,7 @@ class HipSubscriptionControllerSpec extends AnyWordSpec with Matchers with Befor
       val json = contentAsJson(retrieveResult)
       (json \ "success" \ "utr").as[String] shouldBe "1234567890"
       (json \ "success" \ "subscriptionDetails" \ "sdilRegistrationNumber").asOpt[String] shouldBe defined
+      (json \ "success" \ "subscriptionDetails" \ "deregistrationDate") shouldBe JsDefined(JsNull)
     }
 
     "return 429 when the subscription idNumber is 0000010901" in {
