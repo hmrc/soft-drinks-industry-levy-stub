@@ -39,7 +39,8 @@ class SubscriptionControllerSpec extends PlaySpec with GuiceOneAppPerSuite with 
   val cc = stubControllerComponents()
   val authorisedFilterAction = new AuthorisedFilterAction(cc)
   val environmentAction = new EnvironmentFilterAction()
-  val extraActions = new ExtraActions(authorisedFilterAction, environmentAction)
+  val hipFilterAction = new HipFilterAction(cc)
+  val extraActions = new ExtraActions(authorisedFilterAction, environmentAction, hipFilterAction)
   val mockSubscriptionController = new SubscriptionController(mockDesSubmissionService, cc, extraActions)
   implicit val hc: HeaderCarrier = new HeaderCarrier
   val utr = "1111111111"

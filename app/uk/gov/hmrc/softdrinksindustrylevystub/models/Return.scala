@@ -44,12 +44,12 @@ case class Return(
 }
 
 case class ExpoWasted(
-  values: Option[Volume],
+  volumes: Option[Volume],
   monetaryValues: Option[MonetaryValues]
 ) {
   def isValid: Boolean =
     Seq(
-      values.forall(_.isValid),
+      volumes.forall(_.isValid),
       monetaryValues.forall(_.isValid)
     ).reduce(_ & _)
 }

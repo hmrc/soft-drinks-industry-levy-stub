@@ -39,7 +39,8 @@ class ReturnControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Before
   val cc = stubControllerComponents()
   val authorisedFilterAction = new AuthorisedFilterAction(cc)
   val environmentAction = new EnvironmentFilterAction()
-  val extraActions = new ExtraActions(authorisedFilterAction, environmentAction)
+  val hipFilterAction = new HipFilterAction(cc)
+  val extraActions = new ExtraActions(authorisedFilterAction, environmentAction, hipFilterAction)
   val mockReturnController = new ReturnController(mockDesSubmissionService, cc, extraActions)
   val utr = "9024987803"
   val sdilRef = "XVSDIL000987654"
