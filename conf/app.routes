@@ -1,6 +1,6 @@
 #SDIL subscription
 POST        /soft-drinks/subscription/:idType/:idNumber                uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.createSubscription(idType, idNumber)
-GET         /soft-drinks/subscription/:idType/:idNumber        uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
+GET         /soft-drinks/subscription/details/:idType/:idNumber        uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
 
 #SDIL Return
 POST        /soft-drinks/:sdilRef/return                               uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.createReturn(sdilRef)
@@ -17,7 +17,7 @@ GET         /enterprise/financial-data/ZSDL/:sdilRef/ZSDL              @uk.gov.h
 # HIP SDIL subscription
 POST   /etmp/RESTAdapter/soft-drinks/subscription/:idType/:idNumber         uk.gov.hmrc.softdrinksindustrylevystub.controllers.HipSubscriptionController.createSubscription(idType, idNumber)
 
-GET    /etmp/RESTAdapter/soft-drinks/subscription/details/:idType/:idNumber uk.gov.hmrc.softdrinksindustrylevystub.controllers.HipSubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
+GET    /etmp/RESTAdapter/soft-drinks/subscription/:idType/:idNumber uk.gov.hmrc.softdrinksindustrylevystub.controllers.HipSubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
 
 # HIP SDIL return
 POST   /etmp/RESTAdapter/soft-drinks/return/:sdilReference                  uk.gov.hmrc.softdrinksindustrylevystub.controllers.HipReturnController.createReturn(sdilReference)
