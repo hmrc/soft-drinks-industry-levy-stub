@@ -1,6 +1,6 @@
 #SDIL subscription
 POST        /soft-drinks/subscription/:idType/:idNumber                uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.createSubscription(idType, idNumber)
-GET         /soft-drinks/subscription/details/:idType/:idNumber        uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
+GET         /soft-drinks/subscription/:idType/:idNumber        uk.gov.hmrc.softdrinksindustrylevystub.controllers.SubscriptionController.retrieveSubscriptionDetails(idType, idNumber)
 
 #SDIL Return
 POST        /soft-drinks/:sdilRef/return                               uk.gov.hmrc.softdrinksindustrylevystub.controllers.ReturnController.createReturn(sdilRef)
