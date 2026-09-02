@@ -55,4 +55,15 @@ class StoreSpec extends AnyFlatSpec {
     subscription.liabilityDate shouldBe LocalDate.of(2018, 1, 1)
   }
 
+  it should "provide a stable small producer contract packer fixture for returns acceptance tests" in {
+    val subscription = Store.fromUtr("0000001721").get
+
+    subscription.sdilRef shouldBe "XLSDIL000001721"
+    subscription.activity.isSmallProducer shouldBe true
+    subscription.activity.isLarge shouldBe false
+    subscription.activity.isImporter shouldBe false
+    subscription.activity.isContractPacker shouldBe true
+    subscription.activity.isVoluntaryRegistration shouldBe false
+  }
+
 }
