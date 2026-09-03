@@ -28,6 +28,7 @@ sealed trait Activity {
   def isVoluntaryRegistration: Boolean = isProducer && !isLarge && !isImporter && !isContractPacker
   def isSmallProducer: Boolean = isProducer && !isLarge
   def isSmallNoImports: Boolean = isProducer && !isLarge && !isImporter
+  def isSmallNoImportsContractPacker: Boolean = isSmallNoImports && isContractPacker
   def isSmallImportsNoCopacker: Boolean = isProducer && !isLarge && isImporter && !isContractPacker
   def isLargeNoImports: Boolean = isProducer && isLarge && !isImporter
   def isLargeImportCopacker: Boolean = isProducer && isLarge && isImporter && isContractPacker
