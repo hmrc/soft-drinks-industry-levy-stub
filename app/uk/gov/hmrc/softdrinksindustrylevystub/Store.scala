@@ -30,7 +30,8 @@ object Store {
 
   private val smallProducerLiabilityDate = LocalDate.of(2018, 1, 1)
   private val smallProducerRefs = Set(
-    "XASDIL000000431"
+    "XASDIL000000431",
+    "XPSDIL000000478"
   )
 
   def mutable[K, V](f: K => V) =

@@ -66,4 +66,11 @@ class StoreSpec extends AnyFlatSpec {
     subscription.activity.isVoluntaryRegistration shouldBe false
   }
 
+  it should "provide a stable small producer fixture for acceptance tests" in {
+    val subscription = Store.fromSdilRef("XPSDIL000000478").get
+
+    subscription.activity.isSmallProducer shouldBe true
+    subscription.liabilityDate shouldBe LocalDate.of(2018, 1, 1)
+  }
+
 }
