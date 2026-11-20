@@ -34,6 +34,14 @@ object Store {
     "XLSDIL000000101"
   )
 
+  private val liabilityDateOverrides = Map(
+    "XCSDIL000000433" -> LocalDate.of(2025, 11, 1),
+    "XLSDIL000001721" -> LocalDate.of(2026, 2, 1),
+    "XPSDIL000000132" -> LocalDate.of(2026, 2, 1),
+    "XZSDIL000000331" -> LocalDate.of(2026, 5, 1),
+    "XVSDIL000000316" -> LocalDate.of(2026, 5, 1)
+  )
+
   def mutable[K, V](f: K => V) =
     collection.concurrent.TrieMap.empty[K, V].withDefault(f)
 
@@ -67,10 +75,14 @@ object Store {
       case _ => genSubscription.seeded(sdil)
     }
 
-    val subscriptionWithOverrides = if (smallProducerRefs.contains(sdil)) {
-      seeded.map(_.copy(liabilityDate = smallProducerLiabilityDate))
-    } else {
-      seeded
+    val subscriptionWithOverrides = seeded.map { subscription =>
+      val liabilityDate = liabilityDateOverrides.getOrElse(
+        sdil,
+        if (smallProducerRefs.contains(sdil)) smallProducerLiabilityDate
+        else subscription.liabilityDate
+      )
+
+      subscription.copy(liabilityDate = liabilityDate)
     }
 
     subscriptionWithOverrides.map {
