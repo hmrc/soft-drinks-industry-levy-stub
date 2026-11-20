@@ -73,4 +73,33 @@ class StoreSpec extends AnyFlatSpec {
     subscription.liabilityDate shouldBe LocalDate.of(2018, 1, 1)
   }
 
+  it should "allow overriding liabilityDate for XCSDIL000000433" in {
+    val subscription = Store.fromSdilRef("XCSDIL000000433").get
+
+    subscription.liabilityDate shouldBe LocalDate.of(2025, 11, 1)
+  }
+
+  it should "allow overriding liabilityDate for XLSDIL000001721" in {
+    val subscription = Store.fromSdilRef("XLSDIL000001721").get
+
+    subscription.liabilityDate shouldBe LocalDate.of(2026, 2, 1)
+  }
+
+  it should "allow overriding liabilityDate for XPSDIL000000132" in {
+    val subscription = Store.fromSdilRef("XPSDIL000000132").get
+
+    subscription.liabilityDate shouldBe LocalDate.of(2026, 2, 1)
+  }
+
+  it should "allow overriding liabilityDate for XZSDIL000000331" in {
+    val subscription = Store.fromSdilRef("XZSDIL000000331").get
+
+    subscription.liabilityDate shouldBe LocalDate.of(2026, 5, 1)
+  }
+
+  it should "allow overriding liabilityDate for XVSDIL000000316" in {
+    val subscription = Store.fromSdilRef("XVSDIL000000316").get
+
+    subscription.liabilityDate shouldBe LocalDate.of(2026, 5, 1)
+  }
 }
